@@ -167,7 +167,7 @@
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vNode</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#34;h1&#34;</span>, {}, <span style="color:#e6db74">&#34;Hello, World!&#34;</span>);
 
 <span style="color:#a6e22e">ReactDOM</span>.<span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">vNode</span>, document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;root&#34;</span>));
-</code></pre></div><p>Creating elements with the JavaScript syntax can quickly become burdensome, that is why most of the time we use <a href="https://reactjs.org/docs/introducing-jsx.html">JSX</a>. JSX is just syntactic sugar, it is transpilled to a pure JavaScript equivalent using <code>React.createElement</code>.</p>
+</code></pre></div><p>Creating elements with the JavaScript syntax can quickly become burdensome, that is why most of the time we use <a href="https://reactjs.org/docs/introducing-jsx.html">JSX</a>. JSX is just syntactic sugar, it is transpiled to a pure JavaScript equivalent using <code>React.createElement</code>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#75715e">// Some JSX
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vNode</span> <span style="color:#f92672">=</span> (
   &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
@@ -202,7 +202,7 @@
 <p>Now we are ready to create our JSX factory. There are a few difficulties here: we need to implement the same interface as <code>React.createElement</code>, which accepts quite a lot of different types for its arguments. Let&rsquo;s break it down first:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">createElement</span>(<span style="color:#a6e22e">type</span>, <span style="color:#a6e22e">props</span>, <span style="color:#a6e22e">children</span>);
 </code></pre></div><ul>
-<li><strong>type</strong> is either a string corresponding to an HTML element type, such ad <code>&quot;div&quot;</code>, <code>&quot;h1&quot;</code> and so on, or a constructor if the JSX element correspond to a React component (that is it beggins with a capital letter, such as &ldquo;App&rdquo;).</li>
+<li><strong>type</strong> is either a string corresponding to an HTML element type, such ad <code>&quot;div&quot;</code>, <code>&quot;h1&quot;</code> and so on, or a constructor if the JSX element correspond to a React component (that is it begins with a capital letter, such as &ldquo;App&rdquo;).</li>
 <li><strong>props</strong> can be either null or any JavaScript object</li>
 <li><strong>children</strong> is more complicated, it can be either a string, a number, another virtual node, a list of any of these types or even a list of list. To keep things simple we will not deal with each corner case, though it will be general enough to create interesting applications.</li>
 </ul>
@@ -297,7 +297,7 @@
 <p>Now that we can create a virtual DOM, it&rsquo;s time to actually render it on the screen.</p>
 <h2 id="the-reconciliation-algorithm">The reconciliation algorithm</h2>
 <p>The <em>reconciliation algorithm</em>, also called diffing algorithm, computes the differences between two virtual DOMs and deduce a set of operations to be applied to the old DOM to have it match the new one.</p>
-<p>As explained in <a href="https://reactjs.org/docs/reconciliation.html">React&rsquo;s documentation</a>, computing the smallest set of operations to transform one tree into another takes O(n³) comparisons, which is impractical. We will take the same approach as React using a simple O(n) heuristic: two different types of nodes produce different subtrees.</p>
+<p>As explained in <a href="https://reactjs.org/docs/reconciliation.html">React&rsquo;s documentation</a>, computing the smallest set of operations to transform one tree into another takes O(n³) comparisons, which is impractical. We will take the same approach as React using a simple O(n) heuristic: two different types of nodes produce different sub-trees.</p>
 <p>Let&rsquo;s create our <code>diff</code> function</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">diff</span>(
     <span style="color:#a6e22e">parentDom</span>: <span style="color:#66d9ef">HTMLElement</span>,
@@ -306,14 +306,14 @@
 )<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span> {
     ...
 };
-</code></pre></div><p>The algorithm is the following: we take two virtual nodes, one corresponding to the current state and another matching the desired new state. Those two nodes are subtrees of the virtual DOM, we iterate both of them simultaneously and for each node we have several cases:</p>
+</code></pre></div><p>The algorithm is the following: we take two virtual nodes, one corresponding to the current state and another matching the desired new state. Those two nodes are sub-trees of the virtual DOM, we iterate both of them simultaneously and for each node we have several cases:</p>
 <ul>
 <li>If both are HTML tags we can reuse the same (real) DOM element and update its properties. We will create a function <code>updateDomProperties</code> for that. Once updated, we diff children recursively.</li>
 <li>If both nodes are components of the same class, for instance two <code>&lt;App/&gt;</code>, and both have the same props then the current DOM is already up to date and there is nothing to do. Otherwise, if props are different we need to <code>render</code> the component with the most recent props, and then we recursively diff both components children.</li>
 <li>In the case that they does not share the same type, for instance a <code>&lt;div&gt;</code> and a <code>&lt;p&gt;</code> or an <code>&lt;App&gt;</code> and a <code>&lt;List&gt;</code>. Then accordingly to our heuristic we decide that these two nodes will produce different subtrees, thus we destroy the old DOM subtree and instantiate a fresh one. This is also the place to call the <code>componentDidMount</code> lifecycle method.</li>
 </ul>
 <p>The exact code is full of implementation details, I won&rsquo;t include it in this post but you can find it <a href="https://github.com/CharlyCst/microReact/blob/master/src/%C2%B5React/diff.ts">here</a> if you want to have a look.</p>
-<p>But how exactly do we recurse on children? Well the simplest possible way: we have two lists, for instance the old children may be <code>[&lt;div&gt;, &lt;List&gt;]</code> and the new <code>[&lt;div&gt;, &lt;p&gt;, &lt;List&gt;]</code>, we first diff the two <code>&lt;div&gt;</code>, then we diff the <code>&lt;List&gt;</code> and the <code>&lt;p&gt;</code> and finally because we have child left in the new list bot not in the old we instantiate a fresh DOM node accordingly. If we had more old than new children we simply destroy any remaining nodes at the end.</p>
+<p>But how exactly do we iterate on children? Well the simplest possible way: we have two lists, for instance the old children may be <code>[&lt;div&gt;, &lt;List&gt;]</code> and the new <code>[&lt;div&gt;, &lt;p&gt;, &lt;List&gt;]</code>, we first diff the two <code>&lt;div&gt;</code>, then we diff the <code>&lt;List&gt;</code> and the <code>&lt;p&gt;</code> and finally because we have child left in the new list bot not in the old we instantiate a fresh DOM node accordingly. If we had more old than new children we simply destroy any remaining nodes at the end.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#75715e">// Old DOM
 </span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">App</span>&gt;
   &lt;<span style="color:#f92672">div</span>&gt;...&lt;/<span style="color:#f92672">div</span>&gt;

@@ -6,7 +6,7 @@
     <description>Recent content in Algorithm on Charly Castes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 Feb 2020 15:27:06 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 19 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://charlycst.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Speeding up pattern matching with WebAssembly</title>
       <link>https://charlycst.github.io/posts/speeding-up-pattern-matching/</link>
-      <pubDate>Sun, 09 Feb 2020 15:27:06 +0100</pubDate>
+      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://charlycst.github.io/posts/speeding-up-pattern-matching/</guid>
       <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.

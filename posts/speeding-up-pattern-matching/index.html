@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="Castes Charly https://twitter.com/CharlyCastes/ ">
+<meta name="description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
+On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers." />
+<meta name="keywords" content="blog, tech, programming" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://charlycst.github.io/posts/speeding-up-pattern-matching/" />
+
+
+    <title>
+        
+            Speeding up pattern matching with WebAssembly :: Charly Castes 
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.min.479b377ab2df41843115f56b86281b7aa56810bb4d9d74efbe684e766f03297b.css">
+
+
+
+
+<meta itemprop="name" content="Speeding up pattern matching with WebAssembly">
+<meta itemprop="description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
+On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.">
+<meta itemprop="datePublished" content="2020-02-09T15:27:06&#43;01:00" />
+<meta itemprop="dateModified" content="2020-02-09T15:27:06&#43;01:00" />
+<meta itemprop="wordCount" content="1702">
+<meta itemprop="image" content="https://charlycst.github.io/img/speedingUpPatternMatching/automaton.png">
+
+
+
+<meta itemprop="keywords" content="Wasm,Rust,Algorithm,Profiling," /><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://charlycst.github.io/img/speedingUpPatternMatching/automaton.png"/>
+
+<meta name="twitter:title" content="Speeding up pattern matching with WebAssembly"/>
+<meta name="twitter:description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
+On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers."/>
+
+
+
+
+
+    <meta property="article:published_time" content="2020-02-09 15:27:06 &#43;0100 CET" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">Charly | blog</span>
+            
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">Posts</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>8 minutes
+
+            
+
+            </p>
+        </div>
+
+        <article>
+            <h1 class="post-title">
+                <a href="https://charlycst.github.io/posts/speeding-up-pattern-matching/">Speeding up pattern matching with WebAssembly</a>
+            </h1>
+
+            
+
+            <div class="post-content">
+                <p>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.</p>
+<p>On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers. After reading a few articles on performance improvement using Wasm (the acronym for WebAssembly), I decided to give it a try: could it speed up my Lambda function?</p>
+<h2 id="pattern-matching">Pattern matching</h2>
+<p>Before even talking about WebAssembly, let&rsquo;s dig a bit into the pattern searching problem: We are given a set of patterns and a string, and the goal is to find all patterns that appear in the string.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Patterns
+</span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Charizard&#34;</span>, <span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>, <span style="color:#e6db74">&#34;Flamethrower&#34;</span>];
+
+<span style="color:#75715e">// The string
+</span><span style="color:#75715e"></span><span style="color:#e6db74">&#34;Magikarp used Splash! But nothing happened.&#34;</span>[
+  <span style="color:#75715e">/*^^^^^^^^      ^^^^^^                       */</span>
+
+  <span style="color:#75715e">// Output
+</span><span style="color:#75715e"></span>  (<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>)
+];
+</code></pre></div><p>When looking for only one pattern the problem is simple: go through the string character per character and if the current one matches the first character of the pattern, then we compare the next caracter to the second of the pattern and so on. This can be represented using an automaton:</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/linearAutomaton.png"  alt="A linear automaton"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Regular expressions (regexes) are an extension of this algorithm, where the automaton can be more evolved:</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/regex.png"  alt="Example of regex"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>In the example above, the regex is equivalent to searching for both patterns &ldquo;charmander&rdquo; and &ldquo;charizard&rdquo;. Of course, regexes are very expressive and can match much more complex patterns, but in this article we are only interested in plain text patterns.</p>
+<p>Trying to write a single regex to match a thousand patterns or using a thousand regexes is probably not a good idea, however. For those use cases there is another algorithm much more effective called <a href="https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm">Aho-Corasick</a>.</p>
+<p>The idea is to build a deterministic finite automaton (meaning that there is always exactly one possibility when transitioning from one state to another) that takes advantages of common suffixes and prefixes.</p>
+<p>The Aho-Corasick algorithm uses a &lsquo;failure function&rsquo;: for a given state if no transition corresponds to the next character, the failure function kicks in and tell us which is the next state.</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/automaton.png"  alt="Example of Aho-Corasick failure function"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>For instance in the above example, after recognizing <code>lapra</code> of <code>lapras</code>, if the next character is not an <code>s</code>, then no need to go back and try other branches of the automaton: the failure function tells us that we can continue from the first <code>a</code> state of <code>rapidash</code>. Again if the next character is not a <code>p</code>, we can continue from <code>a</code> state of <code>articuno</code> and so on.</p>
+<p>If you are interested in how to build the automaton, you can find a commented implementation in C++ <a href="https://www.geeksforgeeks.org/aho-corasick-algorithm-pattern-searching/">here</a>. If you prefer Rust, I wrote a (less commented) <a href="https://github.com/CharlyCst/fast-match/blob/master/src/lib.rs">Rust version</a> for the sake of this experiment.</p>
+<p>From a practical point of view, the Aho-Corasick algorithm consist in two phases:</p>
+<ul>
+<li>Building the automaton: in linear time, performances of this step are not critical and building time will be neglected by comparison to the execution step.</li>
+<li>Executing the automaton: this is the phase I&rsquo;m interested in, it is mainly about look up into the transition and failure function tables built at the previous step.</li>
+</ul>
+<p>What is interesting is that this task does not involve heavy computation as graphic or cryptography may require, which would be the type of tasks that make WebAssembly shine: still, can Wasm speed-up pattern matching?</p>
+<h2 id="speeding-things-up">Speeding things up</h2>
+<p>Now that we are up to date with the algorithm, <a href="https://www.npmjs.com/package/ahocorasick">here</a> is a good JavaScript implementation that I used as reference. The plan was to write a Rust version, compile it to Wasm and check if it is faster.</p>
+<p>In order to compare performances I needed to create a benchmark. I picked a little over 8,000 distinct random words from <a href="https://en.wikipedia.org/wiki/Les_Mis%C3%A9rables">Les Misérables</a>, a 68,000 lines long novel by <a href="https://en.wikipedia.org/wiki/Victor_Hugo">Victor Hugo</a>. The task is to find all occurrences of these 8,000 words in the whole novel.</p>
+<h3 id="a-failed-attempt">A failed attempt</h3>
+<p>I wrote a first version of Aho-Corasick in Rust using <a href="https://github.com/rustwasm/wasm-bindgen">wasm-bindgen</a> to generate glue code between JavaScript and WebAssembly.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[</span><span style="color:#75715e">wasm_bindgen</span><span style="color:#75715e">]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Matcher</span> {
+	...
+}
+
+<span style="color:#75715e">#[</span><span style="color:#75715e">wasm_bindgen</span><span style="color:#75715e">]</span>
+<span style="color:#66d9ef">impl</span> Matcher {
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>(words: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">js_sys</span>::Array) -&gt; <span style="color:#a6e22e">Matcher</span> {
+        ...
+    }
+
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: String) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
+        ...
+    }
+}
+</code></pre></div><p>I built a release build targeting Node.js</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wasm-pack build --release --target nodejs
+</code></pre></div><p>Then timed both je JavaScript and WebAssembly version:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">time NODE_ENV<span style="color:#f92672">=</span>production node wasm.js
+time NODE_ENV<span style="color:#f92672">=</span>production node js.js
+</code></pre></div><p>And surprise:</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/firstComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>It turned out that my Wasm version was 5 times slower. I sort of knew that I should have expected that, but still, I was somewhat disappointed.</p>
+<p>Before jumping on any conclusions it is often a good idea to check what really happens under the hood: V8 (and thus Node.js) has some good profiling tools built in, you can use them as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># pass the `prof` option to Node.js</span>
+node --prof wasm.js
+
+<span style="color:#75715e"># This will generate a .log file, in my case isolate-0x49a1aa0-11836-v8.log</span>
+<span style="color:#75715e"># This file can be used to generate a profile:</span>
+node --prof-process isolate-0x49a1aa0-11836-v8.log
+</code></pre></div><p>Here is the summary for the JavaScript version:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
+   ticks  total  nonlib   name
+   <span style="color:#ae81ff">2236</span>   41.2%   95.6%  JavaScript
+    <span style="color:#ae81ff">103</span>    1.9%    4.4%  C++
+     <span style="color:#ae81ff">59</span>    1.1%    2.5%  GC
+   <span style="color:#ae81ff">3082</span>   56.9%          Shared libraries
+</code></pre></div><p>And the Wasm version:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
+   ticks  total  nonlib   name
+   <span style="color:#ae81ff">5949</span>   20.2%   37.0%  JavaScript
+   <span style="color:#ae81ff">9405</span>   32.0%   58.5%  C++
+   <span style="color:#ae81ff">1554</span>    5.3%    9.7%  GC
+  <span style="color:#ae81ff">13326</span>   45.3%          Shared libraries
+    <span style="color:#ae81ff">712</span>    2.4%          Unaccounted
+</code></pre></div><p>The JavaScript row accounts for both JavaScript and WebAssembly code, while Shared libraries accounts mostly for Node.js built-in functions.</p>
+<p>Something clearly goes wrong with my Wasm version: 32% of execution time is spent on C++ while it is only accounting for 1.9% in the JS version. You can also notice that the garbage collector (GC) is doing five time more work in Wasm that in JS.</p>
+<p>Let&rsquo;s take a closer look at those categories in the case of Wasm:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>JavaScript<span style="color:#f92672">]</span>:
+   ticks  total  nonlib   name
+   <span style="color:#ae81ff">3166</span>   10.8%   19.7%  Function: *fast_match::Matcher::run::hdc325dfd51ff7151
+    <span style="color:#ae81ff">846</span>    2.9%    5.3%  LazyCompile: *module.exports.__wbindgen_string_new /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:135:48
+    <span style="color:#ae81ff">687</span>    2.3%    4.3%  Function: *&lt;alloc::vec::Vec&lt;T&gt; as core::ops::deref::Deref&gt;::deref::h598faf2834c73f9f
+    <span style="color:#ae81ff">183</span>    0.6%    1.1%  LazyCompile: *getEncodingOps buffer.js:644:24
+    <span style="color:#ae81ff">158</span>    0.5%    1.0%  LazyCompile: *&lt;anonymous&gt; /home/gripsou/Documents/projects/fast-match/node/asm.js:9:49
+    <span style="color:#ae81ff">149</span>    0.5%    0.9%  Function: *js_sys::Array::push::h20c97c9f2647281f
+    <span style="color:#ae81ff">148</span>    0.5%    0.9%  LazyCompile: *module.exports.__wbg_push_446cc0334a2426e8 /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:176:54
+    <span style="color:#ae81ff">107</span>    0.4%    0.7%  LazyCompile: *module.exports.__wbindgen_object_drop_ref /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:131:53
+    ...
+</code></pre></div><p>Most of the time spent executing my code is spent inside my Wasm <code>run</code> function responsible for executing the automaton, that&rsquo;s a good thing. Then comes the glue code generated by wasm-bindgen, it&rsquo;s JavaScript code. As indicated by the <code>LazyCompile</code> name, Node tried to compile our JS and succeeded (there is a <code>*</code>, if the code was interpreted we would have seen a <code>~</code>), so our JavaScript is fast too.</p>
+<p>Up to this point things looks good, let&rsquo;s take a look at the C++:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>C++<span style="color:#f92672">]</span>:
+   ticks  total  nonlib   name
+    <span style="color:#ae81ff">749</span>    2.5%    4.7%  _int_malloc
+    <span style="color:#ae81ff">673</span>    2.3%    4.2%  __GI___libc_malloc
+    <span style="color:#ae81ff">532</span>    1.8%    3.3%  __GI___pthread_mutex_lock
+    <span style="color:#ae81ff">513</span>    1.7%    3.2%  node::i18n::<span style="color:#f92672">(</span>anonymous namespace<span style="color:#f92672">)</span>::ConverterObject::Decode<span style="color:#f92672">(</span>v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;<span style="color:#f92672">)</span>
+    <span style="color:#ae81ff">481</span>    1.6%    3.0%  v8::internal::PrototypeIterator::Advance<span style="color:#f92672">(</span><span style="color:#f92672">)</span>
+    <span style="color:#ae81ff">385</span>    1.3%    2.4%  __pthread_mutex_unlock_usercnt
+    <span style="color:#ae81ff">344</span>    1.2%    2.1%  node::Buffer::Copy<span style="color:#f92672">(</span>node::Environment*, char const*, unsigned long<span style="color:#f92672">)</span>
+    <span style="color:#ae81ff">332</span>    1.1%    2.1%  v8::Object::SetPrototype<span style="color:#f92672">(</span>v8::Local&lt;v8::Context&gt;, v8::Local&lt;v8::Value&gt;<span style="color:#f92672">)</span>
+    <span style="color:#ae81ff">319</span>    1.1%    2.0%  void node::Buffer::<span style="color:#f92672">(</span>anonymous namespace<span style="color:#f92672">)</span>::StringSlice&lt;<span style="color:#f92672">(</span>node::encoding<span style="color:#f92672">)</span>3&gt;<span style="color:#f92672">(</span>v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;<span style="color:#f92672">)</span>
+    <span style="color:#ae81ff">285</span>    1.0%    1.8%  v8::ArrayBuffer::GetContents<span style="color:#f92672">(</span><span style="color:#f92672">)</span>
+</code></pre></div><p>The two first items are related to memory allocation, we also spot a buffer copy operation and some encode and decode primitives. So here we are: I was copying things in memory between JavaScript and Wasm. Note this can also explain the higher load on the GC we noticed earlier.</p>
+<p>And here is the culprit:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: String) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
+	...
+}
+</code></pre></div><p>My interface between JavaScript and WebAssembly was using Rust strings, when reading <a href="https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html">wasm-bindgen doc</a>, we can learn that not only strings are copied back and forth between JS and Wasm, but also that JavaScript is using UTF-16 and Rust UTF-8, meaning that there is an additional conversion overhead.</p>
+<h2 id="fixing-things-up">Fixing things up</h2>
+<p>In fact, I was aware of these copies between JavaScript and WebAssembly, but did it purposefully because I used to think that back and forth between JS and Wasm were slow, <a href="https://hacks.mozilla.org/2018/10/calls-between-javascript-and-webassembly-are-finally-fast-%F0%9F%8E%89/">turns out that is not the case</a>.</p>
+<p>What this all means is that in this case it is much better to work with JavaScript values from Rust, the <a href="https://rustwasm.github.io/wasm-bindgen/api/js_sys/index.html"><code>js-sys</code> crate</a> exposes everything that is needed for that: we can accept JavaScript string (that is a pointer to the memory hosting the string in the JS heap, no copy) and iterate over it, each character is represented by a <code>u16</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">js_sys</span>::JsString) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
+	...
+	<span style="color:#66d9ef">for</span> c <span style="color:#66d9ef">in</span> string.iter() {
+            ...
+        }
+	...
+}
+</code></pre></div><p>Let&rsquo;s check the performances again:</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/secondComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Yep, this time it is faster! It&rsquo;s quite impressive considering that with today&rsquo;s engines JavaScript is already really fast once JIT compiled.</p>
+<p>Let&rsquo;s take a look at the profile to check if we fixed things up:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
+   ticks  total  nonlib   name
+   <span style="color:#ae81ff">8249</span>   84.7%   89.5%  JavaScript
+     <span style="color:#ae81ff">89</span>    0.9%    1.0%  C++
+     <span style="color:#ae81ff">39</span>    0.4%    0.4%  GC
+    <span style="color:#ae81ff">529</span>    5.4%          Shared libraries
+    <span style="color:#ae81ff">874</span>    9.0%          Unaccounted
+</code></pre></div><p>That is indeed much, much better: C++ code went down from 32% to 0.9% of execution time, now Node is truly spending most of its time actually executing our JS and Wasm code! Notice that the GC has also much less work to do, even less that in the pure JS version.</p>
+<p>To put things in perspective, here is a visual recap of the old and new version profiles side to side:</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/profiling.png"  alt="final comparison"   class="rounded"/>
+
+        
+    </figure>
+
+
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope you found this post interesting, if you have to remember anything from it here are some key takeaways:</p>
+<ul>
+<li>Wasm can indeed speed up your code, but it must be handled carefully: pay extra attention to your interfaces with JavaScript, especially if you are passing data around.</li>
+<li>A profiler can help to find what is wrong with your code or confirm your hypothesis.</li>
+<li>JavaScript is already fast, <a href="https://mrale.ph/blog/2018/02/03/maybe-you-dont-need-rust-to-speed-up-your-js.html">maybe you don&rsquo;t need Wasm to speed up your JS</a>. For similar tasks you should not expect an order of magnitude improvement by using Wasm instead of JS.</li>
+</ul>
+<p>To conclude here is a visual summary of the achieved results:</p>
+
+    <figure class="left" >
+        <img src="/img/speedingUpPatternMatching/finalComparison.png"  alt="final comparison"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>So here is the answer: Yes, once done correctly, replacing JS with Wasm can speed up my lambda function by factor of almost 2. It is now up to you to decide whether it is worth introducing Wasm into your project, considering the task you are trying to solve.</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/wasm">Wasm</a></span><span class="tag"><a href="https://charlycst.github.io/tags/rust">Rust</a></span><span class="tag"><a href="https://charlycst.github.io/tags/algorithm">Algorithm</a></span><span class="tag"><a href="https://charlycst.github.io/tags/profiling">Profiling</a></span>
+                </p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1702 Words</p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-02-09 15:27 &#43;0100</p>
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h"></span>
+                    <hr />
+                </div>
+
+                <div class="pagination__buttons">
+                    
+
+                    
+                        <span class="button next">
+                            <a href="https://charlycst.github.io/posts/micro-react/">
+                                <span class="button__text">Let&#39;s (re)code React</span>
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    
+                </div>
+            </div>
+        
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2020</span>
+            
+                <span><a href="https://charlycst.github.io">Castes Charly</a></span>
+            
+            
+            
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.2d5469329143160ae2456a69c3c76dc2d0a3b212b46afe291a51bd68650ed6f8697e001dab54f1c272c77ce08092a8c55e5bb4314e0ee334aab4b927ec896638.js" integrity="sha512-LVRpMpFDFgriRWppw8dtwtCjshK0av4pGlG9aGUO1vhpfgAdq1TxwnLHfOCAkqjFXlu0MU4O4zSqtLkn7IlmOA=="></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-156991616-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+
+
+    </body>
+</html>

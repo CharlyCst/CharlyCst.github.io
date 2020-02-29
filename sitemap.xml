@@ -13,7 +13,17 @@
   </url>
   
   <url>
+    <loc>https://charlycst.github.io/tags/go/</loc>
+    <lastmod>2020-02-29T12:21:24+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://charlycst.github.io/posts/</loc>
+    <lastmod>2020-02-29T12:21:24+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://charlycst.github.io/tags/</loc>
     <lastmod>2020-02-29T12:21:24+01:00</lastmod>
   </url>
   
@@ -34,11 +44,6 @@
   
   <url>
     <loc>https://charlycst.github.io/posts/speeding-up-pattern-matching/</loc>
-    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://charlycst.github.io/tags/</loc>
     <lastmod>2020-02-19T00:00:00+00:00</lastmod>
   </url>
   

@@ -129,15 +129,14 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 <h2 id="pattern-matching">Pattern matching</h2>
 <p>Before even talking about WebAssembly, let&rsquo;s dig a bit into the pattern searching problem: We are given a set of patterns and a string, and the goal is to find all patterns that appear in the string.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Patterns
-</span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Charizard&#34;</span>, <span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>, <span style="color:#e6db74">&#34;Flamethrower&#34;</span>];
+</span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Charizard&#34;</span>, <span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>, <span style="color:#e6db74">&#34;Flamethrower&#34;</span>]
 
 <span style="color:#75715e">// The string
-</span><span style="color:#75715e"></span><span style="color:#e6db74">&#34;Magikarp used Splash! But nothing happened.&#34;</span>[
-  <span style="color:#75715e">/*^^^^^^^^      ^^^^^^                       */</span>
+</span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;Magikarp used Splash! But nothing happened.&#34;</span>
+<span style="color:#75715e">/* ^^^^^^^^      ^^^^^^                        */</span>
 
-  <span style="color:#75715e">// Output
-</span><span style="color:#75715e"></span>  (<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>)
-];
+<span style="color:#75715e">// Output
+</span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>]
 </code></pre></div><p>When looking for only one pattern the problem is simple: go through the string character per character and if the current one matches the first character of the pattern, then we compare the next caracter to the second of the pattern and so on. This can be represented using an automaton:</p>
 
     <figure class="left" >
@@ -346,6 +345,13 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
                 </div>
 
                 <div class="pagination__buttons">
+                    
+                        <span class="button previous">
+                            <a href="https://charlycst.github.io/posts/mpk/">
+                                <span class="button__icon">←</span>
+                                <span class="button__text">Diving into Intel MPK</span>
+                            </a>
+                        </span>
                     
 
                     

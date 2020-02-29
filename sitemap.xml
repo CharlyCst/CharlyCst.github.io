@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://charlycst.github.io/tags/algorithm/</loc>
-    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
+    <loc>https://charlycst.github.io/</loc>
+    <lastmod>2020-02-29T12:21:24+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://charlycst.github.io/</loc>
-    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
+    <loc>https://charlycst.github.io/posts/mpk/</loc>
+    <lastmod>2020-02-29T12:21:24+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://charlycst.github.io/posts/</loc>
+    <lastmod>2020-02-29T12:21:24+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://charlycst.github.io/tags/algorithm/</loc>
     <lastmod>2020-02-19T00:00:00+00:00</lastmod>
   </url>
   

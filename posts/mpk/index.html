@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="Castes Charly https://twitter.com/CharlyCastes/ ">
-<meta name="description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from the userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!" />
+<meta name="description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!" />
 <meta name="keywords" content="blog, tech, programming" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,10 +31,10 @@
 
 
 <meta itemprop="name" content="Diving into Intel MPK">
-<meta itemprop="description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from the userspace using memory protection keys, hence the acronym MPK, let&rsquo;s dive into it!">
+<meta itemprop="description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&rsquo;s dive into it!">
 <meta itemprop="datePublished" content="2020-02-29T12:21:24&#43;01:00" />
 <meta itemprop="dateModified" content="2020-02-29T12:21:24&#43;01:00" />
-<meta itemprop="wordCount" content="2154">
+<meta itemprop="wordCount" content="2155">
 <meta itemprop="image" content="https://charlycst.github.io"/>
 
 
@@ -43,7 +43,7 @@
 <meta name="twitter:image" content="https://charlycst.github.io"/>
 
 <meta name="twitter:title" content="Diving into Intel MPK"/>
-<meta name="twitter:description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from the userspace using memory protection keys, hence the acronym MPK, let&rsquo;s dive into it!"/>
+<meta name="twitter:description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&rsquo;s dive into it!"/>
 
 
 
@@ -121,9 +121,9 @@
             
 
             <div class="post-content">
-                <p>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance <code>mprotect</code> on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from the userspace using <em>memory protection keys</em>, hence the acronym <em>MPK</em>, let&rsquo;s dive into it!</p>
+                <p>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with <code>mprotect</code> on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using <em>memory protection keys</em>, hence the acronym <em>MPK</em>, let&rsquo;s dive into it!</p>
 <h2 id="what-is-intel-mpk">What is Intel MPK?</h2>
-<p>MPK (also referred as <em>PKU</em> for <em>Protection Keys for Userspace</em>) is a <em>userspace</em> mechanism to control page table permissions, it works by tagging memory pages with protection keys using 4 previously unused bits, in other words we can use up to 16 distinct keys to tag our pages.</p>
+<p>MPK (also referred as <em>PKU</em> for <em>Protection Keys for Userspace</em>) is a <em>userspace</em> hardware mechanism to control page table permissions, it works by tagging memory pages with protection keys using 4 previously unused bits, in other words we can use up to 16 distinct keys to tag our pages.</p>
 <p>Once a page is tagged we can change its protection rights at will, <em>from userspace</em>. But, because updating page table entries (PTE) requires privileged access, a system call is still necessary to tag the pages with a given key in the first place. To allocate and free a key we also need to go through the kernel, on Linux the API is the following:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_alloc</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> flags, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> ini_access_rights);
 <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_free</span>(<span style="color:#66d9ef">int</span> pkey);
@@ -316,7 +316,7 @@ fatal error: fault
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/go">Go</a></span>
                 </p>
 
-            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2154 Words</p>
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2155 Words</p>
 
             <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-02-29 12:21 &#43;0100</p>
         </div>

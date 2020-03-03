@@ -17,7 +17,7 @@
       <pubDate>Sat, 29 Feb 2020 12:21:24 +0100</pubDate>
       
       <guid>https://charlycst.github.io/posts/mpk/</guid>
-      <description>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from the userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!</description>
+      <description>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!</description>
     </item>
     
   </channel>

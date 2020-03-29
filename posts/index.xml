@@ -5,8 +5,354 @@
         <description>Recent content in Posts on Charly Castes</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 29 Feb 2020 12:21:24 +0100</lastBuildDate>
+        <lastBuildDate>Sat, 28 Mar 2020 21:01:09 +0100</lastBuildDate>
         <atom:link href="https://charlycst.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>An Interactive Introduction to Reinforcement Learning</title>
+            <link>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</link>
+            <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
+            
+            <guid>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</guid>
+            <description>function resizeIframe(obj) { setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 300); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 1000); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 5000); }  Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
+            <content type="html"><![CDATA[<script>
+  function resizeIframe(obj) {
+    setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';}, 300);
+    setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';}, 1000);
+    setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';}, 5000);
+  }
+</script>
+<p>Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, <a href="https://openai.com/blog/emergent-tool-use/">hide and seek</a>, <a href="https://deepmind.com/blog/article/capture-the-flag-science">capture the flag</a> or <a href="https://deepmind.com/blog/article/alphastar-mastering-real-time-strategy-game-starcraft-ii">StarCraft II</a> to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</p>
+<p>As always, because (even for human) doing is the best way of learning, I have spent some time playing around with RL algorithms, in this article I would like to share with you the intuition I developed for a few of these algorithms, through interactive environments and illustration of the theory behind. I will also try to give you a foretaste of practical applications outside of toy environments we are used to.</p>
+<p>If you are already familiar with reinforcement learning, feel free to skip background explanation and jump directly to interactive examples. If you are not stick with me, this post does not assume any prior knowledge of the field, think about it as Reinforcement Learning 101 ;)</p>
+<h2 id="the-setting">The setting</h2>
+<p>In reinforcement learning we consider one or more <strong>agents</strong> evolving in an <strong>environment</strong>. Agents can perform actions and receive rewards or penalties accordingly. The goal is to maximize the cumulative sum of rewards by tuning the agent&rsquo;s <strong>policy</strong>, that is its behavior given the surrounding environment.</p>
+<p>In this post we will consider a simple discrete and turn based 2D environment, in which a single agent (let&rsquo;s take Mario to make the whole thing more visually appealing) can perform one of these four actions each turn: going right, left, up or down. Mario will receive a reward each time he finds a block, and a penalty each time he encounters a goomba.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/setting.png"  alt="Agent, penalty and reward"   class="rounded"/>
+
+        
+            <figcaption class="center" >Of course, images are the property of Nintendo</figcaption>
+        
+    </figure>
+
+
+<h2 id="q-value-and-policy">Q-value and policy</h2>
+<p>Now let&rsquo;s put ourselves in the shoes of Mario, imagine an even simpler 1D environment where there is a block two steps away on the right side while there is nothing on the left.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/dummyEnv.png"  alt="A simple environment"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>The optimal policy is pretty straightforward: always go right. But how do we know it for sure?</p>
+<p>Well, nether going right or going left will earn Mario any reward, however we have the intuition that he should be going right because he will then be only one step away from the block. In other words, the position one step away in the right direction is of higher &ldquo;quality&rdquo; than the one one step away in the left direction. We call these quality values the <strong>Q-values</strong>.</p>
+<p>Estimating the Q-values of each action for a given state of the environment is at the core of a whole class of RL algorithm, we are going to study a few of those.</p>
+<p>We can compute the Q-value of a given action <em>a</em> in a given state <em>s</em> with the <strong>Bellman equation</strong>:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/bellmanEquation.svg"  alt="Simplified bellman equation"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Where <em>Q(s, a)</em> is the Q-value of action <em>a</em> in state <em>s</em>, <em>R</em> is the reward Mario gets by taking such action and <em>s&rsquo;</em> is the state he ends up in. The term <em>π(s&rsquo;, a&rsquo;)</em> is the probability of choosing action <em>a&rsquo;</em> when the agent is in state <em>s&rsquo;</em>. <em>π</em> stands for <strong>policy</strong>, it is the function that determines the behavior of the agent.</p>
+<p>The meaning of this equation is exactly what we talked about earlier: the quality of a given <em>(state, action)</em> pair is equal to the reward Mario gets by executing that action in that state, plus the quality of the next <em>(state, action)</em> pair available (weighted by the policy).</p>
+<p>You may also have noticed the <em>γ</em> factor that weight the quality of future Q-Values in the above formula, it is called the <strong>discount factor</strong> and is a quantity between 0 and 1, but more on that a little later.</p>
+<p>In fact, our toy example is simple enough so that we can solve the Bellman equation by hand, no need for a complex algorithm. Let&rsquo;s do it: grab a piece of paper!</p>
+<h3 id="pen--paper-1-solving-the-bellman-equation">Pen &amp; Paper 1: Solving the Bellman Equation</h3>
+<p>Just kidding, it will be quick and painless: I will do it for you ;)</p>
+<p>First we need to decide on a policy, the easiest one is to always pick the best possible action: it is called the <strong>greedy policy</strong>. Let&rsquo;s put it in our Bellman equation, we just need to replace the sum by a max (because in this case π(s&rsquo;,a&rsquo;) = 1 if the choice is optimal, 0 otherwise).</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/bellmanGreedy.svg"  alt="Simplified bellman with greedy policy"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>We can start by the end: when Mario reaches a block the game is over, so basically for each action leading to a block <em>Q(s, a) = R = 1</em>.</p>
+<p>Now for an action that leads to an empty state (no goomba or block), the reward is zero, then <em>Q(s, a) = γ max(Q(s&rsquo;, a&rsquo;))</em>.</p>
+<p>So if an action <em>a</em> lead us to a state one step away of a block, the next best action is to reach the block and it has a Q-Value of 1 as we computed just earlier, and <em>Q(s, a) = γ * 1 = γ</em></p>
+<p>Similarly, if we are two steps away from a block, walking toward the block earn us a reward of 0, but the next best action has a Q-Value of <em>γ</em>, thus if we are two steps away and walk toward a block: <em>Q(s, a) = γ²</em>.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/qvalues.png"  alt="Q-Values in our example"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Can you guess what would be the Q-Values <em>Q(S5, LEFT)</em>? Yes <em>γ²</em> exactly, because if Mario is in state <em>S5</em> and goes left he will end up in <em>S4</em> where we already know that the best action is to go right with a Q-Value of <em>γ</em>.</p>
+<h2 id="sarsa">Sarsa</h2>
+<p>Now we suppose that the agent has no prior knowledge of the environment, thus the agent can&rsquo;t compute the exact Q-values as we did before. What we are going to do instead is to estimate the Q-values by updating them accordingly to our observations while exploring the environment.</p>
+<p>We will use the <strong>Sarsa algorithm</strong> to learn Q-values and improve the behavior of the agent over time. Sarsa is a reinforcement learning algorithm that lay the foundations of a whole class of more evolved reinforcement learning algorithms. Having a deep understanding of Sarsa will actually help you to grasp advanced RL concepts more easily.</p>
+<p>The algorithm is the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Q <span style="color:#f92672">=</span> zeroed_q_values
+<span style="color:#960050;background-color:#1e0010">γ</span> <span style="color:#f92672">=</span> discount_factor
+<span style="color:#960050;background-color:#1e0010">η</span> <span style="color:#f92672">=</span> learning_rate
+next_s <span style="color:#f92672">=</span> initial_state
+next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
+
+<span style="color:#66d9ef">while</span> (True):
+	s <span style="color:#f92672">=</span> next_s
+	a <span style="color:#f92672">=</span> next_a
+	r, next_s <span style="color:#f92672">=</span> take_action(s, a)
+	next_a <span style="color:#f92672">=</span> choose_action(Q, next_s)
+	
+	Q[s][a] <span style="color:#f92672">+</span><span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">η</span><span style="color:#f92672">*</span>(r <span style="color:#f92672">+</span> <span style="color:#960050;background-color:#1e0010">γ</span><span style="color:#f92672">*</span>Q[next_s][next_a] <span style="color:#f92672">-</span> Q[s][a])
+</code></pre></div><p>In plain words: we start at state <em>s</em>, take an action <em>a</em>, observe a reward <em>r</em> and the next state <em>s&rsquo;</em>, we take another action <em>a&rsquo;</em> and then we can update the Q-Values by the quantity <em>ΔQ(a, s)</em> computed by:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/sarsaUpdateRule.svg"  alt="Sarsa update rule"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>This <strong>update rule</strong> gives us the guaranty that if all Q-values have converged in expectation (that is ⟨ΔQ(a, s)⟩ = 0), then our Q-Values are solutions of the Bellman equation.</p>
+<p>If you are wondering why this algorithm is named Sarsa, the answer is the following:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/sarsa.png"  alt="Sarsa"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>The name sums up all the steps of the algorithm, well almost, don&rsquo;t forget the update at the end&hellip; Maybe we should call it Sarsau 🤔</p>
+<p>But enough theory, I promised you an <em>interactive</em> introduction to reinforcement learning, the time to fulfill my promises:</p>
+<div>
+<iframe src="https://charlycst.github.io/mario_rl/small" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
+</div>
+<p>(If the iframe is not loading for some reason, try to refresh the page or check it <a href="https://github.com/CharlyCst/mario_rl/blob/master/links.md">here</a>)</p>
+<p>You can start the simulation by clicking the leftmost button, you will see the agent (Mario) walking randomly. Mario is following a greedy policy in this first example, but because at the beginning all Q-Values are 0, he chooses actions randomly.</p>
+<p>The color map depict the Q-Values, it will be updated for the first time when Mario finds either a block or a goomba (because before that all received rewards are zero, as well as all Q-Values, check the update rule).</p>
+<p>In this case the Q-Values are stored in a 3d array indexed by x and y positions, as well as actions: <em>Q(x, y, a)</em>. To keep visualization simple, each square of the color map is divided into 4 triangles, representing the 4 actions possible in each state. Thus, the leftmost triangle of the square <em>(x, y)</em> represent <em>Q(x, y, LEFT)</em>, the topmost <em>Q(x, y, UP)</em> and so on.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/colormap.png"  alt="Colormap explanation"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>A fuchsia triangle indicates an action with a high Q-value, while cyan stands for low (negative) Q-values.</p>
+<p>To see those Q-values appear you can speed up the agent (middle button) instead of waiting. You can also reset Q-values to observe the agent re-learn for scratch, this will be especially useful in the upcoming environments because of the probabilistic nature of reinforcement learning, always run a few simulations before making any conclusion.</p>
+<h2 id="exploration-vs-exploitation-dilemma">Exploration vs Exploitation dilemma</h2>
+<p>You may have noticed that the agent will quickly find a path that leads to a reward, however if you are unlucky that path may not be optimal, in that case the agent will stubbornly execute the same sequences of suboptimal choices over and over again. The agent is not aware of the existence of a better path, it just <strong>exploits</strong> its current knowledge of the environment.</p>
+<p>To improve its behavior, the agent should sometime <strong>explore</strong> and look for better options. Choosing between both option is what we call the <strong>exploration vs exploitation dilemma</strong>.</p>
+<p>The greedy policy leave no room for exploration: the best action - <em>based on the current knowledge</em> - is always selected.</p>
+<p>Fortunately, there are other policies that encourage more or less exploration. One of these is called <strong>ε-greedy</strong>: with a probability ε the agent takes a random action, otherwise it fallbacks to the usual greedy policy.</p>
+<p>The <strong>softmax policy</strong> is another well known example: it weights each action accordingly to its estimated Q-Value:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/softmaxPolicy.svg"  alt="Softmax policy"   style="width: 300px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Note that the softmax policy introduce a parameter, <em>β</em>, whose impact depends on the actual value of the Q-Values, itself depending on the rewards and their distributions in the environment. In other words, if you decide to double both rewards and penalty this will impact the behavior of an agent following a softmax policy, but there will be no change for an agent using <em>ε</em>-greedy.</p>
+<p>It&rsquo;s better if you judge by yourself: this time I&rsquo;ve put a red block that is only worth 0.5 points while the yellow one is still worth 1 point. It&rsquo;s easier to get the first, but if the agent explores a little more it may find out that it&rsquo;s not the best option. Don&rsquo;t be shy to try huge epsilon or small beta to force random exploration, once you are done exploring switch to greedy policy by setting epsilon to 0.</p>
+<div>
+<iframe src="https://charlycst.github.io/mario_rl/policies" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
+</div>
+<h2 id="a-few-words-on-parameters">A few words on parameters</h2>
+<p>In fact, what I just said about a block further away but giving twice the reward being a better option is not always true, it depends on <em>γ</em>, <strong>the discount factor</strong>.</p>
+<p>Remember when we solved the Bellman equation earlier? We found out that if an action put the agent in a state one step away from a block (with a reward of 1 point) it&rsquo;s Q-Value is <em>Q(s, a) = γ</em>, if it&rsquo;s two steps away <em>Q(s, a) = γ²</em>, and extrapolating, if it is <em>n</em> steps away <em>Q(s, a) = γⁿ</em>.</p>
+<p>The general formula in our particular set up, with the greedy policy and with a reward <em>r</em> is <em>Q(s, a) = γⁿ * r</em>. This mean that if you set the discount factor to 0.5, a reward of 2 has the same perceived value than a reward of 1 one step closer to the agent.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/gammaExample.png"  alt="The effect of discount factor"   class="rounded"/>
+
+        
+            <figcaption class="center" >The yellow block worth 2 points, the red one is worth 1 and γ=0.5</figcaption>
+        
+    </figure>
+
+
+<p>The lower the discount factor, the more the agent will go for short term rewards. Conversely, a discount factor close to 1 will much less penalize the agent for long term planing, or for taking a few days off. It&rsquo;s your job to pick the right value for your use case.</p>
+<p>Another parameter I didn&rsquo;t talk about is <em>η</em>, the <strong>learning rate</strong>. If you already have a machine learning background you might be used to it, otherwise it is exactly what you think it is: the rate at which the agent is learning.</p>
+<p>Set it too high and the Q-values will oscillate (even if a good path is found it can be unlearned very quickly), set it too low and the agent will take ages before learning anything. A common strategy is to start with a rather high value and  progressively bring it down to a final, rather low learning rate.</p>
+<p>As always, when it comes to picking parameters it is up to you to strike the right balance.</p>
+<p>To let you play with the discount factor the red block (worth 0.5 points) is still there. Pick a value for <em>γ</em> and check which block the agent choose (don&rsquo;t forget to explore!). You can also try extreme values of learning rate and see what happens. Just be curious!</p>
+<div>
+<iframe src="https://charlycst.github.io/mario_rl/parameters" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
+</div>
+<h2 id="multi-steps-sarsa">Multi-steps Sarsa</h2>
+<p>If you read that far I guess that you spend some time watching the agent evolve in its environment, you may have been annoyed by the fact that the agent needs to complete a few episodes before learning a complete path. In fact if a reward is <em>n</em> steps away, the agent needs at least <em>n</em> episodes before information about the reward reach the initial state.</p>
+<p>We can do better, for instance we can change the update rule to actually update the Q-value after two steps instead of one:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/twoStepsSarsa.svg"  alt="Two steps Sarsa"   style="width: 600px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>The algorithm with the updated rule is called <strong>2-steps-Sarsa</strong>. Now the agent needs to take two steps before being able to update the Q-Value: start in <em>s</em>, take action <em>a</em>, observe reward <em>r</em> and get to <em>s&rsquo;</em> then again take action <em>a&rsquo;</em>, observe reward <em>r&rsquo;</em> and get to <em>s&rsquo;'</em>, finally take action <em>a&rsquo;'</em> and update.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/sarsarsa.png"  alt="Sarsarsa"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Yep, you can call it Sarsarsa if you want to.</p>
+<p>In the end, what this new update rule means is that when the agent updates its Q-Value <em>Q(s, a)</em>, it will take into account the two next rewards and the Q-Value two steps further, <em>Q(s&rsquo;', a&rsquo;')</em>, that is the quality of the situation two steps away from <em>s</em>.</p>
+<p>Intuitively, the agent will propagate the information two steps back each time. Thus, if a reward is 4 steps away, the agent needs only 2 trials to propagate information back to the initial state (assuming that it follows two times the same path).</p>
+<p>Obviously Sarsa can be generalized to take any number of steps into account, the update rule for <em>n-steps-Sarsa</em> is:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/nStepsSarsa.svg"  alt="n steps Sarsa"   style="width: 600px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>From a practical view, to implement <em>n-steps-Sarsa</em> you need to keep track of the <em>n</em> last states, actions and rewards, but other than that the algorithm is very similar.</p>
+<p>If all of this is still a little confusing, it will hopefully become much clearer with an example:</p>
+<div>
+<iframe src="https://charlycst.github.io/mario_rl/multi" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
+</div>
+<h2 id="q-learning">Q-Learning</h2>
+<p>I know that there is already a lot to digest, but would like to talk about one last variant of Sarsa: <strong>Q-learning</strong>.</p>
+<p>Remember the Bellman equation? I paste it here again so that you don&rsquo;t need to scroll up:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/bellmanEquation.svg"  alt="Simplified bellman equation"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Here <em>π</em> is the policy. Ideally in the end we want to pick the greedy policy, however as we discussed before we need to pick a policy that allows the agent to explore, for instance <em>ε</em>-greedy.</p>
+<p>It is important to understand that the policy we choose decides the &ldquo;real&rdquo; Q-values that we are trying to estimate with Sarsa. Thus, if the agent is trained with a policy that is not the greedy policy it will learn a suboptimal behavior, because that behavior takes into account the fact that the agent can make mistakes.</p>
+<p>An example is worth a thousand words, imagine that our agent is walking alongside a cliff and receive a negative reward if it falls. In our setting let&rsquo;s say that Mario is walking alongside a line of goomba instead:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/cliff.png"  alt="A cliff of goomba!"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>The reward is right there on the cliff edge. With the greedy policy there is no risk of falling because the agent always pick the best action, thus Q-values along the cliff will be high.</p>
+<p>However, if the agent follows an <em>ε</em>-greedy policy there is a risk of falling when walking on the edge, thus Q-Values along the cliff will be lower in that case. If the agent can make mistakes, staying one step away from the edge is much safer and that path is only 2 steps longer, Q-values might be higher there.</p>
+<p>So what if you want to learn the optimal path? You can&rsquo;t really use the greedy policy with Sarsa because without exploration there is too much of a risk of staying stuck with a suboptimal path. That is where Q-Learning comes in.</p>
+<p>The Sarsa algorithm is what we call an <strong>on-policy</strong> algorithm, because it learns with the same policy that dictates its behavior. Whereas Q-Learning is an <strong>off-policy</strong> algorithm, it uses the greedy policy to learn but its behavior follows another policy during training, for instance <em>ε</em>-greedy.</p>
+<p>In other words, Q-learning allows the agent to learn the Q-values corresponding to the greedy policy (the best one) while still allowing it to explore by following a probabilistic policy during training.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/SarsaVsQLearning.png"  alt="Sarsa VS Q-learning path"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>More formally, Q-learning estimates the Q-Values for the Bellman equation with the greedy policy:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/bellmanGreedy.svg"  alt="Simplified bellman with greedy policy"   style="width: 450px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>But actually follows a policy that allows exploration. Thus, it uses a slightly different update rule than Sarsa:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/qLearning.svg"  alt="Q-Learning update rule"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
+
+        
+    </figure>
+
+
+<p>As you can see, the only difference is that we do not update the Q-Value using the next chosen action <em>a&rsquo;</em> (based on the current non-greedy policy) but with the best possible action <em>a</em>*, as if we used Sarsa with the greedy policy.</p>
+<p>Let&rsquo;s just see how it works in practice: try to use Q-learning with <em>ε</em>-greedy and when the agent has learned for long enough switch to the greedy policy (set <em>ε</em> to 0). What is the difference with Sarsa? You can try different values of <em>ε</em>.</p>
+<div>
+<iframe src="https://charlycst.github.io/mario_rl/cliff" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
+</div>
+<p>One big question remains: when to use Sarsa over Q-Learning or Q-Learning over Sarsa?</p>
+<p>With Q-Learning the agent takes more risks, but learns an overall better policy. If you are creating an IA to beat a game with the higher possible score, go for Q-Learning and switch for greedy policy once the agent is trained.</p>
+<p>Sarsa is a safer approach, it learns optimal Q-Values knowing that the agent can make mistakes. With Sarsa the agent will take much fewer risks during training, it is a good choice for online training in customer facing application for instance. Sarsa is also more suited for always-learning algorithms, because you can stick with a policy that allows exploration and still have good performances (which is not what is optimized with Q-Learning!).</p>
+<h2 id="real-world-applications">Real world applications</h2>
+<p>Maybe you are starting to get a bit bored watching Mario searching for blocks, but don&rsquo;t worry I have got your back: now is the time to discuss other, more practical applications.</p>
+<p>We will study two use cases: playing Super Marios Bros (oops Mario again, sorry I couldn&rsquo;t resist the temptation) and deciding of the best moment to prompt a user to take an action, say buy a coffee.</p>
+<p>My goal in this section is to give you a feel of what is actually feasible, what is not and how to tackle a given tasks in the light of what we discussed in this post. Sadly it seems to me that this part is missing in a lot of posts on reinforcement learning, I hope you will find it useful and that it will inspire you to put some RL in your own applications!</p>
+<h3 id="super-mario-bros">Super Mario Bros</h3>
+<p>Let&rsquo;s start with the hardest task first: we want to train an agent to play Super Mario Bros, the agent should be able to complete as many levels as possible.</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/marioBros.png"  alt="Super Mario Bros 3"   class="rounded"/>
+
+        
+            <figcaption class="center" >Super Mario Bros 3</figcaption>
+        
+    </figure>
+
+
+<p>To apply Sarsa or Q-Learning we first have to decide on two things: what are the actions and what are the states?</p>
+<p>Regarding actions, the game uses 3 directions (UP does nothing) and 2 buttons <em>A</em> and <em>B</em>. At given time you can press either zero or one direction, and either no action button, only <em>A</em>, only <em>B</em> or <em>A</em> and <em>B</em>. That is a total of 16 distinct actions to choose from.</p>
+<p>Note that it is better to keep this number as low as possible: there is in total 64 (6 buttons thus 2⁶) possible actions, but most of them are redundant and thus would increase by a factor of 4 the number of Q-Values our agent needs to learn for nothing in return. This is due to the fact that Sarsa can not generalize what it learns from a given action to others by itself.</p>
+<p>Now what about the states? The first level alone is roughly 100 blocks long for 20 blocks high, if we encode the state with the agent position <em>(x, y)</em> that is about 2.000 states, but enemies are moving too! Plus this doesn&rsquo;t generalize to other levels.</p>
+<p>Let&rsquo;s try something else, we can discretize the surroundings of Mario and encode only that part of the world:</p>
+
+    <figure class="center" >
+        <img src="/img/interactiveIntroductionToRL/marioDiscretized.png"  alt="Discretization of Super Mario Bros 3"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Let&rsquo;s say we take a 7*7 square centered around Mario, each block can be either empty, solid (a brick or the ground), an enemy Mario can&rsquo;t jump on (a fire ball, piranha plants), an enemy Mario can jump on (a goomba, a koopa) or Mario itself. Yes you guessed it right, that is already are 5⁴⁹ distinct states with an overly simplified solution. Spoiler alert: it does not fit into memory.</p>
+<p>That is the actual limit of Sarsa and Q-Learning: the number of state grows really quickly, often too much to be practical. That is where neural network based algorithms such as <em>Deep Q-Learning</em> &amp; Co shine, but that is a story for another time.</p>
+<p>Let&rsquo;s not surrender that easily, I expect the actual distribution of states to be very sparse: that is some of them will appear very often while others will probably never show up. In fact after googling a little while I found a <a href="http://cs229.stanford.edu/proj2012/LiaoYiYang-RLtoPlayMario.pdf">report from a student project</a> that used a similar approach and reported about 20000 states in their final table. That is still a lot but at least if we store only states Mario actually encounters it should be tractable on any modern personal computer.</p>
+<p>Ok suppose that we can deal with that many states, should we use Q-learning or Sarsa? We only care about the final score, we are looking for the best possible policy and don&rsquo;t mind the agent&rsquo;s death during training, thus we should be going for Q-learning.</p>
+<p>What about rewards? I see two approach here:</p>
+<ul>
+<li>We can compute the closest distance from the end of the level achieved for the current run and give the agent a reward each time he improves that distance.</li>
+<li>We can give the agent a reward when it completes the level. However, the agent is very unlikely to complete the level randomly in the first place, to compensate a good idea is to have the agent start at a random location in the level, this will help it to explore much faster and hopefully it will be able to complete the level a first time when starting close enough of the end.</li>
+</ul>
+<p>In both case we can give the agent a penalty each time it died.</p>
+<h3 id="would-you-like-to-add-a-cup-of-coffee">Would you like to add a cup of coffee?</h3>
+<p>Now let&rsquo;s try to do something much more realistic and practical: imagine you run an online store, a blog or a restaurant where customer make orders on a terminal, you probably want don&rsquo;t want your customers/visitors to miss a T-shirt they could like, your future post or the button hidden at the bottom to order a coffee, what about using a prompt?</p>
+<p>However, you are probably annoyed by all those prompts everywhere as much as I am. If you don&rsquo;t want to bother your customers too much you can try to predict when the prompt will actually be useful for them and are likely to take the action.</p>
+<p>How can we frame this task as a reinforcement learning problem and train an agent to decide when to fire the prompt?</p>
+<p>First the actions, there are two of them: fire the prompt or do nothing, easy.</p>
+<p>Then the states, let&rsquo;s study two cases, a blog and a restaurant:</p>
+<ul>
+<li>For you blog you want your visitor to subscribe to your newsletter, what types of visitor usually subscribes? Probably those that spend some time reading your articles, visit many pages and come back. The tuple <em>(reading time, page viewed, number of visits)</em> is probably a good indicator. However, to keep the number of state low it is better to discretize, for instance you can encode reading time by one of:
+<ul>
+<li>Less than 5 minutes</li>
+<li>Between 5 and 10 minutes</li>
+<li>between 10 and 30 minutes</li>
+<li>between 30 minutes and 1 hour</li>
+<li>more than 1 hour</li>
+</ul>
+</li>
+<li>Now you are running a restaurant that boast a choice of 10 starters, 10 main courses and 10 deserts, and you want to propose a coffee while the customer is composing its order. That is a total of 1000 states, if your restaurant is big enough you can cope with that, otherwise consider grouping some meal together.</li>
+</ul>
+<p>You give a reward to the agent each time he prompt the user and get a positive response, otherwise if the response is negative you give it a penalty.</p>
+<p>In this use case you are dealing with real customers, you can&rsquo;t afford the agent to do whatever it wants while learning. In such scenarios it is better to use Sarsa over Q-learning, remember the cliff? Sarsa will play safer.</p>
+<p>If you already have data about your customers it is even better: you can pre-train your agent before putting it in front of real people. It may also be reasonable to put hard-coded safeguards, to avoid the agent spamming users for instance.</p>
+<p>Hope it gives you some ideas!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>And that&rsquo;s it, I know that this a long post, but I really wanted to cover all that material, from a little of theory to practical use cases, to give you a good first picture of reinforcement learning.</p>
+<p>Obviously the field of reinforcement learning is much bigger than what I depicted here, we don&rsquo;t even talked about neural networks even though they are powering all current state-of-the-art algorithms such AlphaGo to quote just one.</p>
+<p>Anyway I hope you found it interesting, that you&rsquo;ll give a try to RL, and that you will be able to build up on what I shared here.</p>
+<p>If you find any mistake don&rsquo;t hesitate to report it <a href="https://github.com/CharlyCst/CharlyCst.github.io/issues">here</a>, otherwise I hope to see you next time!</p>
+<div>
+<iframe src="https://charlycst.github.io/mario_rl/" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
+</div>
+]]></content>
+        </item>
         
         <item>
             <title>Diving into Intel MPK</title>
@@ -30,7 +376,7 @@
 </ul>
 <p>For a key i ∊ ⟦0; 15⟧ the bit 2i of the PKRU block any data read or write if set to 1 (it is called access disable bit, or AD) and the bit 2i+1 disable only write (called write disable bit, WD). Thus, we can both read and write if the two bits (WD, AD) are set to (0, 0), only read with (1, 0) and have no access with (0, 1) or (1, 1).</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/mpk/pkru.png"  alt="8 first bits of PKRU"   class="rounded"/>
 
         
@@ -225,7 +571,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 </span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>]
 </code></pre></div><p>When looking for only one pattern the problem is simple: go through the string character per character and if the current one matches the first character of the pattern, then we compare the next caracter to the second of the pattern and so on. This can be represented using an automaton:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/linearAutomaton.png"  alt="A linear automaton"   class="rounded"/>
 
         
@@ -234,7 +580,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 
 <p>Regular expressions (regexes) are an extension of this algorithm, where the automaton can be more evolved:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/regex.png"  alt="Example of regex"   class="rounded"/>
 
         
@@ -246,7 +592,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 <p>The idea is to build a deterministic finite automaton (meaning that there is always exactly one possibility when transitioning from one state to another) that takes advantages of common suffixes and prefixes.</p>
 <p>The Aho-Corasick algorithm uses a &lsquo;failure function&rsquo;: for a given state if no transition corresponds to the next character, the failure function kicks in and tell us which is the next state.</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/automaton.png"  alt="Example of Aho-Corasick failure function"   class="rounded"/>
 
         
@@ -288,7 +634,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 time NODE_ENV<span style="color:#f92672">=</span>production node js.js
 </code></pre></div><p>And surprise:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/firstComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
 
         
@@ -364,7 +710,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 }
 </code></pre></div><p>Let&rsquo;s check the performances again:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/secondComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
 
         
@@ -383,7 +729,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 </code></pre></div><p>That is indeed much, much better: C++ code went down from 32% to 0.9% of execution time, now Node is truly spending most of its time actually executing our JS and Wasm code! Notice that the GC has also much less work to do, even less that in the pure JS version.</p>
 <p>To put things in perspective, here is a visual recap of the old and new version profiles side to side:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/profiling.png"  alt="final comparison"   class="rounded"/>
 
         
@@ -399,7 +745,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 </ul>
 <p>To conclude here is a visual summary of the achieved results:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/finalComparison.png"  alt="final comparison"   class="rounded"/>
 
         

@@ -139,7 +139,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 </span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>]
 </code></pre></div><p>When looking for only one pattern the problem is simple: go through the string character per character and if the current one matches the first character of the pattern, then we compare the next caracter to the second of the pattern and so on. This can be represented using an automaton:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/linearAutomaton.png"  alt="A linear automaton"   class="rounded"/>
 
         
@@ -148,7 +148,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 
 <p>Regular expressions (regexes) are an extension of this algorithm, where the automaton can be more evolved:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/regex.png"  alt="Example of regex"   class="rounded"/>
 
         
@@ -160,7 +160,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 <p>The idea is to build a deterministic finite automaton (meaning that there is always exactly one possibility when transitioning from one state to another) that takes advantages of common suffixes and prefixes.</p>
 <p>The Aho-Corasick algorithm uses a &lsquo;failure function&rsquo;: for a given state if no transition corresponds to the next character, the failure function kicks in and tell us which is the next state.</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/automaton.png"  alt="Example of Aho-Corasick failure function"   class="rounded"/>
 
         
@@ -202,7 +202,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 time NODE_ENV<span style="color:#f92672">=</span>production node js.js
 </code></pre></div><p>And surprise:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/firstComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
 
         
@@ -278,7 +278,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 }
 </code></pre></div><p>Let&rsquo;s check the performances again:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/secondComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
 
         
@@ -297,7 +297,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 </code></pre></div><p>That is indeed much, much better: C++ code went down from 32% to 0.9% of execution time, now Node is truly spending most of its time actually executing our JS and Wasm code! Notice that the GC has also much less work to do, even less that in the pure JS version.</p>
 <p>To put things in perspective, here is a visual recap of the old and new version profiles side to side:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/profiling.png"  alt="final comparison"   class="rounded"/>
 
         
@@ -313,7 +313,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 </ul>
 <p>To conclude here is a visual summary of the achieved results:</p>
 
-    <figure class="left" >
+    <figure class="center" >
         <img src="/img/speedingUpPatternMatching/finalComparison.png"  alt="final comparison"   class="rounded"/>
 
         

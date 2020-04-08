@@ -222,7 +222,7 @@
 <span style="color:#a6e22e">TEXT</span> <span style="color:#960050;background-color:#1e0010">·</span><span style="color:#a6e22e">ReadPKRU</span>(<span style="color:#a6e22e">SB</span>),<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>
 	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">CX</span>, <span style="color:#a6e22e">CX</span>
 	<span style="color:#a6e22e">RDPKRU</span>
-	<span style="color:#a6e22e">MOVQ</span> <span style="color:#a6e22e">AX</span>, <span style="color:#a6e22e">ret</span><span style="color:#f92672">+</span><span style="color:#ae81ff">8</span>(<span style="color:#a6e22e">FP</span>)  <span style="color:#75715e">// Mov AX to the address of returned value
+	<span style="color:#a6e22e">MOVQ</span> <span style="color:#a6e22e">AX</span>, <span style="color:#a6e22e">ret</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0</span>(<span style="color:#a6e22e">FP</span>)  <span style="color:#75715e">// Mov AX to the address of returned value
 </span><span style="color:#75715e"></span>	<span style="color:#a6e22e">RET</span>
 </code></pre></div><p>And that is it! We have got everything we need to start using MPK in Go. I don&rsquo;t really want to manipulate bits to update rights of each key, however. Let&rsquo;s make our life simpler and write a short helper function.</p>
 <p>There are three possible protections for each key:</p>

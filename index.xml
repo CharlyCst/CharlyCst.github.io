@@ -6,10 +6,20 @@
     <description>Recent content on Charly Castes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2020 21:01:09 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2020 08:00:00 +0100</lastBuildDate>
     
 	<atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Wasm binary encoding</title>
+      <link>https://charlycst.github.io/posts/wasm-encoding/</link>
+      <pubDate>Fri, 12 Jun 2020 08:00:00 +0100</pubDate>
+      
+      <guid>https://charlycst.github.io/posts/wasm-encoding/</guid>
+      <description>Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.
+Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first.</description>
+    </item>
     
     <item>
       <title>An Interactive Introduction to Reinforcement Learning</title>

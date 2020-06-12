@@ -3,22 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://charlycst.github.io/</loc>
+    <lastmod>2020-06-12T08:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://charlycst.github.io/posts/</loc>
+    <lastmod>2020-06-12T08:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://charlycst.github.io/posts/wasm-encoding/</loc>
+    <lastmod>2020-06-12T08:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://charlycst.github.io/tags/algorithm/</loc>
     <lastmod>2020-03-28T21:01:09+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</loc>
-    <lastmod>2020-03-28T21:01:09+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://charlycst.github.io/</loc>
-    <lastmod>2020-03-28T21:01:09+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://charlycst.github.io/posts/</loc>
     <lastmod>2020-03-28T21:01:09+01:00</lastmod>
   </url>
   

@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Charly Castes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Mar 2020 21:01:09 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2020 08:00:00 +0100</lastBuildDate>
     
 	<atom:link href="https://charlycst.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Wasm</title>
+      <link>https://charlycst.github.io/tags/wasm/</link>
+      <pubDate>Fri, 12 Jun 2020 08:00:00 +0100</pubDate>
+      
+      <guid>https://charlycst.github.io/tags/wasm/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Algorithm</title>
@@ -53,15 +62,6 @@
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://charlycst.github.io/tags/rust/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Wasm</title>
-      <link>https://charlycst.github.io/tags/wasm/</link>
-      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://charlycst.github.io/tags/wasm/</guid>
       <description></description>
     </item>
     

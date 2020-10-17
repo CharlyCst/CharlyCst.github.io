@@ -5,8 +5,98 @@
         <description>Recent content in Posts on Charly Castes</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 12 Jun 2020 08:00:00 +0100</lastBuildDate>
+        <lastBuildDate>Fri, 16 Oct 2020 19:10:59 +0200</lastBuildDate>
         <atom:link href="https://charlycst.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Introducing Parrot</title>
+            <link>https://charlycst.github.io/posts/introducing-parrot/</link>
+            <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
+            
+            <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
+            <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
+Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
+This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
+            <content type="html"><![CDATA[<p>I recently <a href="https://crates.io/crates/parrot-snap">published my very first crate</a>, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&rsquo;s do it properly!</p>
+<p>Before jumping in and telling you what that crate actually is about, let&rsquo;s start with some context.</p>
+<h2 id="this-code-does-not-compile">This code does not compile</h2>
+<p>As a hobby project for the last couple of months I have been building my very own compiler. The project was going well: I built the lexer, the parser, a typing system and a custom backend and then finally ran my first program in my very own language.</p>
+<p>I started adding end-to-end tests as soon as the full pipeline was working, that is easy to do for a compiler: collect a list of correct programs, compile them, run the binary and check that your program exits with the expected value.</p>
+<p><em>But that only works for correct programs.</em></p>
+<p>However, a compiler really has two jobs:</p>
+<ul>
+<li>Compile correct programs</li>
+<li>Help you figure out why a wrong program is wrong.</li>
+</ul>
+<p>How about wrong programs now? Ideally a compiler has some sort of error reporting mechanism, and I put efforts into building one, so you expect it to produce rich and meaningful errors.</p>
+<p>But now how do you test your error messages then? Well, you expect them to either stay the same or to improve over time. Hard-coding the errors for each test really looked like a bad idea because of the maintenance burden, instead I quickly became interested again in something I used a while ago in a different context: <em>snapshot testing</em>.</p>
+<h2 id="can-you-remember-that-for-me">Can you remember that for me?</h2>
+<p>I discovered snapshot testing while doing web development with <a href="https://jestjs.io/">Jest</a>, a JavaScript framework for testing React components. The way it works (or at least worked a few years back) is by literally taking snapshot of a serialized version of your components, then each time you re-run the tests Jest tells you if a component changed.</p>
+<p>So here is the idea: I have a bunch of wrong programs, I want my compiler to generate errors for each of them and be able to check that errors do not change over time, or if they do I want to be able to check if the newer improve over the latter.</p>
+<p>I looked for a tool doing this automatically, but I couldn&rsquo;t find something that really did what I wanted&hellip; Anyway, challenge accepted.</p>
+<h2 id="parrot">Parrot?</h2>
+<p>Let me present <a href="https://github.com/CharlyCst/parrot">parrot</a>, a snapshot CLI tool that makes end-to-end testing a piece of cake!</p>
+<p>Why parrot? Well, it can repeat the output of a program if you ask it to&hellip; Plus I like birds.</p>
+<p>It&rsquo;s a breeze to set up and use, let me walk you through:</p>
+<p>You first need to initialize parrot in your directory, that&rsquo;s as easy as <code>parrot init</code>. Then we will ask it to remember the output of a command of our choice: <code>parrot add 'echo &quot;Hello, world!&quot;'</code>. Finally, let&rsquo;s check that the output didn&rsquo;t change: <code>parrot run</code>. Done.</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/demo.png"  alt="Using parrot cli"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Let&rsquo;s add some spice with a command whose output actually change: <code>parrot add date</code>.</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/fail.png"  alt="Parrot cli detect a change"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>And voilà! You get a failure with a diff of the outputs, so that you can decide whether the change is a regression or not by yourself.</p>
+<h2 id="a-few-tricks">A few tricks</h2>
+<p>Let&rsquo;s imagine that we are developing a command line tool, let&rsquo;s say <a href="https://stedolan.github.io/jq/tutorial/">jq</a> for the sake of example, how could we use parrot to test it?</p>
+<p>First let&rsquo;s create a few json to test <em>jq</em> with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">echo <span style="color:#e6db74">&#39;{&#34;items&#34;: 2, &#34;quality&#34;: &#34;good&#34;, &#34;ids&#34;: [1, 2]}&#39;</span> &gt; simple.json
+curl <span style="color:#e6db74">&#39;https://api.github.com/repos/torvalds/linux/commits?per_page=5&#39;</span> &gt; linux.json
+</code></pre></div><p>Now let&rsquo;s add a few tests:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">parrot add <span style="color:#e6db74">&#34;cat simple.json | jq &#39;.items&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat simple.json | jq &#39;.ids&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat simple.json | jq &#39;.ids[0]&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;.[0] | .commit.author.email&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;.[] | .commit.author.email&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;.[0] | {sha: .sha, name: .commit.author.name}&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;[.[] | {sha: .sha, name: .commit.author.name}]&#39;&#34;</span>
+</code></pre></div><p>A first interesting feature of <em>parrot</em> is that it lets you browse your tests and interact with them in a custom REPL that you can open with the <code>parrot</code> command.</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/repl.png"  alt="Parrot REPL"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>You can find the list of all available commands <a href="https://github.com/CharlyCst/parrot#commands">here</a>, let&rsquo;s just try a few of them.</p>
+<p>Imagine you&rsquo;re working on the array indexing of <em>jq</em>: most likely you are only interested on a few tests. Parrot lets you add a description for each test, you can add tags in that description and later filter tests on them.</p>
+<p>For this example I created an <code>#indexing</code> tag, now I can filter the tests with the <code>filter #indexing</code> command, or <code>f #indexing</code> for short, then run the selected tests: <code>run *</code> or <code>r *</code> for short:</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/parrot.gif"  alt="Parrot demo"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>You can also execute the same parrot commands from the CLI, which can be handy for scripting purpose:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">parrot exec <span style="color:#e6db74">&#39;filter #indexing; r *&#39;</span>
+</code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>And that&rsquo;s already it for this short presentation of <a href="https://github.com/CharlyCst/parrot">parrot</a>, feel free to try it and don&rsquo;t hesitate to open an issue, for both feedbacks and bugs!</p>
+<p>Personally I&rsquo;m using parrot more and more in my own projects, and will continue to work on it until that it can scale to hundreds of tests.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Wasm binary encoding</title>
@@ -16,7 +106,7 @@
             <guid>https://charlycst.github.io/posts/wasm-encoding/</guid>
             <description>Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.
 Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first.</description>
-            <content type="html"><![CDATA[<p>Lately I have been working on <a href="https://github.com/CharlyCst/fork">my own compiler</a> (for fun &amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this <a href="http://craftinginterpreters.com/">book</a> and the <a href="https://rustc-dev-guide.rust-lang.org/">rustc dev guide</a>), but when it comes down to writing bytes one after the other the only thing you can hold onto is the <a href="https://webassembly.github.io/spec/">specification</a>.</p>
+            <content type="html"><![CDATA[<p>Lately I have been working on <a href="https://github.com/CharlyCst/zephyr">my own compiler</a> (for fun &amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this <a href="http://craftinginterpreters.com/">book</a> and the <a href="https://rustc-dev-guide.rust-lang.org/">rustc dev guide</a>), but when it comes down to writing bytes one after the other the only thing you can hold onto is the <a href="https://webassembly.github.io/spec/">specification</a>.</p>
 <p>Don&rsquo;t get me wrong, the specification is great, but it may be a little rough at first. I spent quite some time wrapping my head around branching, number encoding, types and sections, so I feel like I should write that down.</p>
 <p>And here we are! In this post I will walk you through the bytes of a simple wasm module, one by one, and by the end you&rsquo;ll be able to tell what <em>any</em> of those do.</p>
 <h2 id="the-wasm-stack-machine">The wasm stack machine</h2>

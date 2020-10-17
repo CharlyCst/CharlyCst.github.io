@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="Castes Charly https://twitter.com/CharlyCastes/ ">
+<meta name="description" content="I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
+Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
+This code does not compile As a hobby project for the last couple of months I have been building my very own compiler." />
+<meta name="keywords" content="blog, tech, programming" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://charlycst.github.io/posts/introducing-parrot/" />
+
+
+    <title>
+        
+            Introducing Parrot :: Charly Castes 
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.min.faf4b25e51d7196b07dc973331cb4df697b110d0c6ca23a324cce0765a35fd71.css">
+
+
+
+
+<meta itemprop="name" content="Introducing Parrot">
+<meta itemprop="description" content="I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&rsquo;s do it properly!
+Before jumping in and telling you what that crate actually is about, let&rsquo;s start with some context.
+This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.">
+<meta itemprop="datePublished" content="2020-10-16T19:10:59&#43;02:00" />
+<meta itemprop="dateModified" content="2020-10-16T19:10:59&#43;02:00" />
+<meta itemprop="wordCount" content="870">
+<meta itemprop="image" content="https://charlycst.github.io/img/introducingParrot/cover.jpg">
+
+
+
+<meta itemprop="keywords" content="rust,cli," /><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://charlycst.github.io/img/introducingParrot/cover.jpg"/>
+
+<meta name="twitter:title" content="Introducing Parrot"/>
+<meta name="twitter:description" content="I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&rsquo;s do it properly!
+Before jumping in and telling you what that crate actually is about, let&rsquo;s start with some context.
+This code does not compile As a hobby project for the last couple of months I have been building my very own compiler."/>
+
+
+
+
+
+    <meta property="article:published_time" content="2020-10-16 19:10:59 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">Charly | blog</span>
+            
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">Posts</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>5 minutes
+
+            
+
+            </p>
+        </div>
+
+        <article>
+            <h1 class="post-title">
+                <a href="https://charlycst.github.io/posts/introducing-parrot/">Introducing Parrot</a>
+            </h1>
+
+            
+                <img src="/img/introducingParrot/cover.jpg" class="post-cover" />
+            
+
+            <div class="post-content">
+                <p>I recently <a href="https://crates.io/crates/parrot-snap">published my very first crate</a>, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&rsquo;s do it properly!</p>
+<p>Before jumping in and telling you what that crate actually is about, let&rsquo;s start with some context.</p>
+<h2 id="this-code-does-not-compile">This code does not compile</h2>
+<p>As a hobby project for the last couple of months I have been building my very own compiler. The project was going well: I built the lexer, the parser, a typing system and a custom backend and then finally ran my first program in my very own language.</p>
+<p>I started adding end-to-end tests as soon as the full pipeline was working, that is easy to do for a compiler: collect a list of correct programs, compile them, run the binary and check that your program exits with the expected value.</p>
+<p><em>But that only works for correct programs.</em></p>
+<p>However, a compiler really has two jobs:</p>
+<ul>
+<li>Compile correct programs</li>
+<li>Help you figure out why a wrong program is wrong.</li>
+</ul>
+<p>How about wrong programs now? Ideally a compiler has some sort of error reporting mechanism, and I put efforts into building one, so you expect it to produce rich and meaningful errors.</p>
+<p>But now how do you test your error messages then? Well, you expect them to either stay the same or to improve over time. Hard-coding the errors for each test really looked like a bad idea because of the maintenance burden, instead I quickly became interested again in something I used a while ago in a different context: <em>snapshot testing</em>.</p>
+<h2 id="can-you-remember-that-for-me">Can you remember that for me?</h2>
+<p>I discovered snapshot testing while doing web development with <a href="https://jestjs.io/">Jest</a>, a JavaScript framework for testing React components. The way it works (or at least worked a few years back) is by literally taking snapshot of a serialized version of your components, then each time you re-run the tests Jest tells you if a component changed.</p>
+<p>So here is the idea: I have a bunch of wrong programs, I want my compiler to generate errors for each of them and be able to check that errors do not change over time, or if they do I want to be able to check if the newer improve over the latter.</p>
+<p>I looked for a tool doing this automatically, but I couldn&rsquo;t find something that really did what I wanted&hellip; Anyway, challenge accepted.</p>
+<h2 id="parrot">Parrot?</h2>
+<p>Let me present <a href="https://github.com/CharlyCst/parrot">parrot</a>, a snapshot CLI tool that makes end-to-end testing a piece of cake!</p>
+<p>Why parrot? Well, it can repeat the output of a program if you ask it to&hellip; Plus I like birds.</p>
+<p>It&rsquo;s a breeze to set up and use, let me walk you through:</p>
+<p>You first need to initialize parrot in your directory, that&rsquo;s as easy as <code>parrot init</code>. Then we will ask it to remember the output of a command of our choice: <code>parrot add 'echo &quot;Hello, world!&quot;'</code>. Finally, let&rsquo;s check that the output didn&rsquo;t change: <code>parrot run</code>. Done.</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/demo.png"  alt="Using parrot cli"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>Let&rsquo;s add some spice with a command whose output actually change: <code>parrot add date</code>.</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/fail.png"  alt="Parrot cli detect a change"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>And voilà! You get a failure with a diff of the outputs, so that you can decide whether the change is a regression or not by yourself.</p>
+<h2 id="a-few-tricks">A few tricks</h2>
+<p>Let&rsquo;s imagine that we are developing a command line tool, let&rsquo;s say <a href="https://stedolan.github.io/jq/tutorial/">jq</a> for the sake of example, how could we use parrot to test it?</p>
+<p>First let&rsquo;s create a few json to test <em>jq</em> with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">echo <span style="color:#e6db74">&#39;{&#34;items&#34;: 2, &#34;quality&#34;: &#34;good&#34;, &#34;ids&#34;: [1, 2]}&#39;</span> &gt; simple.json
+curl <span style="color:#e6db74">&#39;https://api.github.com/repos/torvalds/linux/commits?per_page=5&#39;</span> &gt; linux.json
+</code></pre></div><p>Now let&rsquo;s add a few tests:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">parrot add <span style="color:#e6db74">&#34;cat simple.json | jq &#39;.items&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat simple.json | jq &#39;.ids&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat simple.json | jq &#39;.ids[0]&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;.[0] | .commit.author.email&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;.[] | .commit.author.email&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;.[0] | {sha: .sha, name: .commit.author.name}&#39;&#34;</span>
+parrot add <span style="color:#e6db74">&#34;cat linux.json | jq &#39;[.[] | {sha: .sha, name: .commit.author.name}]&#39;&#34;</span>
+</code></pre></div><p>A first interesting feature of <em>parrot</em> is that it lets you browse your tests and interact with them in a custom REPL that you can open with the <code>parrot</code> command.</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/repl.png"  alt="Parrot REPL"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>You can find the list of all available commands <a href="https://github.com/CharlyCst/parrot#commands">here</a>, let&rsquo;s just try a few of them.</p>
+<p>Imagine you&rsquo;re working on the array indexing of <em>jq</em>: most likely you are only interested on a few tests. Parrot lets you add a description for each test, you can add tags in that description and later filter tests on them.</p>
+<p>For this example I created an <code>#indexing</code> tag, now I can filter the tests with the <code>filter #indexing</code> command, or <code>f #indexing</code> for short, then run the selected tests: <code>run *</code> or <code>r *</code> for short:</p>
+
+    <figure class="center" >
+        <img src="/img/introducingParrot/parrot.gif"  alt="Parrot demo"   class="rounded"/>
+
+        
+    </figure>
+
+
+<p>You can also execute the same parrot commands from the CLI, which can be handy for scripting purpose:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">parrot exec <span style="color:#e6db74">&#39;filter #indexing; r *&#39;</span>
+</code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>And that&rsquo;s already it for this short presentation of <a href="https://github.com/CharlyCst/parrot">parrot</a>, feel free to try it and don&rsquo;t hesitate to open an issue, for both feedbacks and bugs!</p>
+<p>Personally I&rsquo;m using parrot more and more in my own projects, and will continue to work on it until that it can scale to hundreds of tests.</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/rust">rust</a></span><span class="tag"><a href="https://charlycst.github.io/tags/cli">cli</a></span>
+                </p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>870 Words</p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-10-16 19:10 &#43;0200</p>
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h"></span>
+                    <hr />
+                </div>
+
+                <div class="pagination__buttons">
+                    
+
+                    
+                        <span class="button next">
+                            <a href="https://charlycst.github.io/posts/wasm-encoding/">
+                                <span class="button__text">Wasm binary encoding</span>
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    
+                </div>
+            </div>
+        
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2020</span>
+            
+                <span><a href="https://charlycst.github.io">Castes Charly</a></span>
+            
+            
+            
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.2d5469329143160ae2456a69c3c76dc2d0a3b212b46afe291a51bd68650ed6f8697e001dab54f1c272c77ce08092a8c55e5bb4314e0ee334aab4b927ec896638.js" integrity="sha512-LVRpMpFDFgriRWppw8dtwtCjshK0av4pGlG9aGUO1vhpfgAdq1TxwnLHfOCAkqjFXlu0MU4O4zSqtLkn7IlmOA=="></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-156991616-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+
+
+    </body>
+</html>

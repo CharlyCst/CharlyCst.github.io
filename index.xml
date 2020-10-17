@@ -6,10 +6,21 @@
     <description>Recent content on Charly Castes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 12 Jun 2020 08:00:00 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 16 Oct 2020 19:10:59 +0200</lastBuildDate>
     
 	<atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introducing Parrot</title>
+      <link>https://charlycst.github.io/posts/introducing-parrot/</link>
+      <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
+      
+      <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
+      <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
+Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
+This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
+    </item>
     
     <item>
       <title>Wasm binary encoding</title>

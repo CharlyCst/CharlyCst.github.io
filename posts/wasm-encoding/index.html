@@ -124,7 +124,7 @@ Don&rsquo;t get me wrong, the specification is great, but it may be a little rou
             
 
             <div class="post-content">
-                <p>Lately I have been working on <a href="https://github.com/CharlyCst/fork">my own compiler</a> (for fun &amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this <a href="http://craftinginterpreters.com/">book</a> and the <a href="https://rustc-dev-guide.rust-lang.org/">rustc dev guide</a>), but when it comes down to writing bytes one after the other the only thing you can hold onto is the <a href="https://webassembly.github.io/spec/">specification</a>.</p>
+                <p>Lately I have been working on <a href="https://github.com/CharlyCst/zephyr">my own compiler</a> (for fun &amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this <a href="http://craftinginterpreters.com/">book</a> and the <a href="https://rustc-dev-guide.rust-lang.org/">rustc dev guide</a>), but when it comes down to writing bytes one after the other the only thing you can hold onto is the <a href="https://webassembly.github.io/spec/">specification</a>.</p>
 <p>Don&rsquo;t get me wrong, the specification is great, but it may be a little rough at first. I spent quite some time wrapping my head around branching, number encoding, types and sections, so I feel like I should write that down.</p>
 <p>And here we are! In this post I will walk you through the bytes of a simple wasm module, one by one, and by the end you&rsquo;ll be able to tell what <em>any</em> of those do.</p>
 <h2 id="the-wasm-stack-machine">The wasm stack machine</h2>
@@ -394,6 +394,13 @@ Data           0x0b   <span style="color:#75715e"># Any type of data</span>
                 </div>
 
                 <div class="pagination__buttons">
+                    
+                        <span class="button previous">
+                            <a href="https://charlycst.github.io/posts/introducing-parrot/">
+                                <span class="button__icon">←</span>
+                                <span class="button__text">Introducing Parrot</span>
+                            </a>
+                        </span>
                     
 
                     

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Wasm on Charly Castes</title>
+    <title>Wasm on CharlyCst</title>
     <link>https://charlycst.github.io/tags/wasm/</link>
-    <description>Recent content in Wasm on Charly Castes</description>
+    <description>Recent content in Wasm on CharlyCst</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 21 Dec 2020 10:03:08 +0100</lastBuildDate>

@@ -5,8 +5,267 @@
         <description>Recent content in Posts on Charly Castes</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 16 Oct 2020 19:10:59 +0200</lastBuildDate>
+        <lastBuildDate>Mon, 21 Dec 2020 10:03:08 +0100</lastBuildDate>
         <atom:link href="https://charlycst.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Building a Memory Allocator for WebAssembly</title>
+            <link>https://charlycst.github.io/posts/wasm-memory-allocator/</link>
+            <pubDate>Mon, 21 Dec 2020 10:03:08 +0100</pubDate>
+            
+            <guid>https://charlycst.github.io/posts/wasm-memory-allocator/</guid>
+            <description>While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.
+Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes.</description>
+            <content type="html"><![CDATA[<p>While waiting for the <a href="https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md">GC proposal</a>, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory.
+Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the <em>linked list allocators</em>.</p>
+<p>Building an efficient allocator is notoriously hard, as testifies the popular <a href="http://jemalloc.net/">jemalloc</a> which is famously known for its 30,000 lines of codes.</p>
+<p>In the context of programming languages, the memory allocator is both heavily influenced by the language design  and influences the language itself:
+the <a href="https://golang.org/src/runtime/malloc.go">Go allocator</a> has a huge focus on concurrency with thread local memory pools, while OCaml integers are only 63 bits longs because the lowest bit is used by the GC to differentiate integers from pointers (that is why there is an <a href="https://caml.inria.fr/pub/docs/manual-ocaml/libref/Int64.html">int64 module</a>).</p>
+<p>As you will see, linked list allocators are slow, the <code>malloc</code> operation takes <em>O(n)</em> steps, but they are also very flexible and are often used as a basis upon which more sophisticated allocation methods can be built.</p>
+<h2 id="a-list-of-blocks">A list of blocks</h2>
+<p>Linked list allocators are conceptually simple:
+they consist in a (linked) list of blocks, when an allocation of size <em>s</em> is requested the allocator iterates through the list, selects a block of size at least <em>s</em> and removes it from the list before returning a pointer to the first byte of that block.</p>
+<p>A block usually consist of a header and a body that correspond to the available memory.
+The header is used to store meta-data: the block size and sometimes a few flags, while the body contains the pointer to the next block if it&rsquo;s free and some user data otherwise.</p>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/blocks.png"  alt="Blocks in memory"   class="rounded"/>
+
+        
+            <figcaption class="center" >Blocks with headers (h), next pointers (n) and bodies which may be actively in use or not.</figcaption>
+        
+    </figure>
+
+
+<p>The allocator algorithm can be summarized in a few lines:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">malloc</span>(size):
+    <span style="color:#66d9ef">for</span> block <span style="color:#f92672">in</span> block_list:
+        <span style="color:#66d9ef">if</span> block<span style="color:#f92672">.</span>size <span style="color:#f92672">&gt;</span><span style="color:#f92672">=</span> size:
+            list<span style="color:#f92672">.</span>remove(block)
+            <span style="color:#66d9ef">return</span> block
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Out of memory</span><span style="color:#e6db74">&#34;</span>)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">free</span>(block):
+    list<span style="color:#f92672">.</span>append(block)
+</code></pre></div>
+<div class="notices note" ><p>Such an allocator that return the first big enough block is said to use a <em>first fit</em> strategy, another common strategy is the <em>best fit</em>, where the smallest block that is big enough is returned.</p>
+</div>
+
+<p>There are a few subtleties, however.</p>
+<p>The first one is that we may only have blocks that are too big, imagine having only 64 bytes blocks and being asked a block of size 8. To save memory the solution is simply to break the block in two such that one of these new blocks has a size of 8.</p>
+<p>But this may leads to the opposite problem: what if now all our blocks are too small? We should be able to merge two contiguous blocks into a bigger one. This operation is called <a href="https://en.wikipedia.org/wiki/Coalescing_(computer_science)">block coalescing</a>.</p>
+
+<div class="notices note" ><p>In some case we may not be able to coalesce blocks, imagine our memory consists of two blocks of size 64 separated by a small 4 bytes block: it is no longer possible to allocate a 100 bytes block even though there is technically enough memory, we said that the memory is <em>fragmented</em>.</p>
+</div>
+
+<p>The other subtlety is <em>alignment</em>. In Web assembly alignment has no effect on the semantic, meaning that it does not change the program behavior, but it may affect performances.</p>
+<p>A 32 bits load is aligned if its address is a multiple of 32 bits (or 4 bytes), and as you expect a 64 bits load is aligned if its address is a multiple of 64 bits (or 8 bytes).</p>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/memoryAlignment.png"  alt="Aligned and unaligned reads"   class="rounded"/>
+
+        
+            <figcaption class="center" >First and last blocks (in red) are not aligned, but the others (in green) are.</figcaption>
+        
+    </figure>
+
+
+<p>To put it simply, the hardware is not not wired to read <em>unaligned</em> values, and thus we should strive to avoid unaligned loads as much as possible.</p>
+<h2 id="the-allocator-design">The allocator design</h2>
+<p>The design space is huge, choices had to be made and for this post I propose the following:</p>
+<ul>
+<li>First fit strategy.</li>
+<li>Memory blocks are aligned to 8 bytes.</li>
+<li>Doubly linked list.</li>
+<li>Coalesce on free.</li>
+</ul>
+<p>In WebAssembly the largest load can fetch 64 bits (or 8 bytes) and thus an alignment of 8 bytes is safe for any purpose.</p>
+<p>Ok, but why a doubly linked list? That&rsquo;s because we will need the two way linking to be able to free blocks in O(1) while coalescing at the same time.</p>
+<p>When free is called, it will look at the two neighbouring blocks and merge any free block with the one that is being freed.
+This may require to remove an arbitrary block from the linked list, that is why we need to have pointers in both direction: so that we can glue the two ends together when cutting the chain.</p>
+<p>In fact you will see that we will also need footers, otherwise there is no way to check if the preceding block is free.</p>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/fullBlocks.png"  alt="Blocks layout in memory"   class="rounded"/>
+
+        
+            <figcaption class="center" >Block layout with headers (h), next pointer (n), previous pointer (p) and footer (f).</figcaption>
+        
+    </figure>
+
+
+<p>You may think that all of this makes a lot of wasted space, and it&rsquo;s true, but the thing with WebAssembly is that memory addresses are only 32 bits long, thus we only need 8 bytes of &ldquo;wasted&rdquo; space (4 bytes of header, 4 of footer) plus a minimum of 8 bytes reserved for the body of the blocks so that we can store two pointers inside.</p>
+
+<div class="notices note" ><p>If you want to see different trade-offs, you can have a look at this <a href="https://os.phil-opp.com/allocator-designs/">excellent post</a> which discusses allocator design in the context of a kernel.</p>
+</div>
+
+<h2 id="hands-on-code">Hands on code</h2>
+<p>Before diving into some code, we need to think a little bit about the initial state of the memory (the compiler might help us, or we may write a separate <code>init_malloc</code> function).</p>
+<p>We will need a pointer to the first free block, which may be anywhere, escpecially if the <code>Data</code> section initializes some part of the memory.</p>
+<p>We can store that pointer anywhere we like, as long as <code>malloc</code> can reach it.
+A global variable can do the job, in this post I will store it at the very begining of the linear memory (at index 0).</p>
+<p>Without further ado, let&rsquo;s write that <code>malloc</code> function:</p>
+
+<div class="notices note" ><p>The language I&rsquo;m using here is called <a href="https://github.com/CharlyCst/zephyr">Zephyr</a>, it&rsquo;s a small language I created for learning purpose. It should be pretty straight forward to translate it to your favorite language.</p>
+</div>
+
+<pre><code class="language-zph" data-lang="zph">fun malloc(size i32) i32 {
+    let addr = read_i32(0) // Address of the first free block
+    let target_size = get_real_block_size(size)
+    while true {
+        if addr == 0 {
+            panic()        // Out of memory
+        }
+        if read_i32(addr) &gt;= target_size {
+            let block_size = split_block(addr, target_size)
+            remove_block(addr)
+            let header = block_size | 0x80000000 // set allocated bit
+            set_i32(addr, header)                // header
+            set_i32(addr + block_size, header)   // footer
+            return addr + 4
+        }
+        addr = read_i32(addr + 4)                // go to next block
+    }
+}
+</code></pre><p>Let&rsquo;s recap what happens here:</p>
+<p>First we read the memory at index 0, remember that its where we decided to store the pointer to the first block.</p>
+<p>Then we compute the minimal size of the block, it&rsquo;s not equal to the size passed to <code>malloc</code> for two reasons:</p>
+<ul>
+<li>We have to store a few meta-data in that block, at least two pointers and a footer.</li>
+<li>We have to carefully pick a size such that the next block has the right alignment.</li>
+</ul>
+<p>Let&rsquo;s postpone the choice of the size for now, the next thing to do is to iterate over the list of block until we find one that is big enough.</p>
+<p>We have to talk a little bit about the header now, it&rsquo;s a 32 bit value in which we store two things:</p>
+<ul>
+<li>a flag (the 32nd bit) set to 1 if the block is allocated, 0 otherwise.</li>
+<li>the size of the block in the remaining 31 lowest bits.</li>
+</ul>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/header.png"  alt="Header layout"   class="rounded"/>
+
+        
+            <figcaption class="center" >WebAssembly uses little endian, so the most significant bit is at the end of the word.</figcaption>
+        
+    </figure>
+
+
+<p>This layout allows to directly read the size of free blocks with a memory load at the address of the header: that&rsquo;s exactly what we&rsquo;re doing to check if the block is big enough.</p>
+<p>From here there are two possibilities:</p>
+<ul>
+<li>The block is too small, in which case we can get the next block by following the <code>next</code> pointer (that we can read at <code>header_address + 4</code>).</li>
+<li>The block is bigger than our target size 🎉</li>
+</ul>
+<p>In the latter case, we can try to split the block in two, this avoid wasting too much memory by creating a new free block with the excess space.
+Then we remove the block from the free list, compute the value new header (its size plus the 32nd bit set to 1) and set both the header and footer to that value and finally return the address to the free space (the first byte after the header).</p>
+<p>As you see it&rsquo;s not that complicated, there are a few details to pay attention to, but the algorithm is relatively simple.
+Let&rsquo;s move to free now, it&rsquo;s basically the reverse operation:</p>
+<pre><code class="language-zph" data-lang="zph">pub fun free(ptr i32) {
+    // get back the address of the header
+    let addr = ptr - 4
+    // insert the block in the chain
+    let old_root = read_i32(0)
+    if old_root != 0 {
+        set_i32(old_root + 8, addr)
+    }
+    set_i32(0, addr)
+    set_i32(addr + 4, old_root)
+    set_i32(addr + 8, 0)
+    // mark the block as free
+    let header = read_i32(addr) ^ 0x80000000 // unset allocated bit
+    set_i32(addr, header)                    // header
+    set_i32(addr + header, header)           // footer
+    // coalesce block with neighbours, if possible
+    try_coalesce(addr)
+}
+</code></pre><p>Nothing fancy here, we compute the address of the header (4 bytes before the pointer we gave back with <code>malloc</code>),
+then we insert the block at the beginning of the free list using the fact that the next and previous pointers are respectively 4 and 8 bytes after the header.</p>
+<p>To remove the &lsquo;allocated&rsquo; flag, we use a <em>xor</em> between the header and 0x80000000, which is a 1 followed by 31 zeroes: this will left the 31 lowest bits unchanged, but because the 32nd is set to 1 it will be reset to 0.</p>
+<p>Finally comes the time to coalesce our blocks into bigger ones.</p>
+<p>I don&rsquo;t want to throw too much code into your face, you can check it <a href="https://github.com/CharlyCst/zephyr/blob/58d09fe0da1970566dc4579b1a01f4a0ad97eb9e/lib/core/mem/malloc.zph#L162">here</a> if you want, so let&rsquo;s just talk about the main idea.</p>
+<p>We can easily find the header of the next block because we know the size of our block, if it happens to be free (the &lsquo;allocated&rsquo; flag is set to 0) we can merge both blocks into a single one.</p>
+<p>Remember that we also maintain a footer? Here comes its moment of glory: its sole purpose is to allow coalescing.
+Because both the &lsquo;allocated&rsquo; flag and the size is encoded in the footer, we can (if the block is free) get the address of its header (using the size in the footer) and merge both blocks.</p>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/fullBlocks.png"  alt="Blocks layout in memory"   class="rounded"/>
+
+        
+            <figcaption class="center" >When freeing the right block, we can use the left block&#39;s footer to check if it is free and get its size.</figcaption>
+        
+    </figure>
+
+
+<p>Let&rsquo;s come back to the <code>get_real_block_size</code> function we used in <code>malloc</code>, the choice of the <em>real</em> size of the block is crucial for preserving the alignment:
+imagine if the user asks for a block of 12 bytes, we break a block to create one of size 12 and another one with the space left, here is what happens:</p>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/unalignedBody.png"  alt="Unaligned block bodies"   class="rounded"/>
+
+        
+            <figcaption class="center" >The second body does not have an alignment of 8.</figcaption>
+        
+    </figure>
+
+
+<p>As you can see, the next block&rsquo;s body is only aligned to 4, we are breaking our part of the contract, which may result in unaligned reads and a drop in performance.</p>
+
+<div class="notices note" ><p>Remember that our target alignment for block bodies is 8 bytes, thus because the header is 4 bytes long, our header must have an alignment of 4 (but not 8!) to ensure the desired alignment of the body.</p>
+</div>
+
+<p>The fix is simple, even if the user asked for 12 bytes, let&rsquo;s give him 16:</p>
+
+    <figure class="center" >
+        <img src="/img/wasmMemoryAllocator/alignedBody.png"  alt="Aligned block bodies"   class="rounded"/>
+
+        
+            <figcaption class="center" >All the bodies are aligned to 8.</figcaption>
+        
+    </figure>
+
+
+<p>As you can see, the alignment is now back to what is expected.</p>
+<p>Now that we are aware of that, let&rsquo;s discuss the <code>get_real_block_size</code> function:</p>
+<p>Beside the 4 bytes header there must be enough room for two 4 bytes pointers plus a 4 bytes footer, thus the minimal block has 12 bytes of body + footer, and we can check that with a size of 12 the next block will have the required alignment, perfect.</p>
+<p>Now if the caller requests <em>n</em> bytes of body, <em>n &gt; 8</em>, how much should we allocate to preserve the alignment?
+Simple, we know that the body has an alignment of 8, thus <code>body_size + footer_size + next_header_size = body_size + 8</code> must be a multiple of 8, in other words the body size must be a multiple of 8, and we add 4 bytes for the footer.</p>
+<p>Here is a way do to just that in a few lines:</p>
+<pre><code class="language-zph" data-lang="zph">fun get_real_block_size(size: i32): i32 {
+    if size &lt;= 8 {
+        return 12
+    }
+    let body_size = (size + 0b111) &amp; -0b1000
+    return body_size + 4
+}
+</code></pre><p>Here we used a trick to compute the body size: the <code>&amp; -0b1000</code> operation cleans the 3 last bits, because WebAssembly uses two&rsquo;s complement arithmetics and thus <code>-0b1000</code> evaluates to <code>0b1111....1111000</code>(with 32 ones and zeroes).
+Thus, <code>(size + 0b111) &amp; -0b1000</code> evaluate to <code>size</code> itself if it&rsquo;s already a multiple of 8, or to the next multiple of 8 otherwise.</p>
+<p>And with this, we have seen most of the interesting parts of our linked list allocator, congrats for sticking with me this far 🎉</p>
+<h2 id="a-final-remark">A final remark</h2>
+<p>Ok great, we have built an allocator, but it runs in O(n), it doesn&rsquo;t look like it&rsquo;s anything close to something usable in any serious language or application&hellip;
+Well, yes and no.</p>
+<p>It&rsquo;s clear that no one want to use an O(n) function for every single memory allocation, but there are ways to mitigate that:
+we can organize our memory better.</p>
+<p>Usually, the memory is split in two big parts:</p>
+<ul>
+<li>The <em>stack</em>: a place where a new chunks of memory is pushed on function call, and freed on function return.</li>
+<li>The <em>heap</em>: everything else.</li>
+</ul>
+<p>It&rsquo;s <em>very fast</em> to allocate some space on the stack, it&rsquo;s basically incrementing a pointer. However, because the memory is freed on function return it&rsquo;s not possible to allocate object that outlive the function there, it&rsquo;s the job of <a href="https://en.wikipedia.org/wiki/Escape_analysis">escape analysis</a> to decide whether a chunk of memory can be allocated on the stack or not.</p>
+
+<div class="notices note" ><p>But, there is already a stack in WebAssembly right?</p>
+<p>Yes, that&rsquo;s true, however this stack is not addressable, we can&rsquo;t have a pointer to data stored there.
+That&rsquo;s why LLVM for instance uses a <em>shadow stack</em>, it&rsquo;s basically another stack that lives in the linear memory and that can be directly addressed.</p>
+</div>
+
+<p>Unfortunately, we can&rsquo;t allocate everything in the stack, and we don&rsquo;t want to pay O(n) per heap allocation.</p>
+<p>A frequent solution to this problem is to use <em>segregated lists</em>, where instead of having a single free list with blocks of various sizes, we can maintain a bunch of lists with fixed block sizes, let&rsquo;s say 8, 16, 32, 64 and so on&hellip;</p>
+<p>When the user requests a block, we round the size up to the next power of 2 and take the first block of the corresponding free list, that&rsquo;s O(1) for the allocation, and we put it back in the list on free, that&rsquo;s O(1) too.</p>
+<p>But what happens when there is no block left in the segregated free lists or when the stack is full? We fall back to our O(n) allocator to get some more memory to grow the stack or add a few blocks to the segregated lists!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Thank you for reading that far! I hope you enjoyed this article and learned a thing or two about memory mangement or WebAssembly. If you have any question, remark or feedback don&rsquo;t hesitate to open an issue <a href="https://github.com/CharlyCst/CharlyCst.github.io/issues">here</a>.</p>
+<p>If you want, you can also play with the allocator online right <a href="https://charlycst.github.io/wasm-mem-preview/">here</a>.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Introducing Parrot</title>

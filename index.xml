@@ -79,5 +79,16 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
       <description>With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&amp;rsquo;s get started!</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>https://charlycst.github.io/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://charlycst.github.io/projects/</guid>
+      <description>Projects  Zephyr A small (work in progress) programming language that compiles to WebAssembly.
+A lot of languages are being retro-fitted to compile down to Wasm, however they are often designed to run on a single kind of platform (Posix-like usually), that is why most of Wasm in use today expect to run on WASI and compilers tools such as Emscripten where built.
+Wasm offers much more flexibility, and I think that to get the most out it runtime bindings must be a language feature rather than baked in our compilers.</description>
+    </item>
+    
   </channel>
 </rss>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
+<meta name="description" content="TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
+The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!" />
+<meta name="keywords" content="compilers, systems, the web" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://charlycst.github.io/posts/tla-cli/" />
+
+
+    <title>
+        
+            CharlyCst 
+        
+    </title>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+
+
+
+
+<meta itemprop="name" content="Using the TLA⁺ Command Line Interface">
+<meta itemprop="description" content="TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
+The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!"><meta itemprop="datePublished" content="2021-09-12T10:41:19+02:00" />
+<meta itemprop="dateModified" content="2021-09-12T10:41:19+02:00" />
+<meta itemprop="wordCount" content="791"><meta itemprop="image" content="https://charlycst.github.io"/>
+<meta itemprop="keywords" content="cli," /><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://charlycst.github.io"/>
+
+<meta name="twitter:title" content="Using the TLA⁺ Command Line Interface"/>
+<meta name="twitter:description" content="TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
+The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!"/>
+
+
+
+
+
+    <meta property="article:published_time" content="2021-09-12 10:41:19 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">cd ~</span>
+            
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>4 minutes
+
+            
+
+            </p>
+        </div>
+
+        <article>
+            <h1 class="post-title">
+                <a href="https://charlycst.github.io/posts/tla-cli/">Using the TLA⁺ Command Line Interface</a>
+            </h1>
+
+            
+
+            <div class="post-content">
+                <p><a href="https://lamport.azurewebsites.net/tla/tla.html">TLA⁺</a> is a formal language for
+modelling concurrent and distributed systems in the form of a mathematical
+specification. TLA⁺ is often used with a set of tools, such as the TLC model
+checker, distributed with the official TLA⁺ IDE: the <a href="https://lamport.azurewebsites.net/tla/toolbox.html">TLA⁺
+toolbox</a>.</p>
+<p>The toolbox is fine, but I personally prefer to edit my specifications using my
+favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools
+from the command line is quite simple yet not very well documented, that&rsquo;s why I
+decided to write down my process for using TLA⁺ outside of the toolbox, hope it
+helps!</p>
+<h2 id="downloading-the-tools">Downloading the tools</h2>
+<p>The tools are developed on Github and written in Java, each release consists in
+a few assets such as OS specific versions of the toolbox but also contains a
+standalone version of the tools in the form of the <code>tla2tools.jar</code> file. To
+download the tools simply grab the last <code>tla2tools.jar</code> on the <a href="https://github.com/tlaplus/tlaplus/releases">release
+page</a>. At the time of writing, the
+latest stable release is 1.7.1 and it can be downloaded with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://github.com/tlaplus/tlaplus/releases/download/v1.7.1/tla2tools.jar
+</code></pre></div><p>Next, you need a version of Java on your system, I&rsquo;m using java 11 and it works
+just fine. You can check your Java installation with <code>java --version</code>. Then
+running the tools is pretty simple:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">java -cp tla2tools.jar tlc2.TLC
+</code></pre></div><p>This should raise an error (<code>Missing input TLA+ module</code>) but you should also get
+the version of TLC (<code>TLC2 Version 2.16</code> in my case) so it&rsquo;s a good sign that the
+installation is working.</p>
+<h2 id="using-convenient-wrappers">Using convenient wrappers</h2>
+<p>For ease of use, I use small bash wrappers around the tools so that I can call
+<code>tlc</code> directly from command line. You can copy the following scripts and put
+them somewhere in your <code>$PATH</code> to do the same.</p>
+
+<div class="notices note" ><p>Don&rsquo;t forget to replace <code>&lt;/path/to/tla2tools.jar&gt;</code> by the real path of
+<code>tla2tools.jar</code>!</p>
+</div>
+
+<p>Here are the tools:</p>
+<h3 id="tlc">TLC</h3>
+<p>Used to check models. See the TLC section for an example of usage.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tlc2.TLC $@
+</code></pre></div><h3 id="tlatotex">TLAToTeX</h3>
+<p>Produces a <code>.tex</code> file from a TLA⁺ specification that can in turn be used to
+produce a PDF.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tla2tex.TLA $@
+</code></pre></div><h3 id="textotla">TeXToTLA</h3>
+<p>Given a <code>.tex</code> file containing some TLA⁺ in a <code>tla</code> environment, produces a new
+<code>.tex</code> file with code for rendering the specification. Rendering the final
+<code>.tex</code> requires having
+<a href="https://lamport.azurewebsites.net/tla/tlatex.sty"><code>tlatex.sty</code></a> in scope.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tla2tex.TeX $@
+</code></pre></div><h3 id="sany">SANY</h3>
+<p>A TLA⁺ parser that can report syntax errors in a spec.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tla2sany.SANY $@
+</code></pre></div><h2 id="the-tlc-model-checker">The TLC model checker</h2>
+<p>Working with TLC from the command line requires to create a few additional files
+that the toolbox usually generates automatically. Imagine you wan to specify a
+two bits clock, dump the following spec in a <code>Clock.tla</code> file (the name is
+important, TLC will complain otherwise):</p>
+<pre><code class="language-TLA" data-lang="TLA">---------------------- MODULE Clock ----------------------
+
+CONSTANT InitialValue
+
+VARIABLE clock
+
+Init == clock = InitialValue
+Tick == IF clock = 0 THEN clock' = 1 ELSE clock' = 0
+
+IsValid == clock \in {0, 1}
+Spec    == Init /\ [][Tick]_&lt;&lt;clock&gt;&gt;
+
+==========================================================
+</code></pre><p>So nothing too fancy here, we describe a clock that can take two values: 0
+and 1. When doing model checking, we want to give a concrete value to the
+<code>InitialValue</code> constant, we also want to tell TLC to check some properties such
+as <code>IsValid</code>.</p>
+<p>To do that we need another module, dump the following specification in a
+<code>ClockModel.tla</code> file:</p>
+<pre><code class="language-TLA" data-lang="TLA">------------------- MODULE ClockModel --------------------
+
+EXTENDS Clock
+
+InputInitialValue == 0
+PropertyIsValid   == []IsValid
+
+==========================================================
+</code></pre><p>This module extends the clock specification <code>Clock</code> (file name are important for
+this to work!) and defines two predicate. I like to prefix my predicate with
+<code>Input</code> or <code>Property</code> depending on what they represent. Here we defined an
+initial value and a temporal property.</p>
+<p>Then we need to tell TLC what are the inputs, properties and specifications to
+check, this is done using a last file <code>ClockModel.cfg</code> (once again, the name is
+important, it must be the same as the model filename with the <code>.cfg</code> extension
+instead of <code>.tla</code>).</p>
+<p>Copy the following in <code>ClockModel.cfg</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">CONSTANT InitialValue &lt;- InputInitialValue
+PROPERTY PropertyIsValid
+SPECIFICATION Spec
+</code></pre></div><p>This file tells TLC that the <code>InitialValue</code> constant must take the value
+<code>InputInitialValue</code> we defined in our model, that it has to check the
+<code>PropertyIsValid</code> temporal property and that specification is defined by the
+<code>Spec</code> predicate.</p>
+<p>And that&rsquo;s it, now we can check our model using TLC:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">tlc ClockModel.tla
+</code></pre></div><p>Which should return without error.</p>
+
+<div class="notices info" ><p>If your model is expected to reach some terminal state, pass the <code>-deadlock</code>
+flag to TLC so that deadlocks are no longer considered as bugs.</p>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope this was helpful, you can also find some documentation
+<a href="https://lamport.azurewebsites.net/tla/toolbox.html">here</a> or with the <code>-help</code>
+flag for most tools. Feel free to report issues or corrections
+<a href="https://github.com/CharlyCst/CharlyCst.github.io">here</a> and enjoy writing TLA⁺
+specs outside of the toolbox!</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/cli">cli</a></span>
+                </p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>791 Words</p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-09-12</p>
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h"></span>
+                    <hr />
+                </div>
+
+                <div class="pagination__buttons">
+                    
+
+                    
+                        <span class="button next">
+                            <a href="https://charlycst.github.io/posts/jit-ing-rust/">
+                                <span class="button__text">Compiling Rust Just-In-Time, the easy way</span>
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    
+                </div>
+            </div>
+        
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2021</span>
+            
+                <span><a href="https://charlycst.github.io">Charly Castes</a></span>
+            
+            
+            <span> <a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-156991616-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+
+
+    </body>
+</html>

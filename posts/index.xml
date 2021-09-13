@@ -5,8 +5,140 @@
         <description>Recent content in Posts on CharlyCst</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 27 Mar 2021 10:52:44 +0100</lastBuildDate>
+        <lastBuildDate>Sun, 12 Sep 2021 10:41:19 +0200</lastBuildDate>
         <atom:link href="https://charlycst.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Using the TLA⁺ Command Line Interface</title>
+            <link>https://charlycst.github.io/posts/tla-cli/</link>
+            <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>
+            
+            <guid>https://charlycst.github.io/posts/tla-cli/</guid>
+            <description>TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
+The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!</description>
+            <content type="html"><![CDATA[<p><a href="https://lamport.azurewebsites.net/tla/tla.html">TLA⁺</a> is a formal language for
+modelling concurrent and distributed systems in the form of a mathematical
+specification. TLA⁺ is often used with a set of tools, such as the TLC model
+checker, distributed with the official TLA⁺ IDE: the <a href="https://lamport.azurewebsites.net/tla/toolbox.html">TLA⁺
+toolbox</a>.</p>
+<p>The toolbox is fine, but I personally prefer to edit my specifications using my
+favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools
+from the command line is quite simple yet not very well documented, that&rsquo;s why I
+decided to write down my process for using TLA⁺ outside of the toolbox, hope it
+helps!</p>
+<h2 id="downloading-the-tools">Downloading the tools</h2>
+<p>The tools are developed on Github and written in Java, each release consists in
+a few assets such as OS specific versions of the toolbox but also contains a
+standalone version of the tools in the form of the <code>tla2tools.jar</code> file. To
+download the tools simply grab the last <code>tla2tools.jar</code> on the <a href="https://github.com/tlaplus/tlaplus/releases">release
+page</a>. At the time of writing, the
+latest stable release is 1.7.1 and it can be downloaded with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://github.com/tlaplus/tlaplus/releases/download/v1.7.1/tla2tools.jar
+</code></pre></div><p>Next, you need a version of Java on your system, I&rsquo;m using java 11 and it works
+just fine. You can check your Java installation with <code>java --version</code>. Then
+running the tools is pretty simple:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">java -cp tla2tools.jar tlc2.TLC
+</code></pre></div><p>This should raise an error (<code>Missing input TLA+ module</code>) but you should also get
+the version of TLC (<code>TLC2 Version 2.16</code> in my case) so it&rsquo;s a good sign that the
+installation is working.</p>
+<h2 id="using-convenient-wrappers">Using convenient wrappers</h2>
+<p>For ease of use, I use small bash wrappers around the tools so that I can call
+<code>tlc</code> directly from command line. You can copy the following scripts and put
+them somewhere in your <code>$PATH</code> to do the same.</p>
+
+<div class="notices note" ><p>Don&rsquo;t forget to replace <code>&lt;/path/to/tla2tools.jar&gt;</code> by the real path of
+<code>tla2tools.jar</code>!</p>
+</div>
+
+<p>Here are the tools:</p>
+<h3 id="tlc">TLC</h3>
+<p>Used to check models. See the TLC section for an example of usage.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tlc2.TLC $@
+</code></pre></div><h3 id="tlatotex">TLAToTeX</h3>
+<p>Produces a <code>.tex</code> file from a TLA⁺ specification that can in turn be used to
+produce a PDF.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tla2tex.TLA $@
+</code></pre></div><h3 id="textotla">TeXToTLA</h3>
+<p>Given a <code>.tex</code> file containing some TLA⁺ in a <code>tla</code> environment, produces a new
+<code>.tex</code> file with code for rendering the specification. Rendering the final
+<code>.tex</code> requires having
+<a href="https://lamport.azurewebsites.net/tla/tlatex.sty"><code>tlatex.sty</code></a> in scope.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tla2tex.TeX $@
+</code></pre></div><h3 id="sany">SANY</h3>
+<p>A TLA⁺ parser that can report syntax errors in a spec.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/usr/bin/env bash
+</span><span style="color:#75715e"></span>
+java -cp &lt;/path/to/tla2tools.jar&gt; tla2sany.SANY $@
+</code></pre></div><h2 id="the-tlc-model-checker">The TLC model checker</h2>
+<p>Working with TLC from the command line requires to create a few additional files
+that the toolbox usually generates automatically. Imagine you wan to specify a
+two bits clock, dump the following spec in a <code>Clock.tla</code> file (the name is
+important, TLC will complain otherwise):</p>
+<pre><code class="language-TLA" data-lang="TLA">---------------------- MODULE Clock ----------------------
+
+CONSTANT InitialValue
+
+VARIABLE clock
+
+Init == clock = InitialValue
+Tick == IF clock = 0 THEN clock' = 1 ELSE clock' = 0
+
+IsValid == clock \in {0, 1}
+Spec    == Init /\ [][Tick]_&lt;&lt;clock&gt;&gt;
+
+==========================================================
+</code></pre><p>So nothing too fancy here, we describe a clock that can take two values: 0
+and 1. When doing model checking, we want to give a concrete value to the
+<code>InitialValue</code> constant, we also want to tell TLC to check some properties such
+as <code>IsValid</code>.</p>
+<p>To do that we need another module, dump the following specification in a
+<code>ClockModel.tla</code> file:</p>
+<pre><code class="language-TLA" data-lang="TLA">------------------- MODULE ClockModel --------------------
+
+EXTENDS Clock
+
+InputInitialValue == 0
+PropertyIsValid   == []IsValid
+
+==========================================================
+</code></pre><p>This module extends the clock specification <code>Clock</code> (file name are important for
+this to work!) and defines two predicate. I like to prefix my predicate with
+<code>Input</code> or <code>Property</code> depending on what they represent. Here we defined an
+initial value and a temporal property.</p>
+<p>Then we need to tell TLC what are the inputs, properties and specifications to
+check, this is done using a last file <code>ClockModel.cfg</code> (once again, the name is
+important, it must be the same as the model filename with the <code>.cfg</code> extension
+instead of <code>.tla</code>).</p>
+<p>Copy the following in <code>ClockModel.cfg</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">CONSTANT InitialValue &lt;- InputInitialValue
+PROPERTY PropertyIsValid
+SPECIFICATION Spec
+</code></pre></div><p>This file tells TLC that the <code>InitialValue</code> constant must take the value
+<code>InputInitialValue</code> we defined in our model, that it has to check the
+<code>PropertyIsValid</code> temporal property and that specification is defined by the
+<code>Spec</code> predicate.</p>
+<p>And that&rsquo;s it, now we can check our model using TLC:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">tlc ClockModel.tla
+</code></pre></div><p>Which should return without error.</p>
+
+<div class="notices info" ><p>If your model is expected to reach some terminal state, pass the <code>-deadlock</code>
+flag to TLC so that deadlocks are no longer considered as bugs.</p>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope this was helpful, you can also find some documentation
+<a href="https://lamport.azurewebsites.net/tla/toolbox.html">here</a> or with the <code>-help</code>
+flag for most tools. Feel free to report issues or corrections
+<a href="https://github.com/CharlyCst/CharlyCst.github.io">here</a> and enjoy writing TLA⁺
+specs outside of the toolbox!</p>
+]]></content>
+        </item>
         
         <item>
             <title>Compiling Rust Just-In-Time, the easy way</title>

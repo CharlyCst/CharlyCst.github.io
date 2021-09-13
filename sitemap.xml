@@ -1,114 +1,70 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://charlycst.github.io/</loc>
     <lastmod>2021-03-27T10:52:44+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/jit-ing-rust/</loc>
     <lastmod>2021-03-27T10:52:44+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/</loc>
     <lastmod>2021-03-27T10:52:44+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/rust/</loc>
     <lastmod>2021-03-27T10:52:44+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/</loc>
     <lastmod>2021-03-27T10:52:44+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/wasm-memory-allocator/</loc>
     <lastmod>2020-12-21T10:03:08+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/wasm/</loc>
     <lastmod>2020-12-21T10:03:08+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/cli/</loc>
     <lastmod>2020-10-16T19:10:59+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/introducing-parrot/</loc>
     <lastmod>2020-10-16T19:10:59+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/wasm-encoding/</loc>
     <lastmod>2020-06-12T08:00:00+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/algorithm/</loc>
     <lastmod>2020-03-28T21:01:09+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</loc>
     <lastmod>2020-03-28T21:01:09+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/reinforcement-learning/</loc>
     <lastmod>2020-03-28T21:01:09+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/mpk/</loc>
     <lastmod>2020-02-29T12:21:24+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/go/</loc>
     <lastmod>2020-02-29T12:21:24+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/profiling/</loc>
     <lastmod>2020-02-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/speeding-up-pattern-matching/</loc>
     <lastmod>2020-02-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/posts/micro-react/</loc>
     <lastmod>2020-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/react/</loc>
     <lastmod>2020-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/tags/web/</loc>
     <lastmod>2020-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/projects/</loc>
     <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://charlycst.github.io/categories/</loc>
   </url>
-  
 </urlset>

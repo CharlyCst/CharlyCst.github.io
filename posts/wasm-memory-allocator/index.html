@@ -25,21 +25,16 @@ Building an efficient allocator is notoriously hard, as testifies the popular je
 
 
 
-<link rel="stylesheet" href="/main.min.4a2a71572e71ebf320eecf3713d13c1adf0dbb4e0e8d6675bfd10ee52cb68272.css">
+<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
 
 
 
 
 <meta itemprop="name" content="Building a Memory Allocator for WebAssembly">
 <meta itemprop="description" content="While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.
-Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes.">
-<meta itemprop="datePublished" content="2020-12-21T10:03:08&#43;01:00" />
-<meta itemprop="dateModified" content="2020-12-21T10:03:08&#43;01:00" />
-<meta itemprop="wordCount" content="2653">
-<meta itemprop="image" content="https://charlycst.github.io"/>
-
-
-
+Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes."><meta itemprop="datePublished" content="2020-12-21T10:03:08+01:00" />
+<meta itemprop="dateModified" content="2020-12-21T10:03:08+01:00" />
+<meta itemprop="wordCount" content="2653"><meta itemprop="image" content="https://charlycst.github.io"/>
 <meta itemprop="keywords" content="Wasm," /><meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://charlycst.github.io"/>
 
@@ -147,10 +142,10 @@ The header is used to store meta-data: the block size and sometimes a few flags,
 <p>The allocator algorithm can be summarized in a few lines:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">malloc</span>(size):
     <span style="color:#66d9ef">for</span> block <span style="color:#f92672">in</span> block_list:
-        <span style="color:#66d9ef">if</span> block<span style="color:#f92672">.</span>size <span style="color:#f92672">&gt;</span><span style="color:#f92672">=</span> size:
+        <span style="color:#66d9ef">if</span> block<span style="color:#f92672">.</span>size <span style="color:#f92672">&gt;=</span> size:
             list<span style="color:#f92672">.</span>remove(block)
             <span style="color:#66d9ef">return</span> block
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Out of memory</span><span style="color:#e6db74">&#34;</span>)
+    print(<span style="color:#e6db74">&#34;Out of memory&#34;</span>)
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">free</span>(block):
     list<span style="color:#f92672">.</span>append(block)
@@ -443,7 +438,7 @@ That&rsquo;s why LLVM for instance uses a <em>shadow stack</em>, it&rsquo;s basi
 
 
 
-<script type="text/javascript" src="/bundle.min.73fdcf1c4d2f69bbb293698d9e06eb1a64462866572512816d494a89a50065dfc3cf57e60e0e96bfd04bc393808dd65c1a6632e6e713e6651eec21b8d1ac8a5b.js" integrity="sha512-c/3PHE0vabuyk2mNngbrGmRGKGZXJRKBbUlKiaUAZd/Dz1fmDg6Wv9BLw5OAjdZcGmYy5ucT5mUe7CG40ayKWw=="></script>
+<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
 <meta name="description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!" />
-<meta name="keywords" content="compilers, systems, the web" />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
 <link rel="canonical" href="https://charlycst.github.io/posts/mpk/" />
@@ -24,7 +24,7 @@
 
 
 
-<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+<link rel="stylesheet" href="/main.min.45ddf772e5691aee8d420f6ca9e691994528f081e5304a2779afb44e80cf1047.css">
 
 
 
@@ -32,7 +32,7 @@
 <meta itemprop="name" content="Diving into Intel MPK">
 <meta itemprop="description" content="Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&rsquo;s dive into it!"><meta itemprop="datePublished" content="2020-02-29T12:21:24+01:00" />
 <meta itemprop="dateModified" content="2020-02-29T12:21:24+01:00" />
-<meta itemprop="wordCount" content="2155"><meta itemprop="image" content="https://charlycst.github.io"/>
+<meta itemprop="wordCount" content="2159"><meta itemprop="image" content="https://charlycst.github.io"/>
 <meta itemprop="keywords" content="Go," /><meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://charlycst.github.io"/>
 
@@ -72,7 +72,7 @@
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
     </ul>
 </nav>
 
@@ -119,10 +119,10 @@
 <h2 id="what-is-intel-mpk">What is Intel MPK?</h2>
 <p>MPK (also referred as <em>PKU</em> for <em>Protection Keys for Userspace</em>) is a <em>userspace</em> hardware mechanism to control page table permissions, it works by tagging memory pages with protection keys using 4 previously unused bits, in other words we can use up to 16 distinct keys to tag our pages.</p>
 <p>Once a page is tagged we can change its protection rights at will, <em>from userspace</em>. But, because updating page table entries (PTE) requires privileged access, a system call is still necessary to tag the pages with a given key in the first place. To allocate and free a key we also need to go through the kernel, on Linux the API is the following:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_alloc</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> flags, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> ini_access_rights);
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_free</span>(<span style="color:#66d9ef">int</span> pkey);
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_mprotect</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> start, size_t len, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> protection, <span style="color:#66d9ef">int</span> pkey);
-</code></pre></div><p><code>pkey_mprotect</code> is analog to the <code>mprotect</code> syscall, but takes an additional argument <em>pkey</em>: a key previously allocated through <code>pkey_alloc</code>. As I mentioned before there is only 16 keys available (the key 0 being already used as a default to tag newly allocated pages), thus allocation can fail. You can learn more on the Linux API <a href="http://www.man7.org/linux/man-pages/man7/pkeys.7.html">here</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_alloc</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> flags, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> ini_access_rights);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_free</span>(<span style="color:#66d9ef">int</span> pkey);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">pkey_mprotect</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> start, <span style="color:#66d9ef">size_t</span> len, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> protection, <span style="color:#66d9ef">int</span> pkey);
+</span></span></code></pre></div><p><code>pkey_mprotect</code> is analog to the <code>mprotect</code> syscall, but takes an additional argument <em>pkey</em>: a key previously allocated through <code>pkey_alloc</code>. As I mentioned before there is only 16 keys available (the key 0 being already used as a default to tag newly allocated pages), thus allocation can fail. You can learn more on the Linux API <a href="http://www.man7.org/linux/man-pages/man7/pkeys.7.html">here</a>.</p>
 <p>The rights associated with each key are stored inside a new 32 bits register called <code>PKRU</code>, it can be read and written respectively by the new instructions <code>RDPKRU</code> and <code>WRPKRU</code>. According to the <a href="https://software.intel.com/sites/default/files/managed/39/c5/325462-sdm-vol-1-2abcd-3abcd.pdf">x86_64 Intel manual</a>, <code>RDPKRU</code> and <code>WRPKRU</code> can be used as follows:</p>
 <ul>
 <li><strong>WRPKRU</strong>: Writes the value of <code>EAX</code> inside <code>PKRU</code>, <code>ECX</code> and <code>EDX</code> must contain 0 when executed.</li>
@@ -156,69 +156,69 @@
 <p>At the time of writing, MPK is not yet widely available, I used an AWS EC2 c5.large instance to run the following code.</p>
 <h3 id="syscalls">Syscalls</h3>
 <p>Let&rsquo;s start with the 3 system calls, unfortunately I couldn&rsquo;t find them in the <code>sys/unix</code> module, so let&rsquo;s just use the Syscall functions from <code>syscall</code> module:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Syscall</span>(<span style="color:#a6e22e">trap</span>, <span style="color:#a6e22e">a1</span>, <span style="color:#a6e22e">a2</span>, <span style="color:#a6e22e">a3</span> <span style="color:#66d9ef">uintptr</span>) (<span style="color:#a6e22e">r1</span>, <span style="color:#a6e22e">r2</span> <span style="color:#66d9ef">uintptr</span>, <span style="color:#a6e22e">err</span> <span style="color:#a6e22e">Errno</span>)
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Syscall6</span>(<span style="color:#a6e22e">trap</span>, <span style="color:#a6e22e">a1</span>, <span style="color:#a6e22e">a2</span>, <span style="color:#a6e22e">a3</span>, <span style="color:#a6e22e">a4</span>, <span style="color:#a6e22e">a5</span>, <span style="color:#a6e22e">a6</span> <span style="color:#66d9ef">uintptr</span>) (<span style="color:#a6e22e">r1</span>, <span style="color:#a6e22e">r2</span> <span style="color:#66d9ef">uintptr</span>, <span style="color:#a6e22e">err</span> <span style="color:#a6e22e">Errno</span>)
-</code></pre></div><p>The <em>trap</em> parameter is the syscall signal number, we are interested in those:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> (
-	<span style="color:#a6e22e">sysPkeyMprotect</span> = <span style="color:#ae81ff">329</span>
-	<span style="color:#a6e22e">sysPkeyAlloc</span>    = <span style="color:#ae81ff">330</span>
-	<span style="color:#a6e22e">sysPkeyFree</span>     = <span style="color:#ae81ff">331</span>
-)
-</code></pre></div><p>While <em>a1, a2, a3</em> are the arguments passed to the system call. Because <code>mpkey_mprotect</code> requires 4 arguments we will also need <code>Syscall6</code>, which is the same as <code>Syscall</code> with 3 extra arguments.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Syscall</span>(<span style="color:#a6e22e">trap</span>, <span style="color:#a6e22e">a1</span>, <span style="color:#a6e22e">a2</span>, <span style="color:#a6e22e">a3</span> <span style="color:#66d9ef">uintptr</span>) (<span style="color:#a6e22e">r1</span>, <span style="color:#a6e22e">r2</span> <span style="color:#66d9ef">uintptr</span>, <span style="color:#a6e22e">err</span> <span style="color:#a6e22e">Errno</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Syscall6</span>(<span style="color:#a6e22e">trap</span>, <span style="color:#a6e22e">a1</span>, <span style="color:#a6e22e">a2</span>, <span style="color:#a6e22e">a3</span>, <span style="color:#a6e22e">a4</span>, <span style="color:#a6e22e">a5</span>, <span style="color:#a6e22e">a6</span> <span style="color:#66d9ef">uintptr</span>) (<span style="color:#a6e22e">r1</span>, <span style="color:#a6e22e">r2</span> <span style="color:#66d9ef">uintptr</span>, <span style="color:#a6e22e">err</span> <span style="color:#a6e22e">Errno</span>)
+</span></span></code></pre></div><p>The <em>trap</em> parameter is the syscall signal number, we are interested in those:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sysPkeyMprotect</span> = <span style="color:#ae81ff">329</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sysPkeyAlloc</span>    = <span style="color:#ae81ff">330</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sysPkeyFree</span>     = <span style="color:#ae81ff">331</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>While <em>a1, a2, a3</em> are the arguments passed to the system call. Because <code>mpkey_mprotect</code> requires 4 arguments we will also need <code>Syscall6</code>, which is the same as <code>Syscall</code> with 3 extra arguments.</p>
 <p>With a little help from the <a href="http://man7.org/linux/man-pages/man7/pkeys.7.html">linux doc</a>, it&rsquo;s quite easy to write go wrapper.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Pkey</span>    <span style="color:#66d9ef">int</span>
-<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Prot</span>    <span style="color:#66d9ef">uint32</span>
-<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SysProt</span> <span style="color:#66d9ef">int</span>
-
-<span style="color:#75715e">// PkeyAlloc allocates a new pkey
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PkeyAlloc</span>() (<span style="color:#a6e22e">Pkey</span>, <span style="color:#66d9ef">error</span>) {
-	<span style="color:#a6e22e">pkey</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">Syscall</span>(<span style="color:#a6e22e">sysPkeyAlloc</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
-	<span style="color:#66d9ef">if</span> int(<span style="color:#a6e22e">pkey</span>) &lt; <span style="color:#ae81ff">0</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Pkey</span>(<span style="color:#a6e22e">pkey</span>), <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Failled to allocate pkey&#34;</span>)
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Pkey</span>(<span style="color:#a6e22e">pkey</span>), <span style="color:#66d9ef">nil</span>
-}
-
-<span style="color:#75715e">// PkeyFree frees a pkey previously allocated
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PkeyFree</span>(<span style="color:#a6e22e">pkey</span> <span style="color:#a6e22e">Pkey</span>) <span style="color:#66d9ef">error</span> {
-	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">Syscall</span>(<span style="color:#a6e22e">sysPkeyFree</span>, uintptr(<span style="color:#a6e22e">pkey</span>), <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Could not free pkey&#34;</span>)
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
-}
-
-<span style="color:#75715e">// PkeyMprotect tags pages within [addr, addr + len -1] with the given pkey.
-</span><span style="color:#75715e">// Permission on page table can also be updated at the same time.
-</span><span style="color:#75715e">// Note that addr must be aligned to a page boundary.
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PkeyMprotect</span>(<span style="color:#a6e22e">addr</span> <span style="color:#66d9ef">uintptr</span>, <span style="color:#a6e22e">len</span> <span style="color:#66d9ef">uint64</span>, <span style="color:#a6e22e">sysProt</span> <span style="color:#a6e22e">SysProt</span>, <span style="color:#a6e22e">pkey</span> <span style="color:#a6e22e">Pkey</span>) <span style="color:#66d9ef">error</span> {
-	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">Syscall6</span>(<span style="color:#a6e22e">sysPkeyMprotect</span>, <span style="color:#a6e22e">addr</span>, uintptr(<span style="color:#a6e22e">len</span>), uintptr(<span style="color:#a6e22e">sysProt</span>), uintptr(<span style="color:#a6e22e">pkey</span>), <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Could not update memory access rights&#34;</span>)
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
-}
-</code></pre></div><h3 id="messing-up-with-pkru">Messing up with PKRU</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Pkey</span>    <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Prot</span>    <span style="color:#66d9ef">uint32</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SysProt</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// PkeyAlloc allocates a new pkey
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PkeyAlloc</span>() (<span style="color:#a6e22e">Pkey</span>, <span style="color:#66d9ef">error</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkey</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">Syscall</span>(<span style="color:#a6e22e">sysPkeyAlloc</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> int(<span style="color:#a6e22e">pkey</span>) &lt; <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Pkey</span>(<span style="color:#a6e22e">pkey</span>), <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Failled to allocate pkey&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Pkey</span>(<span style="color:#a6e22e">pkey</span>), <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// PkeyFree frees a pkey previously allocated
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PkeyFree</span>(<span style="color:#a6e22e">pkey</span> <span style="color:#a6e22e">Pkey</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">Syscall</span>(<span style="color:#a6e22e">sysPkeyFree</span>, uintptr(<span style="color:#a6e22e">pkey</span>), <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Could not free pkey&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// PkeyMprotect tags pages within [addr, addr + len -1] with the given pkey.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Permission on page table can also be updated at the same time.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Note that addr must be aligned to a page boundary.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PkeyMprotect</span>(<span style="color:#a6e22e">addr</span> <span style="color:#66d9ef">uintptr</span>, <span style="color:#a6e22e">len</span> <span style="color:#66d9ef">uint64</span>, <span style="color:#a6e22e">sysProt</span> <span style="color:#a6e22e">SysProt</span>, <span style="color:#a6e22e">pkey</span> <span style="color:#a6e22e">Pkey</span>) <span style="color:#66d9ef">error</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">result</span>, <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">Syscall6</span>(<span style="color:#a6e22e">sysPkeyMprotect</span>, <span style="color:#a6e22e">addr</span>, uintptr(<span style="color:#a6e22e">len</span>), uintptr(<span style="color:#a6e22e">sysProt</span>), uintptr(<span style="color:#a6e22e">pkey</span>), <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Could not update memory access rights&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="messing-up-with-pkru">Messing up with PKRU</h3>
 <p>System calls are cool, but what is even cooler is to stay in userspace. Now we need to update the <code>PKRU</code> register, there are two amd64 instructions for that, let&rsquo;s roll up our sleeves and write some assembly!</p>
 <p>First we define the function signature in plain go:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PKRU</span> <span style="color:#66d9ef">uint32</span>
-
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WritePKRU</span>(<span style="color:#a6e22e">prot</span> <span style="color:#a6e22e">PKRU</span>)
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ReadPKRU</span>() <span style="color:#a6e22e">PKRU</span>
-</code></pre></div><p>And then we have to write some assembly. Recall that we need to set <code>ECX</code> and <code>EDX</code> to zero before calling <code>WRPKRU</code>, while <code>RDPKRU</code> only requires to set <code>ECX</code> to zero.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">TEXT</span> <span style="color:#960050;background-color:#1e0010">·</span><span style="color:#a6e22e">WritePKRU</span>(<span style="color:#a6e22e">SB</span>),<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>
-	<span style="color:#a6e22e">MOVQ</span> <span style="color:#a6e22e">prot</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0</span>(<span style="color:#a6e22e">FP</span>), <span style="color:#a6e22e">AX</span> <span style="color:#75715e">// Mov the argument to AX
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">CX</span>, <span style="color:#a6e22e">CX</span>         <span style="color:#75715e">// Set CX to 0
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">DX</span>, <span style="color:#a6e22e">DX</span>
-   	<span style="color:#a6e22e">WRPKRU</span>              <span style="color:#75715e">// Write AX to PKRU
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">RET</span>
-
-<span style="color:#a6e22e">TEXT</span> <span style="color:#960050;background-color:#1e0010">·</span><span style="color:#a6e22e">ReadPKRU</span>(<span style="color:#a6e22e">SB</span>),<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>
-	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">CX</span>, <span style="color:#a6e22e">CX</span>
-	<span style="color:#a6e22e">RDPKRU</span>
-	<span style="color:#a6e22e">MOVQ</span> <span style="color:#a6e22e">AX</span>, <span style="color:#a6e22e">ret</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0</span>(<span style="color:#a6e22e">FP</span>)  <span style="color:#75715e">// Mov AX to the address of returned value
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">RET</span>
-</code></pre></div><p>And that is it! We have got everything we need to start using MPK in Go. I don&rsquo;t really want to manipulate bits to update rights of each key, however. Let&rsquo;s make our life simpler and write a short helper function.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">PKRU</span> <span style="color:#66d9ef">uint32</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WritePKRU</span>(<span style="color:#a6e22e">prot</span> <span style="color:#a6e22e">PKRU</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ReadPKRU</span>() <span style="color:#a6e22e">PKRU</span>
+</span></span></code></pre></div><p>And then we have to write some assembly. Recall that we need to set <code>ECX</code> and <code>EDX</code> to zero before calling <code>WRPKRU</code>, while <code>RDPKRU</code> only requires to set <code>ECX</code> to zero.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">TEXT</span> <span style="color:#960050;background-color:#1e0010">·</span><span style="color:#a6e22e">WritePKRU</span>(<span style="color:#a6e22e">SB</span>),<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MOVQ</span> <span style="color:#a6e22e">prot</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0</span>(<span style="color:#a6e22e">FP</span>), <span style="color:#a6e22e">AX</span> <span style="color:#75715e">// Mov the argument to AX
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">CX</span>, <span style="color:#a6e22e">CX</span>         <span style="color:#75715e">// Set CX to 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">DX</span>, <span style="color:#a6e22e">DX</span>
+</span></span><span style="display:flex;"><span>   	<span style="color:#a6e22e">WRPKRU</span>              <span style="color:#75715e">// Write AX to PKRU
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">RET</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">TEXT</span> <span style="color:#960050;background-color:#1e0010">·</span><span style="color:#a6e22e">ReadPKRU</span>(<span style="color:#a6e22e">SB</span>),<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">XORQ</span> <span style="color:#a6e22e">CX</span>, <span style="color:#a6e22e">CX</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">RDPKRU</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">MOVQ</span> <span style="color:#a6e22e">AX</span>, <span style="color:#a6e22e">ret</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0</span>(<span style="color:#a6e22e">FP</span>)  <span style="color:#75715e">// Mov AX to the address of returned value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">RET</span>
+</span></span></code></pre></div><p>And that is it! We have got everything we need to start using MPK in Go. I don&rsquo;t really want to manipulate bits to update rights of each key, however. Let&rsquo;s make our life simpler and write a short helper function.</p>
 <p>There are three possible protections for each key:</p>
 <ul>
 <li>RWX when the two bits are set to 0</li>
@@ -226,68 +226,68 @@
 <li>X when all access are disabled (bit 2i set to 1)</li>
 </ul>
 <p>We can manipulate these protections by defining some constants to represent the corresponding bits:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> (
-	<span style="color:#a6e22e">ProtRWX</span> <span style="color:#a6e22e">Prot</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">b00</span>
-	<span style="color:#a6e22e">ProtRX</span>  <span style="color:#a6e22e">Prot</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">b10</span>
-	<span style="color:#a6e22e">ProtX</span>   <span style="color:#a6e22e">Prot</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">b11</span>
-)
-</code></pre></div><p>We often want to update the permission for only one key at a time. We can easily do that by setting the two bits corresponding to that key to 0, and then setting them to the value corresponding to the desired protection.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ProtRWX</span> <span style="color:#a6e22e">Prot</span> = <span style="color:#ae81ff">0b00</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ProtRX</span>  <span style="color:#a6e22e">Prot</span> = <span style="color:#ae81ff">0b10</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">ProtX</span>   <span style="color:#a6e22e">Prot</span> = <span style="color:#ae81ff">0b11</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>We often want to update the permission for only one key at a time. We can easily do that by setting the two bits corresponding to that key to 0, and then setting them to the value corresponding to the desired protection.</p>
 <p>Let&rsquo;s say we want to set protection of key i to RX, first we create a mask full of one except for bit 2i and 2i + 1, apply it to the pkru value with a bitwise and <code>&amp;</code>, then shift the protection bits (1, 0) by 2i bits to the left and add them to the pkru.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mask</span> <span style="color:#66d9ef">uint32</span> = <span style="color:#ae81ff">0xfffffff</span>
-
-<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">PKRU</span>) <span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">pkey</span> <span style="color:#a6e22e">Pkey</span>, <span style="color:#a6e22e">prot</span> <span style="color:#a6e22e">Prot</span>) <span style="color:#a6e22e">PKRU</span> {
-	<span style="color:#a6e22e">pkeyMask</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mask</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">pkey</span>)) <span style="color:#f92672">-</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">pkey</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))
-	<span style="color:#a6e22e">pkru</span> <span style="color:#f92672">:=</span> uint32(<span style="color:#a6e22e">p</span>) <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">pkeyMask</span>
-	<span style="color:#a6e22e">pkru</span> <span style="color:#f92672">+=</span> uint32(<span style="color:#a6e22e">prot</span>) <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">pkey</span>)
-
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">PKRU</span>(<span style="color:#a6e22e">pkru</span>)
-}
-</code></pre></div><h3 id="using-mpk-for-real">Using MPK, for real</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mask</span> <span style="color:#66d9ef">uint32</span> = <span style="color:#ae81ff">0xfffffff</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">PKRU</span>) <span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">pkey</span> <span style="color:#a6e22e">Pkey</span>, <span style="color:#a6e22e">prot</span> <span style="color:#a6e22e">Prot</span>) <span style="color:#a6e22e">PKRU</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkeyMask</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mask</span> <span style="color:#f92672">-</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">pkey</span>)) <span style="color:#f92672">-</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">pkey</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkru</span> <span style="color:#f92672">:=</span> uint32(<span style="color:#a6e22e">p</span>) <span style="color:#f92672">&amp;</span> <span style="color:#a6e22e">pkeyMask</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">pkru</span> <span style="color:#f92672">+=</span> uint32(<span style="color:#a6e22e">prot</span>) <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">pkey</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">PKRU</span>(<span style="color:#a6e22e">pkru</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="using-mpk-for-real">Using MPK, for real</h3>
 <p>Time to do a demo! As I said before, using MPK in Go is usually a bad idea, yet let&rsquo;s try to do it anyway.</p>
 <p>First we want to allocate something on its own page, we can allocate a huge array and hope that the runtime will allocates a few new pages to store it. Then we allocate a key with our brand new MPK module and tag the page containing the first item of the array with that key.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// Allocate an array
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10000</span>)
-
-<span style="color:#75715e">// Allocate a key
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">pkey</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">PkeyAlloc</span>()
-<span style="color:#a6e22e">check</span>(<span style="color:#a6e22e">err</span>)
-
-<span style="color:#75715e">// Tag the page containing `a[0]` with our key
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">PkeyMprotect</span>(
-	(uintptr(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>]))<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">12</span>)<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">12</span>, <span style="color:#75715e">// Align pointer to page
-</span><span style="color:#75715e"></span>	<span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">12</span>,          <span style="color:#75715e">// Page size
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">SysProtRWX</span>, <span style="color:#75715e">// Base protection
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pkey</span>,           <span style="color:#75715e">// Key
-</span><span style="color:#75715e"></span>)
-</code></pre></div><p>When calling <code>pkey_mprotect</code>, we need to ensure that the pointer we pass as argument is aligned with a page boundary. One way to do it is to shift the pointer to the right by 12 bits (the page size is 4096 = 2¹² on my system) and then back to the left by 12 bits.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Allocate an array
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10000</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Allocate a key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">pkey</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">PkeyAlloc</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">check</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Tag the page containing `a[0]` with our key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">PkeyMprotect</span>(
+</span></span><span style="display:flex;"><span>	(uintptr(<span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>]))<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">12</span>)<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">12</span>, <span style="color:#75715e">// Align pointer to page
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">12</span>,          <span style="color:#75715e">// Page size
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">SysProtRWX</span>, <span style="color:#75715e">// Base protection
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">pkey</span>,           <span style="color:#75715e">// Key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>)
+</span></span></code></pre></div><p>When calling <code>pkey_mprotect</code>, we need to ensure that the pointer we pass as argument is aligned with a page boundary. One way to do it is to shift the pointer to the right by 12 bits (the page size is 4096 = 2¹² on my system) and then back to the left by 12 bits.</p>
 <p>We then check that we can still read and write the first item of our array, it should be the case because we didn&rsquo;t update the value of <code>PKRU</code> yet.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Memory address of a[0]:  %p\n&#34;</span>, <span style="color:#a6e22e">a</span>)
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;The value inside a[0]:  &#34;</span>, <span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>])
-<span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>] = <span style="color:#ae81ff">1</span>
-</code></pre></div><p>Now let&rsquo;s update the value of <code>PKRU</code> to remove write access</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">pkru</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">AllRightsPKRU</span>
-<span style="color:#a6e22e">pkru</span> = <span style="color:#a6e22e">pkru</span>.<span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">pkey</span>, <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">ProtRX</span>)
-<span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">WritePKRU</span>(<span style="color:#a6e22e">pkru</span>)
-</code></pre></div><p>We should still be able to read</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;The value inside a[0]:  &#34;</span>, <span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>])
-</code></pre></div><p>However, the next write will rise an error</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>] = <span style="color:#ae81ff">2</span>
-</code></pre></div><p>here is the output I got:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Memory address of a<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:  0xc00007a000
-The value inside a<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:   <span style="color:#ae81ff">0</span>
-The value inside a<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:   <span style="color:#ae81ff">1</span>
-unexpected fault address 0xc00007a000
-fatal error: fault
-<span style="color:#f92672">[</span>signal SIGSEGV: segmentation violation code<span style="color:#f92672">=</span>0x4 addr<span style="color:#f92672">=</span>0xc00007a000 pc<span style="color:#f92672">=</span>0x48ef69<span style="color:#f92672">]</span>
-</code></pre></div><p>As expected, the execution triggered a segfault on the second write, after having removed write permission. We can check the error code (4) to verify the cause of the error, for instance in <a href="https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/siginfo.h">singinfo.h</a>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">/*
-</span><span style="color:#75715e"> * SIGSEGV si_codes
-</span><span style="color:#75715e"> */</span>
-<span style="color:#75715e">#define SEGV_MAPERR	1	</span><span style="color:#75715e">/* address not mapped to object */</span><span style="color:#75715e">
-</span><span style="color:#75715e">#define SEGV_ACCERR	2	</span><span style="color:#75715e">/* invalid permissions for mapped object */</span><span style="color:#75715e">
-</span><span style="color:#75715e">#define SEGV_BNDERR	3	</span><span style="color:#75715e">/* failed address bound checks */</span><span style="color:#75715e">
-</span><span style="color:#75715e">#define SEGV_PKUERR	4	</span><span style="color:#75715e">/* failed protection key checks */</span><span style="color:#75715e">
-</span></code></pre></div><p>It is indeed because the protection key check failed 🎉</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Memory address of a[0]:  %p\n&#34;</span>, <span style="color:#a6e22e">a</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;The value inside a[0]:  &#34;</span>, <span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>] = <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>Now let&rsquo;s update the value of <code>PKRU</code> to remove write access</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">pkru</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">AllRightsPKRU</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">pkru</span> = <span style="color:#a6e22e">pkru</span>.<span style="color:#a6e22e">Update</span>(<span style="color:#a6e22e">pkey</span>, <span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">ProtRX</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mpk</span>.<span style="color:#a6e22e">WritePKRU</span>(<span style="color:#a6e22e">pkru</span>)
+</span></span></code></pre></div><p>We should still be able to read</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;The value inside a[0]:  &#34;</span>, <span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>])
+</span></span></code></pre></div><p>However, the next write will rise an error</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">a</span>[<span style="color:#ae81ff">0</span>] = <span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><p>here is the output I got:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Memory address of a<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:  0xc00007a000
+</span></span><span style="display:flex;"><span>The value inside a<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:   <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>The value inside a<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:   <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>unexpected fault address 0xc00007a000
+</span></span><span style="display:flex;"><span>fatal error: fault
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>signal SIGSEGV: segmentation violation code<span style="color:#f92672">=</span>0x4 addr<span style="color:#f92672">=</span>0xc00007a000 pc<span style="color:#f92672">=</span>0x48ef69<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>As expected, the execution triggered a segfault on the second write, after having removed write permission. We can check the error code (4) to verify the cause of the error, for instance in <a href="https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/siginfo.h">singinfo.h</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * SIGSEGV si_codes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define SEGV_MAPERR	1	</span><span style="color:#75715e">/* address not mapped to object */</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define SEGV_ACCERR	2	</span><span style="color:#75715e">/* invalid permissions for mapped object */</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define SEGV_BNDERR	3	</span><span style="color:#75715e">/* failed address bound checks */</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define SEGV_PKUERR	4	</span><span style="color:#75715e">/* failed protection key checks */</span><span style="color:#75715e">
+</span></span></span></code></pre></div><p>It is indeed because the protection key check failed 🎉</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>It is already the end of this post, I hope you enjoyed it and learned a few things about Intel MPK!</p>
 <p>Here is a short recap of the key ideas:</p>
@@ -310,7 +310,7 @@ fatal error: fault
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/go">Go</a></span>
                 </p>
 
-            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2155 Words</p>
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2159 Words</p>
 
             <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-02-29</p>
         </div>
@@ -353,7 +353,7 @@ fatal error: fault
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2022</span>
+            <span>&copy; 2023</span>
             
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
@@ -371,7 +371,7 @@ fatal error: fault
 
 
 
-<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

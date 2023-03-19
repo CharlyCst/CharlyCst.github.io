@@ -13,7 +13,7 @@
       <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
       
       <guid>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</guid>
-      <description>function resizeIframe(obj) { setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 300); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 1000); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 5000); }  Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
+      <description>Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
     </item>
     
     <item>

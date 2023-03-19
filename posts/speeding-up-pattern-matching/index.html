@@ -7,7 +7,7 @@
 <meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
 <meta name="description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
 On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers." />
-<meta name="keywords" content="compilers, systems, the web" />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
 <link rel="canonical" href="https://charlycst.github.io/posts/speeding-up-pattern-matching/" />
@@ -25,7 +25,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 
 
 
-<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+<link rel="stylesheet" href="/main.min.45ddf772e5691aee8d420f6ca9e691994528f081e5304a2779afb44e80cf1047.css">
 
 
 
@@ -75,7 +75,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
     </ul>
 </nav>
 
@@ -122,16 +122,16 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 <p>On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers. After reading a few articles on performance improvement using Wasm (the acronym for WebAssembly), I decided to give it a try: could it speed up my Lambda function?</p>
 <h2 id="pattern-matching">Pattern matching</h2>
 <p>Before even talking about WebAssembly, let&rsquo;s dig a bit into the pattern searching problem: We are given a set of patterns and a string, and the goal is to find all patterns that appear in the string.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// Patterns
-</span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Charizard&#34;</span>, <span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>, <span style="color:#e6db74">&#34;Flamethrower&#34;</span>]
-
-<span style="color:#75715e">// The string
-</span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;Magikarp used Splash! But nothing happened.&#34;</span>
-<span style="color:#75715e">/* ^^^^^^^^      ^^^^^^                        */</span>
-
-<span style="color:#75715e">// Output
-</span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>]
-</code></pre></div><p>When looking for only one pattern the problem is simple: go through the string character per character and if the current one matches the first character of the pattern, then we compare the next caracter to the second of the pattern and so on. This can be represented using an automaton:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// Patterns
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Charizard&#34;</span>, <span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>, <span style="color:#e6db74">&#34;Flamethrower&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// The string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;Magikarp used Splash! But nothing happened.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* ^^^^^^^^      ^^^^^^                        */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Output
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>[<span style="color:#e6db74">&#34;Magikarp&#34;</span>, <span style="color:#e6db74">&#34;Splash&#34;</span>]
+</span></span></code></pre></div><p>When looking for only one pattern the problem is simple: go through the string character per character and if the current one matches the first character of the pattern, then we compare the next caracter to the second of the pattern and so on. This can be represented using an automaton:</p>
 
     <figure class="center" >
         <img src="/img/speedingUpPatternMatching/linearAutomaton.png"  alt="A linear automaton"   class="rounded"/>
@@ -174,27 +174,27 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 <p>In order to compare performances I needed to create a benchmark. I picked a little over 8,000 distinct random words from <a href="https://en.wikipedia.org/wiki/Les_Mis%C3%A9rables">Les Misérables</a>, a 68,000 lines long novel by <a href="https://en.wikipedia.org/wiki/Victor_Hugo">Victor Hugo</a>. The task is to find all occurrences of these 8,000 words in the whole novel.</p>
 <h3 id="a-failed-attempt">A failed attempt</h3>
 <p>I wrote a first version of Aho-Corasick in Rust using <a href="https://github.com/rustwasm/wasm-bindgen">wasm-bindgen</a> to generate glue code between JavaScript and WebAssembly.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[wasm_bindgen]</span>
-<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Matcher</span> {
-	...
-}
-
-<span style="color:#75715e">#[wasm_bindgen]</span>
-<span style="color:#66d9ef">impl</span> Matcher {
-    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>(words: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">js_sys</span>::Array) -&gt; <span style="color:#a6e22e">Matcher</span> {
-        ...
-    }
-
-    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: String) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
-        ...
-    }
-}
-</code></pre></div><p>I built a release build targeting Node.js</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wasm-pack build --release --target nodejs
-</code></pre></div><p>Then timed both je JavaScript and WebAssembly version:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">time NODE_ENV<span style="color:#f92672">=</span>production node wasm.js
-time NODE_ENV<span style="color:#f92672">=</span>production node js.js
-</code></pre></div><p>And surprise:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#75715e">#[wasm_bindgen]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Matcher</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#[wasm_bindgen]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> Matcher {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>(words: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">js_sys</span>::Array) -&gt; <span style="color:#a6e22e">Matcher</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: String) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I built a release build targeting Node.js</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wasm-pack build --release --target nodejs
+</span></span></code></pre></div><p>Then timed both je JavaScript and WebAssembly version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>time NODE_ENV<span style="color:#f92672">=</span>production node wasm.js
+</span></span><span style="display:flex;"><span>time NODE_ENV<span style="color:#f92672">=</span>production node js.js
+</span></span></code></pre></div><p>And surprise:</p>
 
     <figure class="center" >
         <img src="/img/speedingUpPatternMatching/firstComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
@@ -205,72 +205,72 @@ time NODE_ENV<span style="color:#f92672">=</span>production node js.js
 
 <p>It turned out that my Wasm version was 5 times slower. I sort of knew that I should have expected that, but still, I was somewhat disappointed.</p>
 <p>Before jumping on any conclusions it is often a good idea to check what really happens under the hood: V8 (and thus Node.js) has some good profiling tools built in, you can use them as follows:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># pass the `prof` option to Node.js</span>
-node --prof wasm.js
-
-<span style="color:#75715e"># This will generate a .log file, in my case isolate-0x49a1aa0-11836-v8.log</span>
-<span style="color:#75715e"># This file can be used to generate a profile:</span>
-node --prof-process isolate-0x49a1aa0-11836-v8.log
-</code></pre></div><p>Here is the summary for the JavaScript version:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
-   ticks  total  nonlib   name
-   <span style="color:#ae81ff">2236</span>   41.2%   95.6%  JavaScript
-    <span style="color:#ae81ff">103</span>    1.9%    4.4%  C++
-     <span style="color:#ae81ff">59</span>    1.1%    2.5%  GC
-   <span style="color:#ae81ff">3082</span>   56.9%          Shared libraries
-</code></pre></div><p>And the Wasm version:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
-   ticks  total  nonlib   name
-   <span style="color:#ae81ff">5949</span>   20.2%   37.0%  JavaScript
-   <span style="color:#ae81ff">9405</span>   32.0%   58.5%  C++
-   <span style="color:#ae81ff">1554</span>    5.3%    9.7%  GC
-  <span style="color:#ae81ff">13326</span>   45.3%          Shared libraries
-    <span style="color:#ae81ff">712</span>    2.4%          Unaccounted
-</code></pre></div><p>The JavaScript row accounts for both JavaScript and WebAssembly code, while Shared libraries accounts mostly for Node.js built-in functions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># pass the `prof` option to Node.js</span>
+</span></span><span style="display:flex;"><span>node --prof wasm.js
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># This will generate a .log file, in my case isolate-0x49a1aa0-11836-v8.log</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># This file can be used to generate a profile:</span>
+</span></span><span style="display:flex;"><span>node --prof-process isolate-0x49a1aa0-11836-v8.log
+</span></span></code></pre></div><p>Here is the summary for the JavaScript version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>   ticks  total  nonlib   name
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">2236</span>   41.2%   95.6%  JavaScript
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">103</span>    1.9%    4.4%  C++
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">59</span>    1.1%    2.5%  GC
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">3082</span>   56.9%          Shared libraries
+</span></span></code></pre></div><p>And the Wasm version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>   ticks  total  nonlib   name
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">5949</span>   20.2%   37.0%  JavaScript
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">9405</span>   32.0%   58.5%  C++
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">1554</span>    5.3%    9.7%  GC
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">13326</span>   45.3%          Shared libraries
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">712</span>    2.4%          Unaccounted
+</span></span></code></pre></div><p>The JavaScript row accounts for both JavaScript and WebAssembly code, while Shared libraries accounts mostly for Node.js built-in functions.</p>
 <p>Something clearly goes wrong with my Wasm version: 32% of execution time is spent on C++ while it is only accounting for 1.9% in the JS version. You can also notice that the garbage collector (GC) is doing five time more work in Wasm that in JS.</p>
 <p>Let&rsquo;s take a closer look at those categories in the case of Wasm:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>JavaScript<span style="color:#f92672">]</span>:
-   ticks  total  nonlib   name
-   <span style="color:#ae81ff">3166</span>   10.8%   19.7%  Function: *fast_match::Matcher::run::hdc325dfd51ff7151
-    <span style="color:#ae81ff">846</span>    2.9%    5.3%  LazyCompile: *module.exports.__wbindgen_string_new /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:135:48
-    <span style="color:#ae81ff">687</span>    2.3%    4.3%  Function: *&lt;alloc::vec::Vec&lt;T&gt; as core::ops::deref::Deref&gt;::deref::h598faf2834c73f9f
-    <span style="color:#ae81ff">183</span>    0.6%    1.1%  LazyCompile: *getEncodingOps buffer.js:644:24
-    <span style="color:#ae81ff">158</span>    0.5%    1.0%  LazyCompile: *&lt;anonymous&gt; /home/gripsou/Documents/projects/fast-match/node/asm.js:9:49
-    <span style="color:#ae81ff">149</span>    0.5%    0.9%  Function: *js_sys::Array::push::h20c97c9f2647281f
-    <span style="color:#ae81ff">148</span>    0.5%    0.9%  LazyCompile: *module.exports.__wbg_push_446cc0334a2426e8 /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:176:54
-    <span style="color:#ae81ff">107</span>    0.4%    0.7%  LazyCompile: *module.exports.__wbindgen_object_drop_ref /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:131:53
-    ...
-</code></pre></div><p>Most of the time spent executing my code is spent inside my Wasm <code>run</code> function responsible for executing the automaton, that&rsquo;s a good thing. Then comes the glue code generated by wasm-bindgen, it&rsquo;s JavaScript code. As indicated by the <code>LazyCompile</code> name, Node tried to compile our JS and succeeded (there is a <code>*</code>, if the code was interpreted we would have seen a <code>~</code>), so our JavaScript is fast too.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> <span style="color:#f92672">[</span>JavaScript<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>   ticks  total  nonlib   name
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">3166</span>   10.8%   19.7%  Function: *fast_match::Matcher::run::hdc325dfd51ff7151
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">846</span>    2.9%    5.3%  LazyCompile: *module.exports.__wbindgen_string_new /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:135:48
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">687</span>    2.3%    4.3%  Function: *&lt;alloc::vec::Vec&lt;T&gt; as core::ops::deref::Deref&gt;::deref::h598faf2834c73f9f
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">183</span>    0.6%    1.1%  LazyCompile: *getEncodingOps buffer.js:644:24
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">158</span>    0.5%    1.0%  LazyCompile: *&lt;anonymous&gt; /home/gripsou/Documents/projects/fast-match/node/asm.js:9:49
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">149</span>    0.5%    0.9%  Function: *js_sys::Array::push::h20c97c9f2647281f
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">148</span>    0.5%    0.9%  LazyCompile: *module.exports.__wbg_push_446cc0334a2426e8 /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:176:54
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">107</span>    0.4%    0.7%  LazyCompile: *module.exports.__wbindgen_object_drop_ref /home/gripsou/Documents/projects/fast-match/pkg/fast_match.js:131:53
+</span></span><span style="display:flex;"><span>    ...
+</span></span></code></pre></div><p>Most of the time spent executing my code is spent inside my Wasm <code>run</code> function responsible for executing the automaton, that&rsquo;s a good thing. Then comes the glue code generated by wasm-bindgen, it&rsquo;s JavaScript code. As indicated by the <code>LazyCompile</code> name, Node tried to compile our JS and succeeded (there is a <code>*</code>, if the code was interpreted we would have seen a <code>~</code>), so our JavaScript is fast too.</p>
 <p>Up to this point things looks good, let&rsquo;s take a look at the C++:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>C++<span style="color:#f92672">]</span>:
-   ticks  total  nonlib   name
-    <span style="color:#ae81ff">749</span>    2.5%    4.7%  _int_malloc
-    <span style="color:#ae81ff">673</span>    2.3%    4.2%  __GI___libc_malloc
-    <span style="color:#ae81ff">532</span>    1.8%    3.3%  __GI___pthread_mutex_lock
-    <span style="color:#ae81ff">513</span>    1.7%    3.2%  node::i18n::<span style="color:#f92672">(</span>anonymous namespace<span style="color:#f92672">)</span>::ConverterObject::Decode<span style="color:#f92672">(</span>v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;<span style="color:#f92672">)</span>
-    <span style="color:#ae81ff">481</span>    1.6%    3.0%  v8::internal::PrototypeIterator::Advance<span style="color:#f92672">()</span>
-    <span style="color:#ae81ff">385</span>    1.3%    2.4%  __pthread_mutex_unlock_usercnt
-    <span style="color:#ae81ff">344</span>    1.2%    2.1%  node::Buffer::Copy<span style="color:#f92672">(</span>node::Environment*, char const*, unsigned long<span style="color:#f92672">)</span>
-    <span style="color:#ae81ff">332</span>    1.1%    2.1%  v8::Object::SetPrototype<span style="color:#f92672">(</span>v8::Local&lt;v8::Context&gt;, v8::Local&lt;v8::Value&gt;<span style="color:#f92672">)</span>
-    <span style="color:#ae81ff">319</span>    1.1%    2.0%  void node::Buffer::<span style="color:#f92672">(</span>anonymous namespace<span style="color:#f92672">)</span>::StringSlice&lt;<span style="color:#f92672">(</span>node::encoding<span style="color:#f92672">)</span>3&gt;<span style="color:#f92672">(</span>v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;<span style="color:#f92672">)</span>
-    <span style="color:#ae81ff">285</span>    1.0%    1.8%  v8::ArrayBuffer::GetContents<span style="color:#f92672">()</span>
-</code></pre></div><p>The two first items are related to memory allocation, we also spot a buffer copy operation and some encode and decode primitives. So here we are: I was copying things in memory between JavaScript and Wasm. Note this can also explain the higher load on the GC we noticed earlier.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> <span style="color:#f92672">[</span>C++<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>   ticks  total  nonlib   name
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">749</span>    2.5%    4.7%  _int_malloc
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">673</span>    2.3%    4.2%  __GI___libc_malloc
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">532</span>    1.8%    3.3%  __GI___pthread_mutex_lock
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">513</span>    1.7%    3.2%  node::i18n::<span style="color:#f92672">(</span>anonymous namespace<span style="color:#f92672">)</span>::ConverterObject::Decode<span style="color:#f92672">(</span>v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">481</span>    1.6%    3.0%  v8::internal::PrototypeIterator::Advance<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">385</span>    1.3%    2.4%  __pthread_mutex_unlock_usercnt
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">344</span>    1.2%    2.1%  node::Buffer::Copy<span style="color:#f92672">(</span>node::Environment*, char const*, unsigned long<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">332</span>    1.1%    2.1%  v8::Object::SetPrototype<span style="color:#f92672">(</span>v8::Local&lt;v8::Context&gt;, v8::Local&lt;v8::Value&gt;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">319</span>    1.1%    2.0%  void node::Buffer::<span style="color:#f92672">(</span>anonymous namespace<span style="color:#f92672">)</span>::StringSlice&lt;<span style="color:#f92672">(</span>node::encoding<span style="color:#f92672">)</span>3&gt;<span style="color:#f92672">(</span>v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">285</span>    1.0%    1.8%  v8::ArrayBuffer::GetContents<span style="color:#f92672">()</span>
+</span></span></code></pre></div><p>The two first items are related to memory allocation, we also spot a buffer copy operation and some encode and decode primitives. So here we are: I was copying things in memory between JavaScript and Wasm. Note this can also explain the higher load on the GC we noticed earlier.</p>
 <p>And here is the culprit:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: String) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
-	...
-}
-</code></pre></div><p>My interface between JavaScript and WebAssembly was using Rust strings, when reading <a href="https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html">wasm-bindgen doc</a>, we can learn that not only strings are copied back and forth between JS and Wasm, but also that JavaScript is using UTF-16 and Rust UTF-8, meaning that there is an additional conversion overhead.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Rust" data-lang="Rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: String) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>My interface between JavaScript and WebAssembly was using Rust strings, when reading <a href="https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html">wasm-bindgen doc</a>, we can learn that not only strings are copied back and forth between JS and Wasm, but also that JavaScript is using UTF-16 and Rust UTF-8, meaning that there is an additional conversion overhead.</p>
 <h2 id="fixing-things-up">Fixing things up</h2>
 <p>In fact, I was aware of these copies between JavaScript and WebAssembly, but did it purposefully because I used to think that back and forth between JS and Wasm were slow, <a href="https://hacks.mozilla.org/2018/10/calls-between-javascript-and-webassembly-are-finally-fast-%F0%9F%8E%89/">turns out that is not the case</a>.</p>
 <p>What this all means is that in this case it is much better to work with JavaScript values from Rust, the <a href="https://rustwasm.github.io/wasm-bindgen/api/js_sys/index.html"><code>js-sys</code> crate</a> exposes everything that is needed for that: we can accept JavaScript string (that is a pointer to the memory hosting the string in the JS heap, no copy) and iterate over it, each character is represented by a <code>u16</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">js_sys</span>::JsString) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
-	...
-	<span style="color:#66d9ef">for</span> c <span style="color:#66d9ef">in</span> string.iter() {
-            ...
-        }
-	...
-}
-</code></pre></div><p>Let&rsquo;s check the performances again:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Rust" data-lang="Rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">run</span>(<span style="color:#f92672">&amp;</span>self, string: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">js_sys</span>::JsString) -&gt; <span style="color:#a6e22e">js_sys</span>::Array {
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> c <span style="color:#66d9ef">in</span> string.iter() {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">..</span>.
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s check the performances again:</p>
 
     <figure class="center" >
         <img src="/img/speedingUpPatternMatching/secondComparison.png"  alt="JS vs Wasm execution time"   class="rounded"/>
@@ -281,14 +281,14 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 
 <p>Yep, this time it is faster! It&rsquo;s quite impressive considering that with today&rsquo;s engines JavaScript is already really fast once JIT compiled.</p>
 <p>Let&rsquo;s take a look at the profile to check if we fixed things up:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
-   ticks  total  nonlib   name
-   <span style="color:#ae81ff">8249</span>   84.7%   89.5%  JavaScript
-     <span style="color:#ae81ff">89</span>    0.9%    1.0%  C++
-     <span style="color:#ae81ff">39</span>    0.4%    0.4%  GC
-    <span style="color:#ae81ff">529</span>    5.4%          Shared libraries
-    <span style="color:#ae81ff">874</span>    9.0%          Unaccounted
-</code></pre></div><p>That is indeed much, much better: C++ code went down from 32% to 0.9% of execution time, now Node is truly spending most of its time actually executing our JS and Wasm code! Notice that the GC has also much less work to do, even less that in the pure JS version.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span> <span style="color:#f92672">[</span>Summary<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>   ticks  total  nonlib   name
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">8249</span>   84.7%   89.5%  JavaScript
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">89</span>    0.9%    1.0%  C++
+</span></span><span style="display:flex;"><span>     <span style="color:#ae81ff">39</span>    0.4%    0.4%  GC
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">529</span>    5.4%          Shared libraries
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">874</span>    9.0%          Unaccounted
+</span></span></code></pre></div><p>That is indeed much, much better: C++ code went down from 32% to 0.9% of execution time, now Node is truly spending most of its time actually executing our JS and Wasm code! Notice that the GC has also much less work to do, even less that in the pure JS version.</p>
 <p>To put things in perspective, here is a visual recap of the old and new version profiles side to side:</p>
 
     <figure class="center" >
@@ -369,7 +369,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2022</span>
+            <span>&copy; 2023</span>
             
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
@@ -387,7 +387,7 @@ node --prof-process isolate-0x49a1aa0-11836-v8.log
 
 
 
-<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

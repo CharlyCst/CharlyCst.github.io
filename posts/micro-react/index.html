@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
 <meta name="description" content="With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&amp;rsquo;s get started!" />
-<meta name="keywords" content="compilers, systems, the web" />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
 <link rel="canonical" href="https://charlycst.github.io/posts/micro-react/" />
@@ -24,7 +24,7 @@
 
 
 
-<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+<link rel="stylesheet" href="/main.min.45ddf772e5691aee8d420f6ca9e691994528f081e5304a2779afb44e80cf1047.css">
 
 
 
@@ -72,7 +72,7 @@
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
     </ul>
 </nav>
 
@@ -121,186 +121,186 @@
 <p>But first a quick disclaimer: React is a very mature framework, it&rsquo;s the results of years of research and the actual algorithm is more evolved than the one I&rsquo;m presenting here. The core idea is the same, however, and I will point out differences worth mentioning.</p>
 <h2 id="the-virtual-dom">The virtual DOM</h2>
 <p>First thing first: let&rsquo;s talk about the DOM. The DOM (or Document Object Model) is a tree structure that represent the web page, it can be created from HTML:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
-  &lt;<span style="color:#f92672">h1</span>&gt;Hello, World !&lt;/<span style="color:#f92672">h1</span>&gt;
-  &lt;<span style="color:#f92672">p</span>&gt;I&#39;m an HTML page&lt;/<span style="color:#f92672">p</span>&gt;
-&lt;/<span style="color:#f92672">div</span>&gt;
-</code></pre></div><p>But also through JavaScript, for instance we can update the DOM we created:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">root</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;root&#34;</span>);
-
-<span style="color:#75715e">// Set the background color
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">style</span>.<span style="color:#a6e22e">backgroundColor</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>;
-
-<span style="color:#75715e">// Add a new element
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">elt</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#34;b&#34;</span>);
-<span style="color:#a6e22e">elt</span>.<span style="color:#a6e22e">textContent</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;I was added dynamically&#34;</span>;
-<span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">elt</span>);
-</code></pre></div><p>The resulting DOM will be equivalent to:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;background-color: blue;&#34;</span>&gt;
-  &lt;<span style="color:#f92672">h1</span>&gt;Hello, World !&lt;/<span style="color:#f92672">h1</span>&gt;
-  &lt;<span style="color:#f92672">p</span>&gt;I&#39;m an HTML page&lt;/<span style="color:#f92672">p</span>&gt;
-  &lt;<span style="color:#f92672">b</span>&gt;I was added dynamically&lt;/<span style="color:#f92672">b</span>&gt;
-&lt;/<span style="color:#f92672">div</span>&gt;
-</code></pre></div><p>Updating the DOM through JavaScript is the only way to create dynamic web pages, however writing code to perform these updates can quickly become very cumbersome, that&rsquo;s where React comes in.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h1</span>&gt;Hello, World !&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">p</span>&gt;I&#39;m an HTML page&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div><p>But also through JavaScript, for instance we can update the DOM we created:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">root</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;root&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Set the background color
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">style</span>.<span style="color:#a6e22e">backgroundColor</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Add a new element
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">elt</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#34;b&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">elt</span>.<span style="color:#a6e22e">textContent</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;I was added dynamically&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">root</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">elt</span>);
+</span></span></code></pre></div><p>The resulting DOM will be equivalent to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;background-color: blue;&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h1</span>&gt;Hello, World !&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">p</span>&gt;I&#39;m an HTML page&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">b</span>&gt;I was added dynamically&lt;/<span style="color:#f92672">b</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span></code></pre></div><p>Updating the DOM through JavaScript is the only way to create dynamic web pages, however writing code to perform these updates can quickly become very cumbersome, that&rsquo;s where React comes in.</p>
 <p>The idea is that instead of writing imperative code to update the DOM, it would be much easier to write a description of what we want and let our framework figure out which operations to perform. That&rsquo;s what React does, we provide a target DOM and the <em>reconciliation algorithm</em> will perform surgical updates on the real DOM to have it match the target.</p>
 <p>The target DOM is called <em>Virtual DOM</em>, it is a simple JavaScript object, meaning that it is lightweight to create, we can update it at will or even throw it away, it will not have any impact on the actual web page.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// A virtual node
-</span><span style="color:#75715e"></span>{
-  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;p&#34;</span>;
-  <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> {
-    <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;I&#39;m a virtual node!&#34;</span>;
-  }
-}
-</code></pre></div><p>Those virtual nodes are what the virtual DOM is made of. To give a more formal definition, virtual nodes implement this interface:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}&gt; {
-  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span>;
-  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span> <span style="color:#f92672">&amp;</span> { <span style="color:#a6e22e">children</span>: <span style="color:#66d9ef">VNode</span>[] <span style="color:#f92672">|</span> <span style="color:#66d9ef">string</span> };
-}
-</code></pre></div><p>The property <code>children</code> is a little special, it represents the children of this node: you can imagine it as the inner HTML which is itself either a string or a list of other HTML elements.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// A virtual node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;p&#34;</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;I&#39;m a virtual node!&#34;</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Those virtual nodes are what the virtual DOM is made of. To give a more formal definition, virtual nodes implement this interface:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span> <span style="color:#f92672">&amp;</span> { <span style="color:#a6e22e">children</span>: <span style="color:#66d9ef">VNode</span>[] <span style="color:#f92672">|</span> <span style="color:#66d9ef">string</span> };
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The property <code>children</code> is a little special, it represents the children of this node: you can imagine it as the inner HTML which is itself either a string or a list of other HTML elements.</p>
 <p>Now the question is how do we create virtual nodes? React exposes a function <code>createElement</code> that do it for us.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vNode</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#34;h1&#34;</span>, {}, <span style="color:#e6db74">&#34;Hello, World!&#34;</span>);
-
-<span style="color:#a6e22e">ReactDOM</span>.<span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">vNode</span>, document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;root&#34;</span>));
-</code></pre></div><p>Creating elements with the JavaScript syntax can quickly become burdensome, that is why most of the time we use <a href="https://reactjs.org/docs/introducing-jsx.html">JSX</a>. JSX is just syntactic sugar, it is transpiled to a pure JavaScript equivalent using <code>React.createElement</code>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#75715e">// Some JSX
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vNode</span> <span style="color:#f92672">=</span> (
-  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
-    &lt;<span style="color:#f92672">h1</span>&gt;<span style="color:#a6e22e">Hello</span>, <span style="color:#a6e22e">World</span><span style="color:#f92672">!</span>&lt;/<span style="color:#f92672">h1</span>&gt;
-    &lt;<span style="color:#f92672">p</span>&gt;<span style="color:#a6e22e">I</span><span style="color:#e6db74">&#39;m a JSX page&lt;/p&gt;
-</span><span style="color:#e6db74">  &lt;/div&gt;
-</span><span style="color:#e6db74">);
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">// It is translated to
-</span><span style="color:#e6db74">const vNode = React.createElement(&#34;div&#34;, { id: &#34;root&#34; }, [
-</span><span style="color:#e6db74">  React.createElement(&#34;h1&#34;, null, &#34;Hello, World!&#34;),
-</span><span style="color:#e6db74">  React.createElement(&#34;p&#34;, null, &#34;I&#39;</span><span style="color:#a6e22e">m</span> <span style="color:#a6e22e">a</span> <span style="color:#a6e22e">JSX</span> <span style="color:#a6e22e">page</span><span style="color:#960050;background-color:#1e0010">&#34;</span>)
-]);
-</code></pre></div><p>This transpilation step can be performed by tools such as <a href="https://babeljs.io/docs/en/babel-plugin-transform-react-jsx">Babel</a> or <a href="https://www.typescriptlang.org/docs/handbook/jsx.html">Typescript</a>. Fortunately it is possible to pass a custom function to be used instead of <code>React.createElement</code>, all we have to do is to create our own JSX factory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vNode</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#34;h1&#34;</span>, {}, <span style="color:#e6db74">&#34;Hello, World!&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ReactDOM</span>.<span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">vNode</span>, document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;root&#34;</span>));
+</span></span></code></pre></div><p>Creating elements with the JavaScript syntax can quickly become burdensome, that is why most of the time we use <a href="https://reactjs.org/docs/introducing-jsx.html">JSX</a>. JSX is just syntactic sugar, it is transpiled to a pure JavaScript equivalent using <code>React.createElement</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#75715e">// Some JSX
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vNode</span> <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h1</span>&gt;<span style="color:#a6e22e">Hello</span>, <span style="color:#a6e22e">World</span><span style="color:#f92672">!</span>&lt;/<span style="color:#f92672">h1</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">p</span>&gt;<span style="color:#a6e22e">I</span><span style="color:#e6db74">&#39;m a JSX page&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">// It is translated to
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">const vNode = React.createElement(&#34;div&#34;, { id: &#34;root&#34; }, [
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  React.createElement(&#34;h1&#34;, null, &#34;Hello, World!&#34;),
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  React.createElement(&#34;p&#34;, null, &#34;I&#39;</span><span style="color:#a6e22e">m</span> <span style="color:#a6e22e">a</span> <span style="color:#a6e22e">JSX</span> <span style="color:#a6e22e">page</span><span style="color:#960050;background-color:#1e0010">&#34;</span>)
+</span></span><span style="display:flex;"><span>]);
+</span></span></code></pre></div><p>This transpilation step can be performed by tools such as <a href="https://babeljs.io/docs/en/babel-plugin-transform-react-jsx">Babel</a> or <a href="https://www.typescriptlang.org/docs/handbook/jsx.html">Typescript</a>. Fortunately it is possible to pass a custom function to be used instead of <code>React.createElement</code>, all we have to do is to create our own JSX factory.</p>
 <p>Now that we learned a little more about the DOM, virtual nodes and JSX we are ready to go, let&rsquo;s code!</p>
 <h2 id="virtual-nodes-and-components">Virtual nodes and components</h2>
 <p>We will name our framework µReact, it will feature components with the <code>setState</code> and <code>componentDidMound</code> methods as well as full JSX support. You can find the code of this section <a href="https://github.com/CharlyCst/microReact/blob/master/src/%C2%B5React/core.ts">here</a>.</p>
 <p>Let&rsquo;s first define our virtual nodes:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}&gt; {
-  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span>;
-  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span> <span style="color:#f92672">&amp;</span> { <span style="color:#a6e22e">children</span>: <span style="color:#66d9ef">VNode</span>[] <span style="color:#f92672">|</span> <span style="color:#66d9ef">string</span> };
-  <span style="color:#a6e22e">domElt?</span>: <span style="color:#66d9ef">HTMLElement</span>;
-  <span style="color:#66d9ef">class</span><span style="color:#f92672">?:</span> <span style="color:#66d9ef">new</span> (<span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">Component</span>&lt;<span style="color:#f92672">P</span>&gt;;
-  <span style="color:#a6e22e">component?</span>: <span style="color:#66d9ef">Component</span>&lt;<span style="color:#f92672">P</span>&gt;;
-}
-</code></pre></div><p>We added a few fields:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span> <span style="color:#f92672">&amp;</span> { <span style="color:#a6e22e">children</span>: <span style="color:#66d9ef">VNode</span>[] <span style="color:#f92672">|</span> <span style="color:#66d9ef">string</span> };
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">domElt?</span>: <span style="color:#66d9ef">HTMLElement</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">class</span><span style="color:#f92672">?:</span> <span style="color:#66d9ef">new</span> (<span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">Component</span>&lt;<span style="color:#f92672">P</span>&gt;;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">component?</span>: <span style="color:#66d9ef">Component</span>&lt;<span style="color:#f92672">P</span>&gt;;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We added a few fields:</p>
 <ul>
 <li><strong>domElt</strong> is a reference to the corresponding DOM element if any. We will set it once we instantiate a real DOM element corresponding to this virtual node.</li>
 <li><strong>class</strong> is the constructor of the µReact component, it will be defined when the virtual node correspond to a component and not to a HTML tag.</li>
 <li><strong>component</strong> is a reference to the component, if any, once it has been instantiated with the class constructor.</li>
 </ul>
 <p>Now we are ready to create our JSX factory. There are a few difficulties here: we need to implement the same interface as <code>React.createElement</code>, which accepts quite a lot of different types for its arguments. Let&rsquo;s break it down first:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">createElement</span>(<span style="color:#a6e22e">type</span>, <span style="color:#a6e22e">props</span>, <span style="color:#a6e22e">children</span>);
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">createElement</span>(<span style="color:#a6e22e">type</span>, <span style="color:#a6e22e">props</span>, <span style="color:#a6e22e">children</span>);
+</span></span></code></pre></div><ul>
 <li><strong>type</strong> is either a string corresponding to an HTML element type, such ad <code>&quot;div&quot;</code>, <code>&quot;h1&quot;</code> and so on, or a constructor if the JSX element correspond to a React component (that is it begins with a capital letter, such as &ldquo;App&rdquo;).</li>
 <li><strong>props</strong> can be either null or any JavaScript object</li>
 <li><strong>children</strong> is more complicated, it can be either a string, a number, another virtual node, a list of any of these types or even a list of list. To keep things simple we will not deal with each corner case, though it will be general enough to create interesting applications.</li>
 </ul>
 <p>Ok, let&rsquo;s write a function <code>createElement</code> that returns a virtual node:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createElement</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}&gt;(
-  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span> <span style="color:#f92672">|</span> (<span style="color:#66d9ef">new</span> (<span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">Component</span>&lt;<span style="color:#f92672">P</span>&gt;),
-  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>,
-  ...<span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">any</span>&gt; <span style="color:#f92672">|</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">any</span>&gt;[])[] <span style="color:#f92672">|</span> (<span style="color:#66d9ef">string</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">number</span>)[]
-)<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">P</span>&gt; {
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">normalizedProps</span> <span style="color:#f92672">=</span> {
-    ...<span style="color:#a6e22e">props</span>,
-    <span style="color:#a6e22e">children</span>: <span style="color:#66d9ef">isVNodeArray</span>(<span style="color:#a6e22e">children</span>) <span style="color:#f92672">?</span> <span style="color:#a6e22e">flatten</span>(<span style="color:#a6e22e">children</span>) <span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">children</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>
-  };
-
-  <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;string&#34;</span>) {
-    <span style="color:#75715e">// It is an html element
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> { <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">type</span>, <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">normalizedProps</span> };
-  } <span style="color:#66d9ef">else</span> {
-    <span style="color:#75715e">// It is a component
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> { <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">normalizedProps</span>, <span style="color:#66d9ef">class</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">type</span> };
-  }
-}
-</code></pre></div><p>Don&rsquo;t be scared by the types, I have done my best to keep things simple, but you know some times it just gets ugly. The two functions <code>isVNodeArray</code> and <code>flatten</code> are used to normalize the props, <code>children</code> will be either a string or a flat array of VNodes. You can find them in the full code <a href="https://github.com/CharlyCst/microReact/blob/e1c1e08491a181aa034a117354addd706b05486b/src/%C2%B5React/core.ts#L74">here</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createElement</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}&gt;(
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">string</span> <span style="color:#f92672">|</span> (<span style="color:#66d9ef">new</span> (<span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>) <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">Component</span>&lt;<span style="color:#f92672">P</span>&gt;),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>,
+</span></span><span style="display:flex;"><span>  ...<span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">any</span>&gt; <span style="color:#f92672">|</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">any</span>&gt;[])[] <span style="color:#f92672">|</span> (<span style="color:#66d9ef">string</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">number</span>)[]
+</span></span><span style="display:flex;"><span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">P</span>&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">normalizedProps</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    ...<span style="color:#a6e22e">props</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">children</span>: <span style="color:#66d9ef">isVNodeArray</span>(<span style="color:#a6e22e">children</span>) <span style="color:#f92672">?</span> <span style="color:#a6e22e">flatten</span>(<span style="color:#a6e22e">children</span>) <span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">children</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;string&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// It is an html element
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> { <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">type</span>, <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">normalizedProps</span> };
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// It is a component
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> { <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">normalizedProps</span>, <span style="color:#66d9ef">class</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">type</span> };
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Don&rsquo;t be scared by the types, I have done my best to keep things simple, but you know some times it just gets ugly. The two functions <code>isVNodeArray</code> and <code>flatten</code> are used to normalize the props, <code>children</code> will be either a string or a flat array of VNodes. You can find them in the full code <a href="https://github.com/CharlyCst/microReact/blob/e1c1e08491a181aa034a117354addd706b05486b/src/%C2%B5React/core.ts#L74">here</a>.</p>
 <p>Maybe you noticed that <code>type</code> expect either a string or a <code>Component</code> constructor, but we didn&rsquo;t define the Component class yet, let&rsquo;s do it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Component</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}<span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">S </span><span style="color:#f92672">=</span> {}&gt; {
-  <span style="color:#66d9ef">abstract</span> <span style="color:#a6e22e">state</span>: <span style="color:#66d9ef">S</span>;
-  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>;
-  <span style="color:#a6e22e">_vNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">P</span>&gt;;
-
-  <span style="color:#66d9ef">constructor</span>(<span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>) {
-    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">props</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">props</span>;
-    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_vNode</span> <span style="color:#f92672">=</span> {
-      <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
-      <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> { ...<span style="color:#a6e22e">props</span>, <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [<span style="color:#a6e22e">emptyVNode</span>] }
-    };
-  }
-
-  <span style="color:#66d9ef">abstract</span> <span style="color:#a6e22e">render</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">any</span>&gt;;
-  <span style="color:#a6e22e">componentDidMount() {</span>}
-
-  <span style="color:#a6e22e">setState</span>(<span style="color:#a6e22e">newState</span>: <span style="color:#66d9ef">Partial</span>&lt;<span style="color:#f92672">S</span>&gt;) {
-    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> { ...<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span>, ...<span style="color:#a6e22e">newState</span> };
-
-    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">newChild</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">render</span>();
-    <span style="color:#75715e">// Do something with the new child
-</span><span style="color:#75715e"></span>  }
-}
-</code></pre></div><p>It is now possible to define components by extending <code>Component</code> and defining a <code>render</code> method that returns a virtual node, that is some JSX as we are used to. We also defined <code>setState</code>, it updates the state and then call render, but for now we do nothing with the new child, we will come back to this method when talking about the <em>reconciliation algorithm</em>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Component</span>&lt;<span style="color:#f92672">P</span> <span style="color:#960050;background-color:#1e0010">=</span> {}<span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">S </span><span style="color:#f92672">=</span> {}&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">abstract</span> <span style="color:#a6e22e">state</span>: <span style="color:#66d9ef">S</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_vNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">P</span>&gt;;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">constructor</span>(<span style="color:#a6e22e">props</span>: <span style="color:#66d9ef">P</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">props</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">props</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_vNode</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> { ...<span style="color:#a6e22e">props</span>, <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [<span style="color:#a6e22e">emptyVNode</span>] }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">abstract</span> <span style="color:#a6e22e">render</span>()<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span>&lt;<span style="color:#f92672">any</span>&gt;;
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">componentDidMount() {</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">setState</span>(<span style="color:#a6e22e">newState</span>: <span style="color:#66d9ef">Partial</span>&lt;<span style="color:#f92672">S</span>&gt;) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> { ...<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span>, ...<span style="color:#a6e22e">newState</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">newChild</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">render</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Do something with the new child
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It is now possible to define components by extending <code>Component</code> and defining a <code>render</code> method that returns a virtual node, that is some JSX as we are used to. We also defined <code>setState</code>, it updates the state and then call render, but for now we do nothing with the new child, we will come back to this method when talking about the <em>reconciliation algorithm</em>.</p>
 <p>Now that we have our component and our JSX factory we can create a virtual DOM, let&rsquo;s try it out. First we set up our JSX transpiler (for instance Typescript here) to use our own factory:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">tsconfig.json</span>
-{
-  <span style="color:#f92672">&#34;compilerOptions&#34;</span>: {
-    <span style="color:#f92672">&#34;jsx&#34;</span>: <span style="color:#e6db74">&#34;react&#34;</span>,
-    <span style="color:#f92672">&#34;jsxFactory&#34;</span>: <span style="color:#e6db74">&#34;µReact.createElement&#34;</span>
-  }
-}
-</code></pre></div><p>And we can write some JSX:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-tsx" data-lang="tsx"><span style="color:#66d9ef">import</span> <span style="color:#960050;background-color:#1e0010">µ</span><span style="color:#a6e22e">React</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;./µReact&#34;</span>;
-
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">List</span> <span style="color:#66d9ef">extends</span> <span style="color:#960050;background-color:#1e0010">µ</span><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">Component</span> {
-  <span style="color:#a6e22e">render() {</span>
-    <span style="color:#66d9ef">return</span> (
-      &lt;<span style="color:#f92672">ul</span>&gt;
-        &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Drink</span> <span style="color:#a6e22e">apple</span> <span style="color:#a6e22e">juice</span>&lt;/<span style="color:#f92672">li</span>&gt;
-        &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Eat</span> <span style="color:#a6e22e">vegetables</span>&lt;/<span style="color:#f92672">li</span>&gt;
-      &lt;/<span style="color:#f92672">ul</span>&gt;
-    );
-  }
-}
-
-<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> (
-  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span>{{ <span style="color:#a6e22e">backgroundColor</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#f8f8f8&#34;</span> }}&gt;
-    &lt;<span style="color:#f92672">List</span> /&gt;
-  &lt;/<span style="color:#f92672">div</span>&gt;
-);
-
-<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">app</span>);
-</code></pre></div><p>As expected, this code prints:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">{
-  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;div&#34;</span>,
-  <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> {
-    <span style="color:#a6e22e">style</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">backgroundColor</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#f8f8f8&#34;</span> },
-    <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [
-      {
-        <span style="color:#66d9ef">class</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">List</span>
-        <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [] }
-      }
-    ]
-  }
-}
-</code></pre></div><p>Notice that the <code>List</code> virtual node has no children yet, because we don&rsquo;t call <code>render</code> when instantiating the component&rsquo;s virtual node.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// tsconfig.json
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;compilerOptions&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;jsx&#34;</span>: <span style="color:#e6db74">&#34;react&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;jsxFactory&#34;</span>: <span style="color:#e6db74">&#34;µReact.createElement&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And we can write some JSX:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#960050;background-color:#1e0010">µ</span><span style="color:#a6e22e">React</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;./µReact&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">List</span> <span style="color:#66d9ef">extends</span> <span style="color:#960050;background-color:#1e0010">µ</span><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">Component</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">render() {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Drink</span> <span style="color:#a6e22e">apple</span> <span style="color:#a6e22e">juice</span>&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Eat</span> <span style="color:#a6e22e">vegetables</span>&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">style</span><span style="color:#f92672">=</span>{{ <span style="color:#a6e22e">backgroundColor</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#f8f8f8&#34;</span> }}&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">List</span> /&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">app</span>);
+</span></span></code></pre></div><p>As expected, this code prints:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;div&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">style</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">backgroundColor</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;#f8f8f8&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">List</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">props</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">children</span><span style="color:#f92672">:</span> [] }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Notice that the <code>List</code> virtual node has no children yet, because we don&rsquo;t call <code>render</code> when instantiating the component&rsquo;s virtual node.</p>
 <p>Now that we can create a virtual DOM, it&rsquo;s time to actually render it on the screen.</p>
 <h2 id="the-reconciliation-algorithm">The reconciliation algorithm</h2>
 <p>The <em>reconciliation algorithm</em>, also called diffing algorithm, computes the differences between two virtual DOMs and deduce a set of operations to be applied to the old DOM to have it match the new one.</p>
 <p>As explained in <a href="https://reactjs.org/docs/reconciliation.html">React&rsquo;s documentation</a>, computing the smallest set of operations to transform one tree into another takes O(n³) comparisons, which is impractical. We will take the same approach as React using a simple O(n) heuristic: two different types of nodes produce different sub-trees.</p>
 <p>Let&rsquo;s create our <code>diff</code> function</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">diff</span>(
-    <span style="color:#a6e22e">parentDom</span>: <span style="color:#66d9ef">HTMLElement</span>,
-    <span style="color:#a6e22e">newNode</span>: <span style="color:#66d9ef">VNode</span>,
-    <span style="color:#a6e22e">oldNode</span>: <span style="color:#66d9ef">VNode</span>
-)<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span> {
-    ...
-};
-</code></pre></div><p>The algorithm is the following: we take two virtual nodes, one corresponding to the current state and another matching the desired new state. Those two nodes are sub-trees of the virtual DOM, we iterate both of them simultaneously and for each node we have several cases:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">diff</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">parentDom</span>: <span style="color:#66d9ef">HTMLElement</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">newNode</span>: <span style="color:#66d9ef">VNode</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">oldNode</span>: <span style="color:#66d9ef">VNode</span>
+</span></span><span style="display:flex;"><span>)<span style="color:#f92672">:</span> <span style="color:#a6e22e">VNode</span> {
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>The algorithm is the following: we take two virtual nodes, one corresponding to the current state and another matching the desired new state. Those two nodes are sub-trees of the virtual DOM, we iterate both of them simultaneously and for each node we have several cases:</p>
 <ul>
 <li>If both are HTML tags we can reuse the same (real) DOM element and update its properties. We will create a function <code>updateDomProperties</code> for that. Once updated, we diff children recursively.</li>
 <li>If both nodes are components of the same class, for instance two <code>&lt;App/&gt;</code>, and both have the same props then the current DOM is already up to date and there is nothing to do. Otherwise, if props are different we need to <code>render</code> the component with the most recent props, and then we recursively diff both components children.</li>
@@ -308,107 +308,107 @@
 </ul>
 <p>The exact code is full of implementation details, I won&rsquo;t include it in this post but you can find it <a href="https://github.com/CharlyCst/microReact/blob/master/src/%C2%B5React/diff.ts">here</a> if you want to have a look.</p>
 <p>But how exactly do we iterate on children? Well the simplest possible way: we have two lists, for instance the old children may be <code>[&lt;div&gt;, &lt;List&gt;]</code> and the new <code>[&lt;div&gt;, &lt;p&gt;, &lt;List&gt;]</code>, we first diff the two <code>&lt;div&gt;</code>, then we diff the <code>&lt;List&gt;</code> and the <code>&lt;p&gt;</code> and finally because we have child left in the new list bot not in the old we instantiate a fresh DOM node accordingly. If we had more old than new children we simply destroy any remaining nodes at the end.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx"><span style="color:#75715e">// Old DOM
-</span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">App</span>&gt;
-  &lt;<span style="color:#f92672">div</span>&gt;...&lt;/<span style="color:#f92672">div</span>&gt;
-  &lt;<span style="color:#f92672">List</span> /&gt;
-&lt;/<span style="color:#f92672">App</span>&gt;
-
-<span style="color:#75715e">// New DOM
-</span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">App</span>&gt;
-  &lt;<span style="color:#f92672">div</span>&gt;...&lt;/<span style="color:#f92672">div</span>&gt;  {<span style="color:#75715e">/* Same &lt;div/&gt; as before                                  */</span>}
-  &lt;<span style="color:#f92672">p</span>&gt;...&lt;/<span style="color:#f92672">p</span>&gt;      {<span style="color:#75715e">/* We destroyed &lt;List/&gt; and replaced it with a fresh &lt;p/&gt; */</span>}
-  &lt;<span style="color:#f92672">List</span> /&gt;        {<span style="color:#75715e">/* A fresh &lt;List/&gt;                                        */</span>}
-&lt;/<span style="color:#f92672">App</span>&gt;
-</code></pre></div><p>This has some practical implications: in the previous example it would have been more efficient to create a new <code>&lt;p&gt;</code> node and to insert it between the <code>&lt;div&gt;</code> and the <code>&lt;List&gt;</code>. In fact, it will even have a visual impact because the diff operation will destroy the <code>&lt;List&gt;</code> component to create a <code>&lt;p&gt;</code> instead and then create a fresh <code>&lt;List&gt;</code>: the state will be lost. There is a way to mitigate this in React using keys, I will discuss that a little later.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span><span style="color:#75715e">// Old DOM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">App</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span>&gt;...&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">List</span> /&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">App</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// New DOM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">App</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span>&gt;...&lt;/<span style="color:#f92672">div</span>&gt;  {<span style="color:#75715e">/* Same &lt;div/&gt; as before                                  */</span>}
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">p</span>&gt;...&lt;/<span style="color:#f92672">p</span>&gt;      {<span style="color:#75715e">/* We destroyed &lt;List/&gt; and replaced it with a fresh &lt;p/&gt; */</span>}
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">List</span> /&gt;        {<span style="color:#75715e">/* A fresh &lt;List/&gt;                                        */</span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">App</span>&gt;
+</span></span></code></pre></div><p>This has some practical implications: in the previous example it would have been more efficient to create a new <code>&lt;p&gt;</code> node and to insert it between the <code>&lt;div&gt;</code> and the <code>&lt;List&gt;</code>. In fact, it will even have a visual impact because the diff operation will destroy the <code>&lt;List&gt;</code> component to create a <code>&lt;p&gt;</code> instead and then create a fresh <code>&lt;List&gt;</code>: the state will be lost. There is a way to mitigate this in React using keys, I will discuss that a little later.</p>
 <p>Remember the <code>Component.setState()</code> function we created earlier? It&rsquo;s time to complete it:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#a6e22e">setState</span>(<span style="color:#a6e22e">newState</span>: <span style="color:#66d9ef">Partial</span>&lt;<span style="color:#f92672">S</span>&gt;) {
-  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> { ...<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span>, ...<span style="color:#a6e22e">newState</span> };
-
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">newChild</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">render</span>();
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">oldChild</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_vnode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span>[<span style="color:#ae81ff">0</span>];
-  <span style="color:#75715e">// We compute the difference with between the old and new child
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_vnode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">diff</span>(
-    <span style="color:#a6e22e">child</span>.<span style="color:#a6e22e">domElt</span>.<span style="color:#a6e22e">parentElement</span>,
-    <span style="color:#a6e22e">newChild</span>,
-    <span style="color:#a6e22e">oldChild</span>
-  );
-}
-</code></pre></div><p>Now when updating the state of a component the virtual DOM will automatically be updated.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#a6e22e">setState</span>(<span style="color:#a6e22e">newState</span>: <span style="color:#66d9ef">Partial</span>&lt;<span style="color:#f92672">S</span>&gt;) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> { ...<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">state</span>, ...<span style="color:#a6e22e">newState</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">newChild</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">render</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">oldChild</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_vnode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span>[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// We compute the difference with between the old and new child
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">_vnode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">diff</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">child</span>.<span style="color:#a6e22e">domElt</span>.<span style="color:#a6e22e">parentElement</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">newChild</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">oldChild</span>
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now when updating the state of a component the virtual DOM will automatically be updated.</p>
 <p>At this point we can update the virtual DOM in response to events, let&rsquo;s move on and update the <em>real</em> DOM.</p>
 <h2 id="manipulate-the-dom">Manipulate the DOM</h2>
 <p>We are done with the reconciliation algorithm, but we still need two other functions to have it run: <code>updateDomProperties</code> and <code>instantiate</code>. The first is responsible for adding and removing attributes of a DOM element to have it match the new desired state. The second one is needed to create fresh DOM elements.</p>
 <p>Let&rsquo;s starts with updating dom properties.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">updateDomProperties</span>&lt;<span style="color:#f92672">P</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">Q</span>&gt;(
-  <span style="color:#a6e22e">dom</span>: <span style="color:#66d9ef">HTMLElement</span>,
-  <span style="color:#a6e22e">newNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">P</span>&gt;,
-  <span style="color:#a6e22e">oldNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">Q</span>&gt;
-) {
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">newProps</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">newNode</span>.<span style="color:#a6e22e">props</span> <span style="color:#66d9ef">as</span> { [<span style="color:#a6e22e">attr</span>: <span style="color:#66d9ef">string</span>]<span style="color:#f92672">:</span> <span style="color:#66d9ef">any</span> };
-  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">oldProps</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">oldNode</span>.<span style="color:#a6e22e">props</span> <span style="color:#66d9ef">as</span> { [<span style="color:#a6e22e">attr</span>: <span style="color:#66d9ef">string</span>]<span style="color:#f92672">:</span> <span style="color:#66d9ef">any</span> };
-
-  <span style="color:#75715e">// Remove no longer needed attributes and event listeners
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">oldProps</span>) {
-    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(<span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">newProps</span>) <span style="color:#f92672">||</span> <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>] <span style="color:#f92672">!==</span> <span style="color:#a6e22e">oldProps</span>[<span style="color:#a6e22e">attr</span>]) {
-      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isEventListener</span>(<span style="color:#a6e22e">attr</span>)) {
-        <span style="color:#75715e">// For `onfoo` we need to remove the event `foo`
-</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">removeEventListener</span>(<span style="color:#a6e22e">attr</span>.<span style="color:#a6e22e">substring</span>(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">oldProps</span>[<span style="color:#a6e22e">attr</span>]);
-      } <span style="color:#66d9ef">else</span> {
-        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">removeAttribute</span>(<span style="color:#a6e22e">attr</span>);
-      }
-    }
-  }
-  <span style="color:#75715e">// Add new attributes and event listeners
-</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">newProps</span>) {
-    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(<span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">oldProps</span>) <span style="color:#f92672">||</span> <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>] <span style="color:#f92672">!==</span> <span style="color:#a6e22e">oldProps</span>[<span style="color:#a6e22e">attr</span>]) {
-      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isEventListener</span>(<span style="color:#a6e22e">attr</span>)) {
-        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#a6e22e">attr</span>.<span style="color:#a6e22e">substring</span>(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>]);
-      } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;string&#34;</span>) {
-        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#a6e22e">attr</span>, <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>]);
-      }
-    }
-  }
-}
-</code></pre></div><p>This function has been curated by removing some special cases for simplicity purposes, as always you can have a look at the full working code <a href="https://github.com/CharlyCst/microReact/blob/master/src/%C2%B5React/dom.ts">here</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">updateDomProperties</span>&lt;<span style="color:#f92672">P</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">Q</span>&gt;(
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">dom</span>: <span style="color:#66d9ef">HTMLElement</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">newNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">P</span>&gt;,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">oldNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">Q</span>&gt;
+</span></span><span style="display:flex;"><span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">newProps</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">newNode</span>.<span style="color:#a6e22e">props</span> <span style="color:#66d9ef">as</span> { [<span style="color:#a6e22e">attr</span>: <span style="color:#66d9ef">string</span>]<span style="color:#f92672">:</span> <span style="color:#66d9ef">any</span> };
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">oldProps</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">oldNode</span>.<span style="color:#a6e22e">props</span> <span style="color:#66d9ef">as</span> { [<span style="color:#a6e22e">attr</span>: <span style="color:#66d9ef">string</span>]<span style="color:#f92672">:</span> <span style="color:#66d9ef">any</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Remove no longer needed attributes and event listeners
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">oldProps</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(<span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">newProps</span>) <span style="color:#f92672">||</span> <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>] <span style="color:#f92672">!==</span> <span style="color:#a6e22e">oldProps</span>[<span style="color:#a6e22e">attr</span>]) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isEventListener</span>(<span style="color:#a6e22e">attr</span>)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// For `onfoo` we need to remove the event `foo`
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">removeEventListener</span>(<span style="color:#a6e22e">attr</span>.<span style="color:#a6e22e">substring</span>(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">oldProps</span>[<span style="color:#a6e22e">attr</span>]);
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">removeAttribute</span>(<span style="color:#a6e22e">attr</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Add new attributes and event listeners
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">newProps</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(<span style="color:#a6e22e">attr</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">oldProps</span>) <span style="color:#f92672">||</span> <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>] <span style="color:#f92672">!==</span> <span style="color:#a6e22e">oldProps</span>[<span style="color:#a6e22e">attr</span>]) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isEventListener</span>(<span style="color:#a6e22e">attr</span>)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#a6e22e">attr</span>.<span style="color:#a6e22e">substring</span>(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>]);
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;string&#34;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dom</span>.<span style="color:#a6e22e">setAttribute</span>(<span style="color:#a6e22e">attr</span>, <span style="color:#a6e22e">newProps</span>[<span style="color:#a6e22e">attr</span>]);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This function has been curated by removing some special cases for simplicity purposes, as always you can have a look at the full working code <a href="https://github.com/CharlyCst/microReact/blob/master/src/%C2%B5React/dom.ts">here</a>.</p>
 <p>This function is rather simple, but we need to get it right: if we fail to remove an event listener, for instance a <code>onclick</code> attribute, but still add another one then both will be triggered when the user click the element.</p>
 <p>We have to compose with the raw dom API here, and it does not treat all attributes as equal. For instance to set the <code>onchange</code> property (yes, <a href="https://www.w3schools.com/tags/ev_onchange.asp">it is not</a> <code>onChange</code>, you&rsquo;ve been fooled) we must first understand that it is an event listeners (because it starts with <code>on</code>) and then call <code>addEventListener</code> instead of <code>setAttribute</code> for most other properties.</p>
 <p>And now let&rsquo;s write <code>instantiate</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">instantiate</span>&lt;<span style="color:#f92672">P</span>&gt;(<span style="color:#a6e22e">vNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">P</span>&gt;)<span style="color:#f92672">:</span> <span style="color:#a6e22e">HTMLElement</span> {
-  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">vNode</span>.<span style="color:#66d9ef">class</span>) {
-    <span style="color:#75715e">// This is a µReact Component
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">component</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">vNode</span>.<span style="color:#66d9ef">class</span>(<span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>);
-    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">child</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">component</span>.<span style="color:#a6e22e">render</span>();
-    <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">component</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">component</span>;
-    <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span> <span style="color:#f92672">=</span> [<span style="color:#a6e22e">child</span>];
-    <span style="color:#a6e22e">component</span>.<span style="color:#a6e22e">_vNode</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">vNode</span>;
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">instantiate</span>(<span style="color:#a6e22e">child</span>);
-  } <span style="color:#66d9ef">else</span> {
-    <span style="color:#75715e">// This is an HTML element
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">domElt</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#a6e22e">vNode</span>.<span style="color:#66d9ef">type</span>);
-    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;string&#34;</span>) {
-      <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">child</span> <span style="color:#f92672">=&gt;</span>
-        <span style="color:#a6e22e">domElt</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">instantiate</span>(<span style="color:#a6e22e">child</span>))
-      );
-    }
-    <span style="color:#a6e22e">updateDomProperties</span>(<span style="color:#a6e22e">domElt</span>, <span style="color:#a6e22e">vNode</span>, <span style="color:#a6e22e">emptyVNode</span>);
-    <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">domElt</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">domElt</span>;
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">domElt</span>;
-  }
-}
-</code></pre></div><p>There are two cases:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">instantiate</span>&lt;<span style="color:#f92672">P</span>&gt;(<span style="color:#a6e22e">vNode</span>: <span style="color:#66d9ef">VNode</span>&lt;<span style="color:#f92672">P</span>&gt;)<span style="color:#f92672">:</span> <span style="color:#a6e22e">HTMLElement</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">vNode</span>.<span style="color:#66d9ef">class</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// This is a µReact Component
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">component</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">vNode</span>.<span style="color:#66d9ef">class</span>(<span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">child</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">component</span>.<span style="color:#a6e22e">render</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">component</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">component</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span> <span style="color:#f92672">=</span> [<span style="color:#a6e22e">child</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">component</span>.<span style="color:#a6e22e">_vNode</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">vNode</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">instantiate</span>(<span style="color:#a6e22e">child</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// This is an HTML element
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">domElt</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#a6e22e">vNode</span>.<span style="color:#66d9ef">type</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;string&#34;</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">props</span>.<span style="color:#a6e22e">children</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">child</span> <span style="color:#f92672">=&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">domElt</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">instantiate</span>(<span style="color:#a6e22e">child</span>))
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">updateDomProperties</span>(<span style="color:#a6e22e">domElt</span>, <span style="color:#a6e22e">vNode</span>, <span style="color:#a6e22e">emptyVNode</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">vNode</span>.<span style="color:#a6e22e">domElt</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">domElt</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">domElt</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>There are two cases:</p>
 <ul>
 <li>The virtual node is a component, thus it will not have any corresponding DOM element, but instead it holds a pointer to a fresh instance of its component class. It is also time to render the component for the first time, then we recursively instantiate its children.</li>
 <li>The virtual node correspond to an HTML element, then we create a new DOM element, update its properties to match the virtual element&rsquo;s props and recursively instantiate its children.</li>
 </ul>
 <p>And we are done, we can create and maintain real DOM element. The very last thing we need is the ability to attach our DOM somewhere in the web page, that&rsquo;s the job of <code>render</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">vRoot</span>: <span style="color:#66d9ef">VNode</span>, <span style="color:#a6e22e">root</span>: <span style="color:#66d9ef">HTMLElement</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">null</span>) {
-  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">root</span>) {
-    <span style="color:#a6e22e">diff</span>(<span style="color:#a6e22e">root</span>, <span style="color:#a6e22e">vRoot</span>, <span style="color:#a6e22e">emptyVNode</span>);
-  }
-}
-</code></pre></div><p>Let&rsquo;s give it a try !</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#960050;background-color:#1e0010">µ</span><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">App</span>, document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;app&#34;</span>));
-</code></pre></div><p>And here is the result, a real application rendered by µReact:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">vRoot</span>: <span style="color:#66d9ef">VNode</span>, <span style="color:#a6e22e">root</span>: <span style="color:#66d9ef">HTMLElement</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">root</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">diff</span>(<span style="color:#a6e22e">root</span>, <span style="color:#a6e22e">vRoot</span>, <span style="color:#a6e22e">emptyVNode</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s give it a try !</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ts" data-lang="ts"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">µ</span><span style="color:#a6e22e">React</span>.<span style="color:#a6e22e">render</span>(<span style="color:#a6e22e">App</span>, document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;app&#34;</span>));
+</span></span></code></pre></div><p>And here is the result, a real application rendered by µReact:</p>
 <div>
   <iframe src="https://charlycst.github.io/microReact/" width="100%" height="500px"></iframe>
 </div>
@@ -422,39 +422,39 @@
 </ul>
 <h4 id="keying">Keying</h4>
 <p>When discussing the diffing algorithm we saw the issue of inserting new elements at the beginning or in the middle of the list of children, which is very inefficient:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx">&lt;<span style="color:#f92672">ul</span>&gt;
-  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Python</span>&lt;/<span style="color:#f92672">li</span>&gt;
-  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Go</span>&lt;/<span style="color:#f92672">li</span>&gt;
-&lt;/<span style="color:#f92672">ul</span>&gt;
-
-<span style="color:#75715e">// After inserting a new element
-</span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">ul</span>&gt;
-  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Rust</span>&lt;/<span style="color:#f92672">li</span>&gt;   {<span style="color:#75715e">/* old Python    */</span>}
-  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Python</span>&lt;/<span style="color:#f92672">li</span>&gt; {<span style="color:#75715e">/* old Go        */</span>}
-  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Go</span>&lt;/<span style="color:#f92672">li</span>&gt;     {<span style="color:#75715e">/* fresh element */</span>}
-&lt;/<span style="color:#f92672">ul</span>&gt;
-</code></pre></div><p>Inefficiency is a thing, but there is worse: there is actually a bug in our Todo list application. If you have at least two items in the todo list, click on the first (it then becomes yellow, its state contains <code>clicked: true</code>) and remove it (by clicking the red dot), then the second item takes the first place but becomes yellow, what happened?</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx">&lt;<span style="color:#f92672">List</span>&gt;
-  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Drink apple juice&#34;</span>/&gt; {<span style="color:#75715e">/* clicked:true  */</span>}
-  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:false */</span>}
-&lt;/<span style="color:#f92672">List</span>&gt;
-
-<span style="color:#75715e">// After deleting the first item
-</span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">List</span>&gt;
-  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:true  */</span>}
-&lt;/<span style="color:#f92672">List</span>&gt;
-</code></pre></div><p>When iterating through children the algorithm will first compare <code>&lt;Item text=&quot;Drink apple juice&quot;/&gt;</code> and <code>&lt;Item text=&quot;Eat vegetables&quot;/&gt;</code> and think that you just changed the props, so it keeps the same component with the state <code>clicked:true</code>, update its props and trigger a re render.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>&lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Python</span>&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Go</span>&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// After inserting a new element
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Rust</span>&lt;/<span style="color:#f92672">li</span>&gt;   {<span style="color:#75715e">/* old Python    */</span>}
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Python</span>&lt;/<span style="color:#f92672">li</span>&gt; {<span style="color:#75715e">/* old Go        */</span>}
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">li</span>&gt;<span style="color:#a6e22e">Go</span>&lt;/<span style="color:#f92672">li</span>&gt;     {<span style="color:#75715e">/* fresh element */</span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span></code></pre></div><p>Inefficiency is a thing, but there is worse: there is actually a bug in our Todo list application. If you have at least two items in the todo list, click on the first (it then becomes yellow, its state contains <code>clicked: true</code>) and remove it (by clicking the red dot), then the second item takes the first place but becomes yellow, what happened?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>&lt;<span style="color:#f92672">List</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Drink apple juice&#34;</span>/&gt; {<span style="color:#75715e">/* clicked:true  */</span>}
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:false */</span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">List</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// After deleting the first item
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">List</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:true  */</span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">List</span>&gt;
+</span></span></code></pre></div><p>When iterating through children the algorithm will first compare <code>&lt;Item text=&quot;Drink apple juice&quot;/&gt;</code> and <code>&lt;Item text=&quot;Eat vegetables&quot;/&gt;</code> and think that you just changed the props, so it keeps the same component with the state <code>clicked:true</code>, update its props and trigger a re render.</p>
 <p>A solution is to use <em>keys</em>, those are special props used by the diffing algorithm to decide if it should reuse a component or an HTML element.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-jsx" data-lang="jsx">&lt;<span style="color:#f92672">List</span>&gt;
-  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Drink apple juice&#34;</span>/&gt; {<span style="color:#75715e">/* clicked:true  */</span>}
-  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:false */</span>}
-&lt;/<span style="color:#f92672">List</span>&gt;
-
-<span style="color:#75715e">// After deleting the first item
-</span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">List</span>&gt;
-  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:false */</span>}
-&lt;/<span style="color:#f92672">List</span>&gt;
-</code></pre></div><p>Now because we used key, the diffing algorithm knows that it should reuse the second component instead of updating props of the first.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-jsx" data-lang="jsx"><span style="display:flex;"><span>&lt;<span style="color:#f92672">List</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;aaa&#34;</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Drink apple juice&#34;</span>/&gt; {<span style="color:#75715e">/* clicked:true  */</span>}
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:false */</span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">List</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// After deleting the first item
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;<span style="color:#f92672">List</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">Item</span> <span style="color:#a6e22e">key</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bbb&#34;</span> <span style="color:#a6e22e">text</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Eat vegetables&#34;</span>/&gt;    {<span style="color:#75715e">/* clicked:false */</span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">List</span>&gt;
+</span></span></code></pre></div><p>Now because we used key, the diffing algorithm knows that it should reuse the second component instead of updating props of the first.</p>
 <p>This is why React print a warning if you try to render a list without keys, this kind of performance issue or unexpected behavior may happen.</p>
 <h4 id="react-architecture">React architecture</h4>
 <p>There are a lot of react-like frameworks out there, for instance <a href="https://preactjs.com/">Preact</a> and <a href="https://infernojs.org/">Inferno</a>, they each have their own focus such as bundle size or raw speed and implement more or less of React&rsquo;s features. There is, however, one big difference between most of these frameworks and React itself: the project architecture.</p>
@@ -517,7 +517,7 @@
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2022</span>
+            <span>&copy; 2023</span>
             
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
@@ -535,7 +535,7 @@
 
 
 
-<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -7,7 +7,7 @@
 <meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
 <meta name="description" content="Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.
 Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first." />
-<meta name="keywords" content="compilers, systems, the web" />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
 <link rel="canonical" href="https://charlycst.github.io/posts/wasm-encoding/" />
@@ -25,7 +25,7 @@ Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little
 
 
 
-<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+<link rel="stylesheet" href="/main.min.45ddf772e5691aee8d420f6ca9e691994528f081e5304a2779afb44e80cf1047.css">
 
 
 
@@ -75,7 +75,7 @@ Don&rsquo;t get me wrong, the specification is great, but it may be a little rou
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
     </ul>
 </nav>
 
@@ -124,21 +124,21 @@ Don&rsquo;t get me wrong, the specification is great, but it may be a little rou
 <h2 id="the-wasm-stack-machine">The wasm stack machine</h2>
 <p>Let&rsquo;s start with the basics: what is WebAssembly (wasm) exactly?</p>
 <p>WebAssembly is a set of binary instructions which looks like that with your favorite hex dumper:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">00000000: 0061 736d 0100 0000 0107 0160 027f 7f01  .asm.......`....
-00000010: 7f03 0201 0007 0701 0361 6464 0000 0a09  .........add....
-00000020: 0107 0020 0020 016a 0b                   ... . .j.
-</code></pre></div><p>But you may be more familiar with its textual form (<em>wat</em>, standing for WebAssembly Text):</p>
-<pre><code class="language-wasm" data-lang="wasm">(module
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>00000000: 0061 736d 0100 0000 0107 0160 027f 7f01  .asm.......`....
+</span></span><span style="display:flex;"><span>00000010: 7f03 0201 0007 0701 0361 6464 0000 0a09  .........add....
+</span></span><span style="display:flex;"><span>00000020: 0107 0020 0020 016a 0b                   ... . .j.
+</span></span></code></pre></div><p>But you may be more familiar with its textual form (<em>wat</em>, standing for WebAssembly Text):</p>
+<pre tabindex="0"><code class="language-wasm" data-lang="wasm">(module
   (func $add (param $lhs i32) (param $rhs i32) (result i32)
     get_local $lhs
     get_local $rhs
     i32.add)
-  (export &quot;add&quot; (func $add))
+  (export &#34;add&#34; (func $add))
 )
 </code></pre><p>There are tools to go from one to the other, if you are planning to get your hands dirty with wasm I strongly recommend investing in such <a href="https://github.com/WebAssembly/wabt">tooling</a>, it will save you many hours of debugging.</p>
 <p>Those instructions are targeting a stack based virtual machine following the WasAssembly specification, there are plenty of such VM out there: the <a href="https://github.com/WebAssembly/spec/tree/master/interpreter">reference interpreter</a>, <a href="https://github.com/bytecodealliance/wasmtime">Wasmtime</a> or the one in your browser to quote a few.</p>
 <p>The &lsquo;stack based&rsquo; part means that the VM is doing its calculation on a stack, to compute <code>3 + 5</code> it first pushes 3 onto the top of the stack, then 5 and finally uses the <code>add</code> instruction which consume the topmost two values and push the result back on the stack.</p>
-<pre><code class="language-wasm" data-lang="wasm">i32.const 3
+<pre tabindex="0"><code class="language-wasm" data-lang="wasm">i32.const 3
 i32.const 5
 i32.add
 </code></pre>
@@ -150,7 +150,7 @@ i32.add
 
 
 <p>There is another common family of VM called register-based, which as you guess operate on registers. With such an instruction set adding 3 and 5 would be done in a single instruction, if you already have the values somewhere. It may look like this:</p>
-<pre><code class="language-wasm" data-lang="wasm">(; store the result of register_a + register_b in register_c ;)
+<pre tabindex="0"><code class="language-wasm" data-lang="wasm">(; store the result of register_a + register_b in register_c ;)
 i32.add register_c register_a register_b
 </code></pre><p>As you can see overall register based machines tend to use fewer instructions, they also tend to be faster to interpret because they require less instruction dispatch, but the code size tend to be larger (<a href="https://www.usenix.org/legacy/events/vee05/full_papers/p153-yunhe.pdf">here</a> is a very interesting comparison if you are interested).</p>
 <p>But back to WabAssembly, targeting a stack machine is a good thing for us, compiler writers, because it&rsquo;s generally easier: we don&rsquo;t have to bother with registers at all.</p>
@@ -169,19 +169,19 @@ i32.add register_c register_a register_b
 
 <p>It&rsquo;s not very useful for now, we will need to add a few sections to actually do something with our module.</p>
 <p>At the time of writing there are 11 predefined sections:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Section name   code     description
-Type           0x01   <span style="color:#75715e"># Function signature definitions </span>
-Import         0x02   <span style="color:#75715e"># Import declarations</span>
-Function       0x03   <span style="color:#75715e"># Function declarations</span>
-Table          0x04   <span style="color:#75715e"># Tables used by call_indirect</span>
-Memory         0x05   <span style="color:#75715e"># Memory attributes</span>
-Global         0x06   <span style="color:#75715e"># Global declarations</span>
-Export         0x07   <span style="color:#75715e"># Exports declaration</span>
-Start          0x08   <span style="color:#75715e"># Start function declaration, if any</span>
-Element        0x09   <span style="color:#75715e"># Elements declaration</span>
-Code           0x0a   <span style="color:#75715e"># Function code</span>
-Data           0x0b   <span style="color:#75715e"># Any type of data</span>
-</code></pre></div><p>That is a lot, I will just walk you through a few of them, you can learn more by reading the
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Section name   code     description
+</span></span><span style="display:flex;"><span>Type           0x01   <span style="color:#75715e"># Function signature definitions </span>
+</span></span><span style="display:flex;"><span>Import         0x02   <span style="color:#75715e"># Import declarations</span>
+</span></span><span style="display:flex;"><span>Function       0x03   <span style="color:#75715e"># Function declarations</span>
+</span></span><span style="display:flex;"><span>Table          0x04   <span style="color:#75715e"># Tables used by call_indirect</span>
+</span></span><span style="display:flex;"><span>Memory         0x05   <span style="color:#75715e"># Memory attributes</span>
+</span></span><span style="display:flex;"><span>Global         0x06   <span style="color:#75715e"># Global declarations</span>
+</span></span><span style="display:flex;"><span>Export         0x07   <span style="color:#75715e"># Exports declaration</span>
+</span></span><span style="display:flex;"><span>Start          0x08   <span style="color:#75715e"># Start function declaration, if any</span>
+</span></span><span style="display:flex;"><span>Element        0x09   <span style="color:#75715e"># Elements declaration</span>
+</span></span><span style="display:flex;"><span>Code           0x0a   <span style="color:#75715e"># Function code</span>
+</span></span><span style="display:flex;"><span>Data           0x0b   <span style="color:#75715e"># Any type of data</span>
+</span></span></code></pre></div><p>That is a lot, I will just walk you through a few of them, you can learn more by reading the
 <a href="https://webassembly.github.io/spec/">spec</a> (or reading other posts ¯\_(ツ)_/¯).</p>
 <h2 id="writing-a-wasm-function">Writing a wasm function</h2>
 <p>Let&rsquo;s say we want to put an &lsquo;add&rsquo; section in our module, we will need three sections:</p>
@@ -276,7 +276,7 @@ Data           0x0b   <span style="color:#75715e"># Any type of data</span>
 <p>And boom! The Function section is done!</p>
 <h3 id="adding-the-function-body">Adding the function body</h3>
 <p>It is the part where we actually encore the body of our function, inside the <em>Code</em> section.</p>
-<pre><code class="language-wasm" data-lang="wasm">func $add (param $lhs i32) (param $rhs i32) (result i32)
+<pre tabindex="0"><code class="language-wasm" data-lang="wasm">func $add (param $lhs i32) (param $rhs i32) (result i32)
     get_local $lhs
     get_local $rhs
     i32.add
@@ -418,7 +418,7 @@ Data           0x0b   <span style="color:#75715e"># Any type of data</span>
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2022</span>
+            <span>&copy; 2023</span>
             
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
@@ -436,7 +436,7 @@ Data           0x0b   <span style="color:#75715e"># Any type of data</span>
 
 
 
-<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

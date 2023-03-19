@@ -7,7 +7,7 @@
 <meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
 <meta name="description" content="While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.
 Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes." />
-<meta name="keywords" content="compilers, systems, the web" />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
 <link rel="canonical" href="https://charlycst.github.io/posts/wasm-memory-allocator/" />
@@ -25,7 +25,7 @@ Building an efficient allocator is notoriously hard, as testifies the popular je
 
 
 
-<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+<link rel="stylesheet" href="/main.min.45ddf772e5691aee8d420f6ca9e691994528f081e5304a2779afb44e80cf1047.css">
 
 
 
@@ -75,7 +75,7 @@ Building an efficient allocator is notoriously hard, as testifies the popular je
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
     </ul>
 </nav>
 
@@ -140,16 +140,16 @@ The header is used to store meta-data: the block size and sometimes a few flags,
 
 
 <p>The allocator algorithm can be summarized in a few lines:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">malloc</span>(size):
-    <span style="color:#66d9ef">for</span> block <span style="color:#f92672">in</span> block_list:
-        <span style="color:#66d9ef">if</span> block<span style="color:#f92672">.</span>size <span style="color:#f92672">&gt;=</span> size:
-            list<span style="color:#f92672">.</span>remove(block)
-            <span style="color:#66d9ef">return</span> block
-    print(<span style="color:#e6db74">&#34;Out of memory&#34;</span>)
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">free</span>(block):
-    list<span style="color:#f92672">.</span>append(block)
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">malloc</span>(size):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> block <span style="color:#f92672">in</span> block_list:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> block<span style="color:#f92672">.</span>size <span style="color:#f92672">&gt;=</span> size:
+</span></span><span style="display:flex;"><span>            list<span style="color:#f92672">.</span>remove(block)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Out of memory&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">free</span>(block):
+</span></span><span style="display:flex;"><span>    list<span style="color:#f92672">.</span>append(block)
+</span></span></code></pre></div>
 <div class="notices note" ><p>Such an allocator that return the first big enough block is said to use a <em>first fit</em> strategy, another common strategy is the <em>best fit</em>, where the smallest block that is big enough is returned.</p>
 </div>
 
@@ -211,7 +211,7 @@ A global variable can do the job, in this post I will store it at the very begin
 <div class="notices note" ><p>The language I&rsquo;m using here is called <a href="https://github.com/CharlyCst/zephyr">Zephyr</a>, it&rsquo;s a small language I created for learning purpose. It should be pretty straight forward to translate it to your favorite language.</p>
 </div>
 
-<pre><code class="language-zph" data-lang="zph">fun malloc(size i32) i32 {
+<pre tabindex="0"><code class="language-zph" data-lang="zph">fun malloc(size i32) i32 {
     let addr = read_i32(0) // Address of the first free block
     let target_size = get_real_block_size(size)
     while true {
@@ -262,7 +262,7 @@ A global variable can do the job, in this post I will store it at the very begin
 Then we remove the block from the free list, compute the value new header (its size plus the 32nd bit set to 1) and set both the header and footer to that value and finally return the address to the free space (the first byte after the header).</p>
 <p>As you see it&rsquo;s not that complicated, there are a few details to pay attention to, but the algorithm is relatively simple.
 Let&rsquo;s move to free now, it&rsquo;s basically the reverse operation:</p>
-<pre><code class="language-zph" data-lang="zph">pub fun free(ptr i32) {
+<pre tabindex="0"><code class="language-zph" data-lang="zph">pub fun free(ptr i32) {
     // get back the address of the header
     let addr = ptr - 4
     // insert the block in the chain
@@ -332,7 +332,7 @@ imagine if the user asks for a block of 12 bytes, we break a block to create one
 <p>Now if the caller requests <em>n</em> bytes of body, <em>n &gt; 8</em>, how much should we allocate to preserve the alignment?
 Simple, we know that the body has an alignment of 8, thus <code>body_size + footer_size + next_header_size = body_size + 8</code> must be a multiple of 8, in other words the body size must be a multiple of 8, and we add 4 bytes for the footer.</p>
 <p>Here is a way do to just that in a few lines:</p>
-<pre><code class="language-zph" data-lang="zph">fun get_real_block_size(size: i32): i32 {
+<pre tabindex="0"><code class="language-zph" data-lang="zph">fun get_real_block_size(size: i32): i32 {
     if size &lt;= 8 {
         return 12
     }
@@ -420,7 +420,7 @@ That&rsquo;s why LLVM for instance uses a <em>shadow stack</em>, it&rsquo;s basi
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2022</span>
+            <span>&copy; 2023</span>
             
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
@@ -438,7 +438,7 @@ That&rsquo;s why LLVM for instance uses a <em>shadow stack</em>, it&rsquo;s basi
 
 
 
-<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

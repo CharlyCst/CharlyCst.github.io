@@ -63,7 +63,7 @@ Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little
       <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
       
       <guid>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</guid>
-      <description>function resizeIframe(obj) { setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 300); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 1000); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + &#39;px&#39;;}, 5000); }  Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
+      <description>Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
     </item>
     
     <item>
@@ -100,9 +100,18 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://charlycst.github.io/projects/</guid>
-      <description>Projects  Zephyr  2020-2021   A small (work in progress) programming language that compiles to WebAssembly.
+      <description>Projects Zephyr 2020-2021 A small (work in progress) programming language that compiles to WebAssembly.
 A lot of languages are being retro-fitted to compile down to Wasm, however they are often designed to run on a single kind of platform (Posix-like usually), that is why most of Wasm in use today expect to run on WASI and compilers tools such as Emscripten where built.
 Wasm offers much more flexibility, and I think that to get the most out it runtime bindings must be a language feature rather than baked in our compilers.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://charlycst.github.io/research/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://charlycst.github.io/research/</guid>
+      <description>Research Statement Software is going through a trust crisis. Our society critically relies on software, from the apps on our smartphones to the systems that power our businesses and governments, but software itself is getting out of control. Nowadays, the simplest applications embed hundreds of dependencies written by thousands of independent developers, while our operating systems, kernels, and hypervisors are exposing an ever-growing attack surface that results in a never-ending flow of critical vulnerabilities.</description>
     </item>
     
   </channel>

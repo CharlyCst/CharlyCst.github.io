@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
-<meta name="description" content="function resizeIframe(obj) { setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 300); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 1000); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 5000); }  Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent." />
-<meta name="keywords" content="compilers, systems, the web" />
+<meta name="description" content="Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent." />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
 <link rel="canonical" href="https://charlycst.github.io/posts/an-animated-introduction-to-rl/" />
@@ -24,20 +24,20 @@
 
 
 
-<link rel="stylesheet" href="/main.min.d487cead1af2175c75b6bc503edbc7565ff599722e0820426c20188889be7ed2.css">
+<link rel="stylesheet" href="/main.min.45ddf772e5691aee8d420f6ca9e691994528f081e5304a2779afb44e80cf1047.css">
 
 
 
 
 <meta itemprop="name" content="An Interactive Introduction to Reinforcement Learning">
-<meta itemprop="description" content="function resizeIframe(obj) { setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 300); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 1000); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 5000); }  Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent."><meta itemprop="datePublished" content="2020-03-28T21:01:09+01:00" />
+<meta itemprop="description" content="Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent."><meta itemprop="datePublished" content="2020-03-28T21:01:09+01:00" />
 <meta itemprop="dateModified" content="2020-03-28T21:01:09+01:00" />
-<meta itemprop="wordCount" content="4449"><meta itemprop="image" content="https://charlycst.github.io/img/interactiveIntroductionToRL/interactiveIntroductionToRL.png">
+<meta itemprop="wordCount" content="4424"><meta itemprop="image" content="https://charlycst.github.io/img/interactiveIntroductionToRL/interactiveIntroductionToRL.png">
 <meta itemprop="keywords" content="Algorithm,Reinforcement learning," /><meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://charlycst.github.io/img/interactiveIntroductionToRL/interactiveIntroductionToRL.png"/>
 
 <meta name="twitter:title" content="An Interactive Introduction to Reinforcement Learning"/>
-<meta name="twitter:description" content="function resizeIframe(obj) { setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 300); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 1000); setTimeout(function() {obj.style.height = obj.contentWindow.document.documentElement.scrollHeight &#43; &#39;px&#39;;}, 5000); }  Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent."/>
+<meta name="twitter:description" content="Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent."/>
 
 
 
@@ -72,7 +72,7 @@
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/projects">/projects</a></li>
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
     </ul>
 </nav>
 
@@ -160,13 +160,13 @@
     </figure>
 
 
-<p>Where <em>Q(s, a)</em> is the Q-value of action <em>a</em> in state <em>s</em>, <em>R</em> is the reward Mario gets by taking such action and <em>s'</em> is the state he ends up in. The term <em>π(s', a')</em> is the probability of choosing action <em>a'</em> when the agent is in state <em>s'</em>. <em>π</em> stands for <strong>policy</strong>, it is the function that determines the behavior of the agent.</p>
+<p>Where <em>Q(s, a)</em> is the Q-value of action <em>a</em> in state <em>s</em>, <em>R</em> is the reward Mario gets by taking such action and <em>s&rsquo;</em> is the state he ends up in. The term <em>π(s&rsquo;, a&rsquo;)</em> is the probability of choosing action <em>a&rsquo;</em> when the agent is in state <em>s&rsquo;</em>. <em>π</em> stands for <strong>policy</strong>, it is the function that determines the behavior of the agent.</p>
 <p>The meaning of this equation is exactly what we talked about earlier: the quality of a given <em>(state, action)</em> pair is equal to the reward Mario gets by executing that action in that state, plus the quality of the next <em>(state, action)</em> pair available (weighted by the policy).</p>
 <p>You may also have noticed the <em>γ</em> factor that weight the quality of future Q-Values in the above formula, it is called the <strong>discount factor</strong> and is a quantity between 0 and 1, but more on that a little later.</p>
 <p>In fact, our toy example is simple enough so that we can solve the Bellman equation by hand, no need for a complex algorithm. Let&rsquo;s do it: grab a piece of paper!</p>
 <h3 id="pen--paper-1-solving-the-bellman-equation">Pen &amp; Paper 1: Solving the Bellman Equation</h3>
 <p>Just kidding, it will be quick and painless: I will do it for you ;)</p>
-<p>First we need to decide on a policy, the easiest one is to always pick the best possible action: it is called the <strong>greedy policy</strong>. Let&rsquo;s put it in our Bellman equation, we just need to replace the sum by a max (because in this case π(s',a') = 1 if the choice is optimal, 0 otherwise).</p>
+<p>First we need to decide on a policy, the easiest one is to always pick the best possible action: it is called the <strong>greedy policy</strong>. Let&rsquo;s put it in our Bellman equation, we just need to replace the sum by a max (because in this case π(s&rsquo;,a&rsquo;) = 1 if the choice is optimal, 0 otherwise).</p>
 
     <figure class="center" >
         <img src="/img/interactiveIntroductionToRL/bellmanGreedy.svg"  alt="Simplified bellman with greedy policy"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
@@ -176,7 +176,7 @@
 
 
 <p>We can start by the end: when Mario reaches a block the game is over, so basically for each action leading to a block <em>Q(s, a) = R = 1</em>.</p>
-<p>Now for an action that leads to an empty state (no goomba or block), the reward is zero, then <em>Q(s, a) = γ max(Q(s', a'))</em>.</p>
+<p>Now for an action that leads to an empty state (no goomba or block), the reward is zero, then <em>Q(s, a) = γ max(Q(s&rsquo;, a&rsquo;))</em>.</p>
 <p>So if an action <em>a</em> lead us to a state one step away of a block, the next best action is to reach the block and it has a Q-Value of 1 as we computed just earlier, and <em>Q(s, a) = γ * 1 = γ</em></p>
 <p>Similarly, if we are two steps away from a block, walking toward the block earn us a reward of 0, but the next best action has a Q-Value of <em>γ</em>, thus if we are two steps away and walk toward a block: <em>Q(s, a) = γ²</em>.</p>
 
@@ -192,20 +192,20 @@
 <p>Now we suppose that the agent has no prior knowledge of the environment, thus the agent can&rsquo;t compute the exact Q-values as we did before. What we are going to do instead is to estimate the Q-values by updating them accordingly to our observations while exploring the environment.</p>
 <p>We will use the <strong>Sarsa algorithm</strong> to learn Q-values and improve the behavior of the agent over time. Sarsa is a reinforcement learning algorithm that lay the foundations of a whole class of more evolved reinforcement learning algorithms. Having a deep understanding of Sarsa will actually help you to grasp advanced RL concepts more easily.</p>
 <p>The algorithm is the following:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Q <span style="color:#f92672">=</span> zeroed_q_values
-γ <span style="color:#f92672">=</span> discount_factor
-η <span style="color:#f92672">=</span> learning_rate
-next_s <span style="color:#f92672">=</span> initial_state
-next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
-
-<span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">True</span>):
-	s <span style="color:#f92672">=</span> next_s
-	a <span style="color:#f92672">=</span> next_a
-	r, next_s <span style="color:#f92672">=</span> take_action(s, a)
-	next_a <span style="color:#f92672">=</span> choose_action(Q, next_s)
-	
-	Q[s][a] <span style="color:#f92672">+=</span> η<span style="color:#f92672">*</span>(r <span style="color:#f92672">+</span> γ<span style="color:#f92672">*</span>Q[next_s][next_a] <span style="color:#f92672">-</span> Q[s][a])
-</code></pre></div><p>In plain words: we start at state <em>s</em>, take an action <em>a</em>, observe a reward <em>r</em> and the next state <em>s'</em>, we take another action <em>a'</em> and then we can update the Q-Values by the quantity <em>ΔQ(a, s)</em> computed by:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>Q <span style="color:#f92672">=</span> zeroed_q_values
+</span></span><span style="display:flex;"><span>γ <span style="color:#f92672">=</span> discount_factor
+</span></span><span style="display:flex;"><span>η <span style="color:#f92672">=</span> learning_rate
+</span></span><span style="display:flex;"><span>next_s <span style="color:#f92672">=</span> initial_state
+</span></span><span style="display:flex;"><span>next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> (<span style="color:#66d9ef">True</span>):
+</span></span><span style="display:flex;"><span>	s <span style="color:#f92672">=</span> next_s
+</span></span><span style="display:flex;"><span>	a <span style="color:#f92672">=</span> next_a
+</span></span><span style="display:flex;"><span>	r, next_s <span style="color:#f92672">=</span> take_action(s, a)
+</span></span><span style="display:flex;"><span>	next_a <span style="color:#f92672">=</span> choose_action(Q, next_s)
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	Q[s][a] <span style="color:#f92672">+=</span> η<span style="color:#f92672">*</span>(r <span style="color:#f92672">+</span> γ<span style="color:#f92672">*</span>Q[next_s][next_a] <span style="color:#f92672">-</span> Q[s][a])
+</span></span></code></pre></div><p>In plain words: we start at state <em>s</em>, take an action <em>a</em>, observe a reward <em>r</em> and the next state <em>s&rsquo;</em>, we take another action <em>a&rsquo;</em> and then we can update the Q-Values by the quantity <em>ΔQ(a, s)</em> computed by:</p>
 
     <figure class="center" >
         <img src="/img/interactiveIntroductionToRL/sarsaUpdateRule.svg"  alt="Sarsa update rule"   style="width: 500px; margin: 1rem 0"  class="rounded"/>
@@ -295,7 +295,7 @@ next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
     </figure>
 
 
-<p>The algorithm with the updated rule is called <strong>2-steps-Sarsa</strong>. Now the agent needs to take two steps before being able to update the Q-Value: start in <em>s</em>, take action <em>a</em>, observe reward <em>r</em> and get to <em>s'</em> then again take action <em>a'</em>, observe reward <em>r'</em> and get to <em>s''</em>, finally take action <em>a''</em> and update.</p>
+<p>The algorithm with the updated rule is called <strong>2-steps-Sarsa</strong>. Now the agent needs to take two steps before being able to update the Q-Value: start in <em>s</em>, take action <em>a</em>, observe reward <em>r</em> and get to <em>s&rsquo;</em> then again take action <em>a&rsquo;</em>, observe reward <em>r&rsquo;</em> and get to <em>s&rsquo;&rsquo;</em>, finally take action <em>a&rsquo;&rsquo;</em> and update.</p>
 
     <figure class="center" >
         <img src="/img/interactiveIntroductionToRL/sarsarsa.png"  alt="Sarsarsa"   class="rounded"/>
@@ -305,7 +305,7 @@ next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
 
 
 <p>Yep, you can call it Sarsarsa if you want to.</p>
-<p>In the end, what this new update rule means is that when the agent updates its Q-Value <em>Q(s, a)</em>, it will take into account the two next rewards and the Q-Value two steps further, <em>Q(s'', a'')</em>, that is the quality of the situation two steps away from <em>s</em>.</p>
+<p>In the end, what this new update rule means is that when the agent updates its Q-Value <em>Q(s, a)</em>, it will take into account the two next rewards and the Q-Value two steps further, <em>Q(s&rsquo;&rsquo;, a&rsquo;&rsquo;)</em>, that is the quality of the situation two steps away from <em>s</em>.</p>
 <p>Intuitively, the agent will propagate the information two steps back each time. Thus, if a reward is 4 steps away, the agent needs only 2 trials to propagate information back to the initial state (assuming that it follows two times the same path).</p>
 <p>Obviously Sarsa can be generalized to take any number of steps into account, the update rule for <em>n-steps-Sarsa</em> is:</p>
 
@@ -374,7 +374,7 @@ next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
     </figure>
 
 
-<p>As you can see, the only difference is that we do not update the Q-Value using the next chosen action <em>a'</em> (based on the current non-greedy policy) but with the best possible action <em>a</em>*, as if we used Sarsa with the greedy policy.</p>
+<p>As you can see, the only difference is that we do not update the Q-Value using the next chosen action <em>a&rsquo;</em> (based on the current non-greedy policy) but with the best possible action <em>a</em>*, as if we used Sarsa with the greedy policy.</p>
 <p>Let&rsquo;s just see how it works in practice: try to use Q-learning with <em>ε</em>-greedy and when the agent has learned for long enough switch to the greedy policy (set <em>ε</em> to 0). What is the difference with Sarsa? You can try different values of <em>ε</em>.</p>
 <div>
 <iframe src="https://charlycst.github.io/mario_rl/cliff" width="100%" height="400px" scrolling="no" onload="resizeIframe(this)"></iframe>
@@ -462,7 +462,7 @@ next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/algorithm">Algorithm</a></span><span class="tag"><a href="https://charlycst.github.io/tags/reinforcement-learning">Reinforcement learning</a></span>
                 </p>
 
-            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4449 Words</p>
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4424 Words</p>
 
             <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-03-28</p>
         </div>
@@ -505,7 +505,7 @@ next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2022</span>
+            <span>&copy; 2023</span>
             
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
@@ -523,7 +523,7 @@ next_a <span style="color:#f92672">=</span> choose_action(Q, initial_state)
 
 
 
-<script type="text/javascript" src="/bundle.min.c8935e134d82fea57594e85abf5016b1f2f0bdd6ea9b48342be3df6a0a78559fa166b560bf224fff20e45a9007033cb10ab01625d88a0d38bd84d5ec03391576.js" integrity="sha512-yJNeE02C/qV1lOhav1AWsfLwvdbqm0g0K&#43;Pfagp4VZ&#43;hZrVgvyJP/yDkWpAHAzyxCrAWJdiKDTi9hNXsAzkVdg=="></script>
+<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

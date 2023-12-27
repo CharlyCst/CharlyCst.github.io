@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
+<meta name="author" content="">
 <meta name="description" content="I just learned about dlopen a few days ago while scrolling on Twitter, it&amp;rsquo;s a function for programmatically loading dynamic libraries and then calling into them or using exported symbols. I already knew it was possible before, but until then I didn&amp;rsquo;t know how exactly, but now that all this power is at my fingertips I started to think about all kind of crazy things I could do with that." />
 <meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
@@ -24,7 +24,7 @@
 
 
 
-<link rel="stylesheet" href="/main.min.5c5a3df84877cabf3e8e37f06c22943932153d03c3e732060a08aae265730384.css">
+<link rel="stylesheet" href="/main.min.3f97b3b5428c94755991f5459aa7ab633505d96b6f9dafd68dbb4b6bc111a56a.css">
 
 
 
@@ -166,12 +166,12 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Compile our dynamic library
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Command::new(<span style="color:#e6db74">&#34;rustc&#34;</span>)
 </span></span><span style="display:flex;"><span>        .args(<span style="color:#f92672">&amp;</span>[<span style="color:#e6db74">&#34;--crate-type=dylib&#34;</span>, <span style="color:#e6db74">&#34;dlib/hello.rs&#34;</span>, <span style="color:#e6db74">&#34;-o&#34;</span>])
-</span></span><span style="display:flex;"><span>        .arg(<span style="color:#f92672">&amp;</span>format!(<span style="color:#e6db74">&#34;{}/libhello.so&#34;</span>, out_dir))
+</span></span><span style="display:flex;"><span>        .arg(<span style="color:#f92672">&amp;</span>format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">/libhello.so&#34;</span>, out_dir))
 </span></span><span style="display:flex;"><span>        .status()
 </span></span><span style="display:flex;"><span>        .unwrap();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Linking directives
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;cargo:rustc-link-search={}&#34;</span>, out_dir);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;cargo:rustc-link-search=</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, out_dir);
 </span></span><span style="display:flex;"><span>    println!(<span style="color:#e6db74">&#34;cargo:rustc-link-lib=dylib=hello&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Re-run this script only when the library has changed
@@ -209,7 +209,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 <li>Close the library once we are done (with <code>dlclose</code>).</li>
 </ol>
 <p>The <code>libc</code> crate re-export all these functions, with their raw C interface, so it boils down to this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> libc::{c_void, dlclose, dlopen, dlsym, RTLD_NOW};
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> libc::{c_void, dlclose, dlopen, dlsym, <span style="color:#66d9ef">RTLD_NOW</span>};
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> std::ffi::CString;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
@@ -217,7 +217,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsafe</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Load the library
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> filename <span style="color:#f92672">=</span> CString::new(<span style="color:#e6db74">&#34;./libhello.so&#34;</span>).unwrap();
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> handle <span style="color:#f92672">=</span> dlopen(filename.as_ptr(), RTLD_NOW);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> handle <span style="color:#f92672">=</span> dlopen(filename.as_ptr(), <span style="color:#66d9ef">RTLD_NOW</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> handle.is_null() {
 </span></span><span style="display:flex;"><span>            panic!(<span style="color:#e6db74">&#34;Failed to resolve dlopen&#34;</span>)
 </span></span><span style="display:flex;"><span>        }
@@ -226,7 +226,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> fun_name <span style="color:#f92672">=</span> CString::new(<span style="color:#e6db74">&#34;hello&#34;</span>).unwrap();
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> fun <span style="color:#f92672">=</span> dlsym(handle, fun_name.as_ptr());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fun.is_null() {
-</span></span><span style="display:flex;"><span>            panic!(<span style="color:#e6db74">&#34;Failed to resolve &#39;{}&#39;&#34;</span>, <span style="color:#f92672">&amp;</span>fun_name.to_str().unwrap());
+</span></span><span style="display:flex;"><span>            panic!(<span style="color:#e6db74">&#34;Failed to resolve &#39;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;&#34;</span>, <span style="color:#f92672">&amp;</span>fun_name.to_str().unwrap());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// dlsym returns a C &#39;void*&#39;, cast it to a function pointer
@@ -258,9 +258,9 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> std::io::SeekFrom;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> std::process::Command;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> SOURCE_PATH: <span style="color:#66d9ef">&amp;</span><span style="color:#f92672">&#39;</span>static <span style="color:#66d9ef">str</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/tmp/jit.rs&#34;</span>;
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> LIB_PATH: <span style="color:#66d9ef">&amp;</span><span style="color:#f92672">&#39;</span>static <span style="color:#66d9ef">str</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/tmp/librsjit.so&#34;</span>;
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> FUN_NAME: <span style="color:#66d9ef">&amp;</span><span style="color:#f92672">&#39;</span>static <span style="color:#66d9ef">str</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;calc&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">SOURCE_PATH</span>: <span style="color:#66d9ef">&amp;</span>&#39;static <span style="color:#66d9ef">str</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/tmp/jit.rs&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">LIB_PATH</span>: <span style="color:#66d9ef">&amp;</span>&#39;static <span style="color:#66d9ef">str</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/tmp/librsjit.so&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">FUN_NAME</span>: <span style="color:#66d9ef">&amp;</span>&#39;static <span style="color:#66d9ef">str</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;calc&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">JitEngine</span> {
 </span></span><span style="display:flex;"><span>    file: <span style="color:#a6e22e">File</span>,
@@ -268,7 +268,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">impl</span> JitEngine {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>() -&gt; <span style="color:#a6e22e">Self</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> file <span style="color:#f92672">=</span> File::create(SOURCE_PATH).expect(<span style="color:#e6db74">&#34;Could not create file&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> file <span style="color:#f92672">=</span> File::create(<span style="color:#66d9ef">SOURCE_PATH</span>).expect(<span style="color:#e6db74">&#34;Could not create file&#34;</span>);
 </span></span><span style="display:flex;"><span>        Self { file }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
@@ -284,9 +284,9 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>                format!(
 </span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    #[no_mangle]
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    pub extern fn calc(a: i64, b: i64) -&gt; i64 {{
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                        {}
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    }}&#34;</span>,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    pub extern fn calc(a: i64, b: i64) -&gt; i64 </span><span style="color:#ae81ff">{{</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                        </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    </span><span style="color:#ae81ff">}}</span><span style="color:#e6db74">&#34;</span>,
 </span></span><span style="display:flex;"><span>                    expression
 </span></span><span style="display:flex;"><span>                )
 </span></span><span style="display:flex;"><span>                .as_bytes(),
@@ -295,13 +295,13 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Compile the sources
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Command::new(<span style="color:#e6db74">&#34;rustc&#34;</span>)
-</span></span><span style="display:flex;"><span>            .args(<span style="color:#f92672">&amp;</span>[<span style="color:#e6db74">&#34;--crate-type=dylib&#34;</span>, SOURCE_PATH, <span style="color:#e6db74">&#34;-o&#34;</span>])
-</span></span><span style="display:flex;"><span>            .arg(LIB_PATH)
+</span></span><span style="display:flex;"><span>            .args(<span style="color:#f92672">&amp;</span>[<span style="color:#e6db74">&#34;--crate-type=dylib&#34;</span>, <span style="color:#66d9ef">SOURCE_PATH</span>, <span style="color:#e6db74">&#34;-o&#34;</span>])
+</span></span><span style="display:flex;"><span>            .arg(<span style="color:#66d9ef">LIB_PATH</span>)
 </span></span><span style="display:flex;"><span>            .status()
 </span></span><span style="display:flex;"><span>            .unwrap();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Return a wrapper around the function
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">unsafe</span> { Fun::new(LIB_PATH, FUN_NAME) }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">unsafe</span> { Fun::new(<span style="color:#66d9ef">LIB_PATH</span>, <span style="color:#66d9ef">FUN_NAME</span>) }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div>
@@ -319,7 +319,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsafe</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>(lib_path: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>, fun_name: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; <span style="color:#a6e22e">Self</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Load the library
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> filename <span style="color:#f92672">=</span> CString::new(lib_path).unwrap();
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> handle <span style="color:#f92672">=</span> dlopen(filename.as_ptr(), RTLD_NOW);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> handle <span style="color:#f92672">=</span> dlopen(filename.as_ptr(), <span style="color:#66d9ef">RTLD_NOW</span>);
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> handle.is_null() {
 </span></span><span style="display:flex;"><span>            panic!(<span style="color:#e6db74">&#34;Failed to resolve dlopen&#34;</span>)
 </span></span><span style="display:flex;"><span>        }
@@ -328,7 +328,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> fun_name <span style="color:#f92672">=</span> CString::new(fun_name).unwrap();
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> fun <span style="color:#f92672">=</span> dlsym(handle, fun_name.as_ptr());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fun.is_null() {
-</span></span><span style="display:flex;"><span>            panic!(<span style="color:#e6db74">&#34;Failed to resolve &#39;{}&#39;&#34;</span>, <span style="color:#f92672">&amp;</span>fun_name.to_str().unwrap());
+</span></span><span style="display:flex;"><span>            panic!(<span style="color:#e6db74">&#34;Failed to resolve &#39;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#39;&#34;</span>, <span style="color:#f92672">&amp;</span>fun_name.to_str().unwrap());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// dlsym returns a C &#39;void*&#39;, cast it to a function pointer
@@ -363,7 +363,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> expression <span style="color:#f92672">=</span> read_expression();
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> fun <span style="color:#f92672">=</span> jit.compile(<span style="color:#f92672">&amp;</span>expression);
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> result <span style="color:#f92672">=</span> fun.call(a, b);
-</span></span><span style="display:flex;"><span>        println!(<span style="color:#e6db74">&#34;{}\n&#34;</span>, result);
+</span></span><span style="display:flex;"><span>        println!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{}</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, result);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>You can find the full source code <a href="https://gist.github.com/CharlyCst/1ba59e09f7ff9f844a5e907746d0c52e">here</a>.</p>
@@ -436,7 +436,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
             
-            <span> <a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            <span><a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
     </div>
 </footer>
@@ -449,7 +449,7 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
 
 
 
-<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
+<script type="text/javascript" src="/bundle.min.6697ced562b071c5399a9f9042aee0db06b2346c0a3090facbcbc39ef4ff67a255fa797a9e66c112466324f5ea76dd023656e23d15cc61555260562e29ea5ed2.js" integrity="sha512-ZpfO1WKwccU5mp&#43;QQq7g2wayNGwKMJD6y8vDnvT/Z6JV&#43;nl6nmbBEkZjJPXqdt0CNlbiPRXMYVVSYFYuKepe0g=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

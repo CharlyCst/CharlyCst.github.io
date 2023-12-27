@@ -4,8 +4,9 @@
         <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="author" content="Charly Castes https://twitter.com/CharlyCastes/ ">
-<meta name="description" content="Research Statement Software is going through a trust crisis. Our society critically relies on software, from the apps on our smartphones to the systems that power our businesses and governments, but software itself is getting out of control. Nowadays, the simplest applications embed hundreds of dependencies written by thousands of independent developers, while our operating systems, kernels, and hypervisors are exposing an ever-growing attack surface that results in a never-ending flow of critical vulnerabilities." />
+<meta name="author" content="">
+<meta name="description" content="Research My research focuses on building systems we can trust. Today&amp;rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together. Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security. My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.
+My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware." />
 <meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -24,20 +25,22 @@
 
 
 
-<link rel="stylesheet" href="/main.min.5c5a3df84877cabf3e8e37f06c22943932153d03c3e732060a08aae265730384.css">
+<link rel="stylesheet" href="/main.min.3f97b3b5428c94755991f5459aa7ab633505d96b6f9dafd68dbb4b6bc111a56a.css">
 
 
 
 
 <meta itemprop="name" content="">
-<meta itemprop="description" content="Research Statement Software is going through a trust crisis. Our society critically relies on software, from the apps on our smartphones to the systems that power our businesses and governments, but software itself is getting out of control. Nowadays, the simplest applications embed hundreds of dependencies written by thousands of independent developers, while our operating systems, kernels, and hypervisors are exposing an ever-growing attack surface that results in a never-ending flow of critical vulnerabilities.">
+<meta itemprop="description" content="Research My research focuses on building systems we can trust. Today&rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together. Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security. My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.
+My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware.">
 
-<meta itemprop="wordCount" content="400"><meta itemprop="image" content="https://charlycst.github.io"/>
+<meta itemprop="wordCount" content="320"><meta itemprop="image" content="https://charlycst.github.io"/>
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://charlycst.github.io"/>
 
 <meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="Research Statement Software is going through a trust crisis. Our society critically relies on software, from the apps on our smartphones to the systems that power our businesses and governments, but software itself is getting out of control. Nowadays, the simplest applications embed hundreds of dependencies written by thousands of independent developers, while our operating systems, kernels, and hypervisors are exposing an ever-growing attack surface that results in a never-ending flow of critical vulnerabilities."/>
+<meta name="twitter:description" content="Research My research focuses on building systems we can trust. Today&rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together. Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security. My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.
+My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware."/>
 
 
 
@@ -104,101 +107,75 @@
             
 
             <div class="post-content">
-                <h1 id="research-statement">Research Statement</h1>
-<p><strong>Software is going through a trust crisis</strong>.
-Our society critically relies on software, from the apps on our smartphones to
-the systems that power our businesses and governments, but software itself is
-getting out of control.
-Nowadays, the simplest applications embed hundreds of dependencies written by
-thousands of independent developers, while our operating systems, kernels, and
-hypervisors are exposing an ever-growing attack surface that results in a
-never-ending flow of critical vulnerabilities.</p>
-<p>Our systems, whose fundamental design originates from the &rsquo;70s, are unable to
-face the complexity of the modern world: trust in the all-mighty privileged code
-is eroded, compute is moving to the public cloud, and our applications are
-exponentially growing in size.
-The abstractions baked in our systems, processes and virtual machines, can no
-longer keep up with the increasingly complex trust relationships between
-software components.</p>
-<p>The way we build and compose software is in desperate need for an update.
-<strong>My research focus on developing new isolation abstractions and mechanisms to
-power our systems for the next 50 years.</strong>
-I rethink how isolation should work, from programming languages and compilers
-all the way down to operating systems and hypervisors.</p>
+                <h1 id="research">Research</h1>
+<p>My research focuses on building systems we can trust.
+Today&rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together.
+Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security.
+My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.</p>
+<p>My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware.
+I enjoy revisiting existing abstractions and redesigning them from ground-up with a security first mindset.
+Here are some of the main projects I have been working on:</p>
 
 
-<hr>
-
-<div class="project">
-    <div class="project-title">
-        <b>Semantic Operating Systems</b>
-        
-            <span class="project-date">
+<div class="card-box ">
+    <img src="/img/projects/tyche-banner.png"/> 
+    <div style="padding: 1rem 1rem 0 1rem;">
+        <div class="card-title-box">
+            <b class="card-title">Tyche: Building Systems for Trust</b>
+            
+            <span class="card-date">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                2023
+                2022-ongoing
             </span>
-        
-        </div>
-    <div class="project-body">
-        <div class="project-description">
-            <p>The design of operating systems in wide use today is rooted in systems
-originally developed in the seventies, and hence inherits design decisions
-constrained by the available tooling of that time. In particular, today’s
-operating systems lack understanding of programs, leading to the need for costly
-isolation, unstructured interfaces between software components, and lack of
-flexibility of execution. Yet, programming language design and compiler
-toolchains made stunning progress during the last two decades and opened the
-door to radically different designs for a new generation of operating systems.
-In fact, such designs already emerge in both research and widely used legacy
-systems, achieving better performance with increased reliability.</p>
-        </div>
-        <div class="project-links">
-            
-            
-            
-                <a href="/papers/semantic-os-dw.pdf">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                </a>
             
         </div>
+        <p>The notion of trust has always been the cornerstone of the design of computer systems.
+Today&rsquo;s computers have long departed from the original time sharing machine, and yet the trust model barely evolved.
+From multi-tenant clouds to applications pulling in thousands of dependencies, the world of computing is facing a trust crisis.
+We are building Tyche, a new kind of security monitor that makes it possible to enforce and reason about trust relationships.</p>
     </div>
 </div>
 
 
-<hr>
 
-<div class="project">
-    <div class="project-title">
-        <b>Stateful Confidential Computing</b>
-        
-            <span class="project-date">
+
+<div class="card-box ">
+    <img src="/img/projects/fold-banner.png"/> 
+    <div style="padding: 1rem 1rem 0 1rem;">
+        <div class="card-title-box">
+            <b class="card-title">Fold: Redesigning the Narrow Waist</b>
+            
+            <span class="card-date">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                2021-2022
+                2023-ongoing
             </span>
-        
-        </div>
-    <div class="project-body">
-        <div class="project-description">
-            <p><p>Confidential computing offers very few options for data management, in practice
-limited to the generation of keys private to the enclave. This has the
-unfortunate consequence of preventing the transparent software upgrade of
-stateful services, such as confidential databases, when the service operator
-cannot be trusted. Indeed, data migration could be trivially abused by a
-malicious operator to either leak data or inject corrupt data into the restarted
-enclave.</p>
-<p>We propose attestable software versioning to ensure the trust-worthy software
-migration of stateful enclaves in the context of an untrusted service operator.</p>
-</p>
-        </div>
-        <div class="project-links">
-            
-            
-            
-                <a href="/papers/attestable-sw-versioning.pdf">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                </a>
             
         </div>
+        <p>Dynamic linkers are the narrow waist of operating systems.
+The dynamic linker runs before virtually any program on the system to serve as a glue between the kernel and user space.
+Despite their central role on the system, dynamic linkers have barely evolved since their inception in early Unix systems.
+The Fold project aims to explore how to build and use dynamic linkers to improve system security and robustness.</p>
+    </div>
+</div>
+
+
+
+
+<div class="card-box ">
+    <img src="/img/projects/mirage-banner.png"/> 
+    <div style="padding: 1rem 1rem 0 1rem;">
+        <div class="card-title-box">
+            <b class="card-title">Mirage: Next Generation Firmware</b>
+            
+            <span class="card-date">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                2024-ongoing
+            </span>
+            
+        </div>
+        <p>Firmware is creeping in all systems&rsquo; root of trust.
+Modern firmware is both opaque an all powerful, yet all of our systems security depends on it being correct and trusted.
+The Mirage project explores the theoretical boundaries of firmware reach, while building the foundations of next generation untrusted yet secure firmware.</p>
     </div>
 </div>
 
@@ -226,7 +203,7 @@ migration of stateful enclaves in the context of an untrusted service operator.<
                 <span><a href="https://charlycst.github.io">Charly Castes</a></span>
             
             
-            <span> <a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            <span><a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
     </div>
 </footer>
@@ -239,7 +216,7 @@ migration of stateful enclaves in the context of an untrusted service operator.<
 
 
 
-<script type="text/javascript" src="/bundle.min.4f0263b9d2cc51e6869b9a9f9466d0c763154ee80eb1cde2bd45eee7df9070d899871bc7fb49a1776e63bce42816a0ee725238281fb18f1cbed1138928e0f215.js" integrity="sha512-TwJjudLMUeaGm5qflGbQx2MVTugOsc3ivUXu59&#43;QcNiZhxvH&#43;0mhd25jvOQoFqDuclI4KB&#43;xjxy&#43;0ROJKODyFQ=="></script>
+<script type="text/javascript" src="/bundle.min.6697ced562b071c5399a9f9042aee0db06b2346c0a3090facbcbc39ef4ff67a255fa797a9e66c112466324f5ea76dd023656e23d15cc61555260562e29ea5ed2.js" integrity="sha512-ZpfO1WKwccU5mp&#43;QQq7g2wayNGwKMJD6y8vDnvT/Z6JV&#43;nl6nmbBEkZjJPXqdt0CNlbiPRXMYVVSYFYuKepe0g=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

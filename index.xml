@@ -5,114 +5,94 @@
     <link>https://charlycst.github.io/</link>
     <description>Recent content on CharlyCst</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 12 Sep 2021 10:41:19 +0200</lastBuildDate><atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Sun, 12 Sep 2021 10:41:19 +0200</lastBuildDate>
+    <atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using the TLA⁺ Command Line Interface</title>
       <link>https://charlycst.github.io/posts/tla-cli/</link>
       <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>
-      
       <guid>https://charlycst.github.io/posts/tla-cli/</guid>
       <description>TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
 The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!</description>
     </item>
-    
     <item>
       <title>Compiling Rust Just-In-Time, the easy way</title>
       <link>https://charlycst.github.io/posts/jit-ing-rust/</link>
       <pubDate>Sat, 27 Mar 2021 10:52:44 +0100</pubDate>
-      
       <guid>https://charlycst.github.io/posts/jit-ing-rust/</guid>
       <description>I just learned about dlopen a few days ago while scrolling on Twitter, it&amp;rsquo;s a function for programmatically loading dynamic libraries and then calling into them or using exported symbols. I already knew it was possible before, but until then I didn&amp;rsquo;t know how exactly, but now that all this power is at my fingertips I started to think about all kind of crazy things I could do with that.</description>
     </item>
-    
     <item>
       <title>Building a Memory Allocator for WebAssembly</title>
       <link>https://charlycst.github.io/posts/wasm-memory-allocator/</link>
       <pubDate>Mon, 21 Dec 2020 10:03:08 +0100</pubDate>
-      
       <guid>https://charlycst.github.io/posts/wasm-memory-allocator/</guid>
       <description>While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.
 Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes.</description>
     </item>
-    
     <item>
       <title>Introducing Parrot</title>
       <link>https://charlycst.github.io/posts/introducing-parrot/</link>
       <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
-      
       <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
       <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
 Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
 This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
     </item>
-    
     <item>
       <title>Wasm binary encoding</title>
       <link>https://charlycst.github.io/posts/wasm-encoding/</link>
       <pubDate>Fri, 12 Jun 2020 08:00:00 +0100</pubDate>
-      
       <guid>https://charlycst.github.io/posts/wasm-encoding/</guid>
       <description>Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.
 Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first.</description>
     </item>
-    
     <item>
       <title>An Interactive Introduction to Reinforcement Learning</title>
       <link>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</link>
       <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
-      
       <guid>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</guid>
       <description>Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
     </item>
-    
     <item>
       <title>Diving into Intel MPK</title>
       <link>https://charlycst.github.io/posts/mpk/</link>
       <pubDate>Sat, 29 Feb 2020 12:21:24 +0100</pubDate>
-      
       <guid>https://charlycst.github.io/posts/mpk/</guid>
       <description>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!</description>
     </item>
-    
     <item>
       <title>Speeding up pattern matching with WebAssembly</title>
       <link>https://charlycst.github.io/posts/speeding-up-pattern-matching/</link>
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-      
       <guid>https://charlycst.github.io/posts/speeding-up-pattern-matching/</guid>
       <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
 On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
     </item>
-    
     <item>
       <title>Let&#39;s (re)code React</title>
       <link>https://charlycst.github.io/posts/micro-react/</link>
       <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
-      
       <guid>https://charlycst.github.io/posts/micro-react/</guid>
       <description>With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&amp;rsquo;s get started!</description>
     </item>
-    
     <item>
       <title></title>
       <link>https://charlycst.github.io/projects/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
       <guid>https://charlycst.github.io/projects/</guid>
       <description>Projects Zephyr 2020-2021 A small (work in progress) programming language that compiles to WebAssembly.
 A lot of languages are being retro-fitted to compile down to Wasm, however they are often designed to run on a single kind of platform (Posix-like usually), that is why most of Wasm in use today expect to run on WASI and compilers tools such as Emscripten where built.
 Wasm offers much more flexibility, and I think that to get the most out it runtime bindings must be a language feature rather than baked in our compilers.</description>
     </item>
-    
     <item>
       <title></title>
       <link>https://charlycst.github.io/research/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
       <guid>https://charlycst.github.io/research/</guid>
-      <description>Research Statement Software is going through a trust crisis. Our society critically relies on software, from the apps on our smartphones to the systems that power our businesses and governments, but software itself is getting out of control. Nowadays, the simplest applications embed hundreds of dependencies written by thousands of independent developers, while our operating systems, kernels, and hypervisors are exposing an ever-growing attack surface that results in a never-ending flow of critical vulnerabilities.</description>
+      <description>Research My research focuses on building systems we can trust. Today&amp;rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together. Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security. My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.
+My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware.</description>
     </item>
-    
   </channel>
 </rss>

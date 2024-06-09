@@ -4,17 +4,15 @@
     <title>CharlyCst</title>
     <link>https://charlycst.github.io/</link>
     <description>Recent content on CharlyCst</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 12 Sep 2021 10:41:19 +0200</lastBuildDate>
     <atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using the TLA⁺ Command Line Interface</title>
       <link>https://charlycst.github.io/posts/tla-cli/</link>
       <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>
       <guid>https://charlycst.github.io/posts/tla-cli/</guid>
-      <description>TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
-The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!</description>
+      <description>TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.&#xA;The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!</description>
     </item>
     <item>
       <title>Compiling Rust Just-In-Time, the easy way</title>
@@ -28,25 +26,21 @@ The toolbox is fine, but I personally prefer to edit my specifications using my 
       <link>https://charlycst.github.io/posts/wasm-memory-allocator/</link>
       <pubDate>Mon, 21 Dec 2020 10:03:08 +0100</pubDate>
       <guid>https://charlycst.github.io/posts/wasm-memory-allocator/</guid>
-      <description>While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.
-Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes.</description>
+      <description>While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.&#xA;Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes.</description>
     </item>
     <item>
       <title>Introducing Parrot</title>
       <link>https://charlycst.github.io/posts/introducing-parrot/</link>
       <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
       <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
-      <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
-Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
-This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
+      <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!&#xA;Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.&#xA;This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
     </item>
     <item>
       <title>Wasm binary encoding</title>
       <link>https://charlycst.github.io/posts/wasm-encoding/</link>
       <pubDate>Fri, 12 Jun 2020 08:00:00 +0100</pubDate>
       <guid>https://charlycst.github.io/posts/wasm-encoding/</guid>
-      <description>Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.
-Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first.</description>
+      <description>Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.&#xA;Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first.</description>
     </item>
     <item>
       <title>An Interactive Introduction to Reinforcement Learning</title>
@@ -67,8 +61,7 @@ Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little
       <link>https://charlycst.github.io/posts/speeding-up-pattern-matching/</link>
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
       <guid>https://charlycst.github.io/posts/speeding-up-pattern-matching/</guid>
-      <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
-On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
+      <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.&#xA;On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
     </item>
     <item>
       <title>Let&#39;s (re)code React</title>
@@ -82,17 +75,14 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
       <link>https://charlycst.github.io/projects/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://charlycst.github.io/projects/</guid>
-      <description>Projects Zephyr 2020-2021 A small (work in progress) programming language that compiles to WebAssembly.
-A lot of languages are being retro-fitted to compile down to Wasm, however they are often designed to run on a single kind of platform (Posix-like usually), that is why most of Wasm in use today expect to run on WASI and compilers tools such as Emscripten where built.
-Wasm offers much more flexibility, and I think that to get the most out it runtime bindings must be a language feature rather than baked in our compilers.</description>
+      <description>Projects Zephyr 2020-2021 A small (work in progress) programming language that compiles to WebAssembly.&#xA;A lot of languages are being retro-fitted to compile down to Wasm, however they are often designed to run on a single kind of platform (Posix-like usually), that is why most of Wasm in use today expect to run on WASI and compilers tools such as Emscripten where built.&#xA;Wasm offers much more flexibility, and I think that to get the most out it runtime bindings must be a language feature rather than baked in our compilers.</description>
     </item>
     <item>
       <title></title>
       <link>https://charlycst.github.io/research/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://charlycst.github.io/research/</guid>
-      <description>Research My research focuses on building systems we can trust. Today&amp;rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together. Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security. My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.
-My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware.</description>
+      <description>Research My research focuses on building systems we can trust. Today&amp;rsquo;s computers are complex beasts, composed of dozens or hundreds of hardware and software components stitched together. Their composite nature makes it hard, if not sometimes impossible, to reason about end-to-end system security. My aim is to restore some order to this chaos and build systems we can trust, by providing strong and auditable security guarantees by design.&#xA;My work spans the whole software stack: from user-space applications, to kernels, hypervisors, and firmware.</description>
     </item>
   </channel>
 </rss>

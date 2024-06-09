@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>rust on CharlyCst</title>
+    <title>Rust on CharlyCst</title>
     <link>https://charlycst.github.io/tags/rust/</link>
-    <description>Recent content in rust on CharlyCst</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Rust on CharlyCst</description>
+    <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 27 Mar 2021 10:52:44 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 13 Sep 2021 09:02:34 +0200</lastBuildDate>
     <atom:link href="https://charlycst.github.io/tags/rust/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Compiling Rust Just-In-Time, the easy way</title>
@@ -20,17 +20,14 @@
       <link>https://charlycst.github.io/posts/introducing-parrot/</link>
       <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
       <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
-      <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
-Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
-This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
+      <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!&#xA;Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.&#xA;This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
     </item>
     <item>
       <title>Speeding up pattern matching with WebAssembly</title>
       <link>https://charlycst.github.io/posts/speeding-up-pattern-matching/</link>
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
       <guid>https://charlycst.github.io/posts/speeding-up-pattern-matching/</guid>
-      <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
-On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
+      <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.&#xA;On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
     </item>
   </channel>
 </rss>

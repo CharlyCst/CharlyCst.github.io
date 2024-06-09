@@ -30,17 +30,20 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 
 
 
-<meta itemprop="name" content="Speeding up pattern matching with WebAssembly">
-<meta itemprop="description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
-On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers."><meta itemprop="datePublished" content="2020-02-19T00:00:00+00:00" />
-<meta itemprop="dateModified" content="2020-02-19T00:00:00+00:00" />
-<meta itemprop="wordCount" content="1702"><meta itemprop="image" content="https://charlycst.github.io/img/speedingUpPatternMatching/automaton.png">
-<meta itemprop="keywords" content="Wasm,Rust,Algorithm,Profiling," /><meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://charlycst.github.io/img/speedingUpPatternMatching/automaton.png"/>
 
-<meta name="twitter:title" content="Speeding up pattern matching with WebAssembly"/>
-<meta name="twitter:description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
-On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers."/>
+  <meta itemprop="name" content="Speeding up pattern matching with WebAssembly">
+  <meta itemprop="description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
+On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.">
+  <meta itemprop="datePublished" content="2020-02-19T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2020-02-25T16:40:05+01:00">
+  <meta itemprop="wordCount" content="1702">
+  <meta itemprop="image" content="https://charlycst.github.io/img/speedingUpPatternMatching/automaton.png">
+  <meta itemprop="keywords" content="Wasm,Rust,Algorithm,Profiling">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://charlycst.github.io/img/speedingUpPatternMatching/automaton.png">
+  <meta name="twitter:title" content="Speeding up pattern matching with WebAssembly">
+  <meta name="twitter:description" content="I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
+On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.">
 
 
 
@@ -325,6 +328,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
             <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1702 Words</p>
 
             <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-02-19</p>
+                <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"></circle><line x1="1.05" y1="12" x2="7" y2="12"></line><line x1="17.01" y1="12" x2="22.96" y2="12"></line></svg><a href="3dada9f58d9798ea71f3f648b4c20a92601c69c3" target="_blank" rel="noopener">3dada9f</a> @ 2020-02-25</p>
         </div>
 
         
@@ -365,9 +369,9 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2023</span>
+            <span>&copy; 2024</span>
             
-                <span><a href="https://charlycst.github.io">Charly Castes</a></span>
+                <span><a href="https://charlycst.github.io/">Charly Castes</a></span>
             
             
             <span><a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
@@ -383,7 +387,7 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
 
 
 
-<script type="text/javascript" src="/bundle.min.6697ced562b071c5399a9f9042aee0db06b2346c0a3090facbcbc39ef4ff67a255fa797a9e66c112466324f5ea76dd023656e23d15cc61555260562e29ea5ed2.js" integrity="sha512-ZpfO1WKwccU5mp&#43;QQq7g2wayNGwKMJD6y8vDnvT/Z6JV&#43;nl6nmbBEkZjJPXqdt0CNlbiPRXMYVVSYFYuKepe0g=="></script>
+<script type="text/javascript" src="/bundle.min.22367122448ac311a15ec336cf23e35f8a16a077e9f70f2bb2beffbd522f2f4fec58e1545a4f6bf680c5619fe6ed893d870d782baed08b2a3117d820d47061a3.js" integrity="sha512-IjZxIkSKwxGhXsM2zyPjX4oWoHfp9w8rsr7/vVIvL0/sWOFUWk9r9oDFYZ/m7Yk9hw14K67QiyoxF9gg1HBhow=="></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

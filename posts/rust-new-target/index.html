@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="I really like the Rust ecosystem, it&rsquo;s the language that brought me back to system programming, and since then I have been going down the rabbit hole and ended up building kernels and hypervisors in Rust. Rust is an evolving language, and even though the experience is well polished for most user-level development needs there are some rough edges left. One of which the std/no_std dichotomy.
+Providing support for no_std environment is an explicit design choice, and for libraries whose main use cases are environments that do support std it requires extra testing and a fair amount of #[cfg(not(feature = &quot;no_std&quot;))] sprinkled across the code base." />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="http://localhost:1313/posts/rust-new-target/" />
+
+
+    <title>
+        
+            CharlyCst 
+        
+    </title>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/main.min.a6fd1d8ecc7624f8f894c7318c7ea7d94b4f1a954078d535e1a2a70e3b5fea0e.css">
+
+
+
+
+
+  <meta itemprop="name" content="Porting the Rust Standard Libary to a New Target">
+  <meta itemprop="description" content="I really like the Rust ecosystem, it’s the language that brought me back to system programming, and since then I have been going down the rabbit hole and ended up building kernels and hypervisors in Rust. Rust is an evolving language, and even though the experience is well polished for most user-level development needs there are some rough edges left. One of which the std/no_std dichotomy.
+Providing support for no_std environment is an explicit design choice, and for libraries whose main use cases are environments that do support std it requires extra testing and a fair amount of #[cfg(not(feature = &#34;no_std&#34;))] sprinkled across the code base.">
+  <meta itemprop="datePublished" content="2022-04-24T14:55:02+02:00">
+  <meta itemprop="dateModified" content="2022-12-12T10:19:24+01:00">
+  <meta itemprop="wordCount" content="397">
+  <meta itemprop="image" content="http://localhost:1313/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/">
+  <meta name="twitter:title" content="Porting the Rust Standard Libary to a New Target">
+  <meta name="twitter:description" content="I really like the Rust ecosystem, it’s the language that brought me back to system programming, and since then I have been going down the rabbit hole and ended up building kernels and hypervisors in Rust. Rust is an evolving language, and even though the experience is well polished for most user-level development needs there are some rough edges left. One of which the std/no_std dichotomy.
+Providing support for no_std environment is an explicit design choice, and for libraries whose main use cases are environments that do support std it requires extra testing and a fair amount of #[cfg(not(feature = &#34;no_std&#34;))] sprinkled across the code base.">
+
+
+
+
+
+    <meta property="article:published_time" content="2022-04-24 14:55:02 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">cd ~</span>
+            
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="http://localhost:1313/posts">/posts</a></li><li><a href="http://localhost:1313/research">/research</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>2 minutes
+
+            
+
+            </p>
+        </div>
+
+        <article>
+            <h1 class="post-title">
+                <a href="http://localhost:1313/posts/rust-new-target/">Porting the Rust Standard Libary to a New Target</a>
+            </h1>
+
+            
+
+            <div class="post-content">
+                <p>I really like the Rust ecosystem, it&rsquo;s the language that brought me back to
+system programming, and since then I have been going down the rabbit hole and
+ended up building kernels and hypervisors in Rust.
+Rust is an evolving language, and even though the experience is well
+polished for most user-level development needs there are some rough edges left.
+One of which the <code>std</code>/<code>no_std</code> dichotomy.</p>
+<p>Providing support for <code>no_std</code> environment is an explicit design choice, and for
+libraries whose main use cases are environments that do support <code>std</code> it
+requires extra testing and a fair amount of <code>#[cfg(not(feature = &quot;no_std&quot;))]</code>
+sprinkled across the code base.
+One such example is the <a href="https://github.com/bytecodealliance/wasmtime/tree/main/cranelift">Cranelift
+compiler</a>,
+which uses to bend over backward to support both environments and finally
+decided to <a href="https://docs.wasmtime.dev/stability-platform-support.html#what-about-no_std">remove support for
+<code>no_std</code></a>.</p>
+<p>It turns out I badly wanted to run Cranelift on bare metal for an <a href="https://github.com/CharlyCst/coral">experimental
+kernel</a> I was working on.</p>
+<hr>
+<p>Plan:</p>
+<ol>
+<li>Why? Other options?</li>
+<li>Add a target to Rustc</li>
+</ol>
+<ul>
+<li>Targets, json and compiler built-in</li>
+<li>Where to modify</li>
+<li>Role of arch, vendor, os and env</li>
+<li>Build the compiler, check that the target is available (linking the toolchain)</li>
+</ul>
+<ol start="3">
+<li>Update the standard library</li>
+</ol>
+<ul>
+<li>
+<p>The <code>sys</code> module</p>
+</li>
+<li>
+<p>The <code>unsupported</code> modules</p>
+</li>
+<li>
+<p><a href="https://rustc-dev-guide.rust-lang.org/building/new-target.html">https://rustc-dev-guide.rust-lang.org/building/new-target.html</a></p>
+</li>
+<li>
+<p><a href="https://doc.rust-lang.org/nightly/rustc/platform-support.html">https://doc.rust-lang.org/nightly/rustc/platform-support.html</a></p>
+</li>
+<li>
+<p><a href="https://www.reddit.com/r/rust/comments/5ag60z/how_do_i_bootstrap_rust_to_crosscompile_for_a_new/">https://www.reddit.com/r/rust/comments/5ag60z/how_do_i_bootstrap_rust_to_crosscompile_for_a_new/</a></p>
+</li>
+<li>
+<p><a href="https://doc.rust-lang.org/reference/conditional-compilation.html">https://doc.rust-lang.org/reference/conditional-compilation.html</a></p>
+</li>
+</ul>
+<pre tabindex="0"><code># Print target spec
+rustc +coral -Z unstable-options --target=x86_64-coral-unknown-kernel --print target-spec-json
+
+# Quickly rebuild the standard library
+./x.py build -i library/std --keep-stage 0
+
+# Duplicated items (due to -Z build-std):
+duplicate lang item in crate `core` (which `kernel` depends on): `bool`
+
+# Real duplicated items:
+found duplicate lang item `panic_impl`
+
+#[cfg(not(any(test, target_vendor = &#34;coral&#34;)))]
+#[doc(hidden)]
+#[alloc_error_handler]
+#[unstable(feature = &#34;alloc_internals&#34;, issue = &#34;none&#34;)]
+pub fn rust_oom(layout: Layout) -&gt; ! { ... }
+
+
+# Had to add an &#34;#[allow(dead_code)]&#34; to get the lib to compile
+
+# Path `sys_common/mod.rs`:
+cfg_if::cfg_if! {
+    if #[cfg(any(target_os = &#34;l4re&#34;,
+                 target_os = &#34;hermit&#34;,
+                 feature = &#34;restricted-std&#34;,
+                 target_vendor = &#34;coral&#34;,
+                 all(target_family = &#34;wasm&#34;, not(target_os = &#34;emscripten&#34;)),
+                 all(target_vendor = &#34;fortanix&#34;, target_env = &#34;sgx&#34;)))] {
+        pub use crate::sys::net;
+    } else {
+        pub mod net;
+    }
+}
+
+# Linking now fail:
+linking with `rust-lld` failed: exit status: 1
+...
+note: rust-lld: error: undefined symbol: memcpy
+
+# Update the build process to include &#34;compiler-builtins-mem&#34; featurues.
+# func `std_cargo` in `src/bootstrap/compile.rs`.
+if target.contains(&#34;coral&#34;) {
+    features.push_str(&#34; compiler-builtins-mem&#34;);
+}
+
+# Thead local doesn&#39;t work, so just avoid it in some common places (e.g. hashmaps)
+# func: pub fn new() -&gt; RandomState
+#[cfg(target_vendor = &#34;coral&#34;)]
+return RandomState { k0: 14, k1: 15 };
+</code></pre>
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>397 Words</p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2022-04-24</p>
+                <p>Last edited on 2022-12-12</p>
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h"></span>
+                    <hr />
+                </div>
+
+                <div class="pagination__buttons">
+                    
+                        <span class="button previous">
+                            <a href="http://localhost:1313/posts/all-we-need-are-processes/">
+                                <span class="button__icon">←</span>
+                                <span class="button__text">Processes Are All We Need</span>
+                            </a>
+                        </span>
+                    
+
+                    
+                        <span class="button next">
+                            <a href="http://localhost:1313/posts/tla-cli/">
+                                <span class="button__text">Using the TLA⁺ Command Line Interface</span>
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    
+                </div>
+            </div>
+        
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2024</span>
+            
+                <span><a href="http://localhost:1313/">Charly Castes</a></span>
+            
+            
+            <span><a href="http://localhost:1313/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.ca03643369d34a3ffdf96b403fe35ceb5924ec218c73345ebe3c7b7c3d1ffe2320ead14c71f8c8e0bbe9ac9d30862950f985fe74310dfb0149ee3f68f3586c83.js" integrity="sha512-ygNkM2nTSj/9&#43;WtAP&#43;Nc61kk7CGMczRevjx7fD0f/iMg6tFMcfjI4LvprJ0whilQ&#43;YX&#43;dDEN&#43;wFJ7j9o81hsgw=="></script>
+
+
+
+    </body>
+</html>

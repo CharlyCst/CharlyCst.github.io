@@ -8,6 +8,13 @@
     <language>en</language>
     <atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Reflections on Core Gapping</title>
+      <link>https://charlycst.github.io/posts/reflections-on-core-gapping/</link>
+      <pubDate>Wed, 29 May 2024 14:36:04 +0200</pubDate>
+      <guid>https://charlycst.github.io/posts/reflections-on-core-gapping/</guid>
+      <description>As my work on core gapping recently got published to ASPLOS (to be presented at ASPLOS&#39;25), I&amp;rsquo;ll use this opportunity to take a step back and write down some of my thoughts, one year after starting the project.&#xA;When I started my visiting at Google&amp;rsquo;s system research group last year, we decided to look into the upcoming Arm CCA extension. Arm CCA stands for Confidential Computing Architecture, Arm&amp;rsquo;s solution for confidential VMs.</description>
+    </item>
+    <item>
       <title>Using the TLA⁺ Command Line Interface</title>
       <link>https://charlycst.github.io/posts/tla-cli/</link>
       <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>

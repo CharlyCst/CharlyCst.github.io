@@ -6,8 +6,15 @@
     <description>Recent content in Tags on CharlyCst</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 24 Apr 2022 23:06:29 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 08 Sep 2024 16:54:49 +0200</lastBuildDate>
     <atom:link href="https://charlycst.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Research</title>
+      <link>https://charlycst.github.io/tags/research/</link>
+      <pubDate>Wed, 29 May 2024 14:36:04 +0200</pubDate>
+      <guid>https://charlycst.github.io/tags/research/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Cli</title>
       <link>https://charlycst.github.io/tags/cli/</link>

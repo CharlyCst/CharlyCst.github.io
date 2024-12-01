@@ -9,6 +9,90 @@
         <atom:link href="https://charlycst.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
+            <title>Reflections on Core Gapping</title>
+            <link>https://charlycst.github.io/posts/reflections-on-core-gapping/</link>
+            <pubDate>Wed, 29 May 2024 14:36:04 +0200</pubDate>
+            
+            <guid>https://charlycst.github.io/posts/reflections-on-core-gapping/</guid>
+            <description>As my work on core gapping recently got published to ASPLOS (to be presented at ASPLOS&#39;25), I&amp;rsquo;ll use this opportunity to take a step back and write down some of my thoughts, one year after starting the project.
+When I started my visiting at Google&amp;rsquo;s system research group last year, we decided to look into the upcoming Arm CCA extension. Arm CCA stands for Confidential Computing Architecture, Arm&amp;rsquo;s solution for confidential VMs.</description>
+            <content type="html"><![CDATA[<p>As my <a href="/papers/coregap-asplos24.pdf">work on core gapping</a> recently got published to ASPLOS (to be presented at ASPLOS'25), I&rsquo;ll use this opportunity to take a step back and write down some of my thoughts, one year after starting the project.</p>
+<p>When I started my visiting at Google&rsquo;s system research group last year, we decided to look into the upcoming Arm CCA extension.
+Arm CCA stands for Confidential Computing Architecture, Arm&rsquo;s solution for confidential VMs.
+What is interesting with Arm is that the architecture is much more open that Intel or AMD x86, with open-source <a href="https://www.trustedfirmware.org/">firmware implementations</a> and an <a href="https://developer.arm.com/Tools%20and%20Software/Fixed%20Virtual%20Platforms">official emulator</a>.
+And in particular it makes it possible to experiment with custom security monitors (the RMM in Arm parlance), a gold mine of opportunities for people like me.</p>
+<p>The idea for my stay at Google was to look into the elephant in the room<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> with respect to confidential VMs: how to deal with transient execution attacks and CPU bugs.
+Indeed, confidential computing promises safe (trusted) execution environments where code and data are completely protection from the outside, including the cloud service provider and other tenants.
+However, the protections are defined at the <em>architectural level</em>, but it is now well known that <em>micro-architecture</em> <a href="https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability">can be exploited to leak secrets</a>.
+The thing is that in the context of confidential computing those attacks are event more likely, because the threat model assumes the hypervisor or the OS can be the bad guy and it is easy to exploit micro-architecture when controling and scheduling resources on the machine.</p>
+<p>That being said perfect is the enemy of good, and I do think confidential computing is a great additional line of defense.
+Yet I also think we can do better that the status quo, and plugging the leak of transient execution attack is one obvious improvement.
+We spent some time investigating ideas to reduce exposure to transient execution attacks on Arm CCA, but none of the solutions we came up with initially were completely satisfying.
+In the end those were more mitigations than holistic solutions, and we do need a principled and robust solution.</p>
+<p>Core-gapping started from a relatively simple observation: almost all of those attacks we were trying to mitigate rely on the fact that untrusted software can execute on the same physical core as the victim.
+So, what if we don&rsquo;t run untrusted code on those cores?
+Well, it turns out that solves a whole bunch of issues, and that is how core gapping was born.</p>
+<h2 id="dedicating-cores-in-the-cloud">Dedicating cores in the cloud</h2>
+<p>We propose a simple solution: to run confidential VMs on dedicated cores.
+If the only trusted code runs on a CPU core most of the side channels and attack vectors just go away.
+Of course cross-core attacks do exist, yes one can exploit L3 caches.
+But the points is that running only trusted code on the CPU gets us 95%<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> there if our goal is to mitigate all known practical attacks.</p>
+<p>Dedicating whole cores to vCPUs might seem a bit draconian at first, and yet that solution fits the use case of confidential VMs surprisingly well.
+People often associate virtualization with <em>consolidation</em>, i.e. heavily multiplexing and oversubscribing hardware resources to maximise the bang for bucks one can get out of a given machine.
+Consolidation is (part of) what made virtualization so successful, and is still heavily used today when running on-premise.
+Cloud providers are playing a whole different game, however.
+When renting a VM on one the of big cloud providers what one gets really is a slice of the hardware.
+The customer is getting the cores and memory they are paying for<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>.
+And it is a happy coincidence, because the public cloud is exactly where I would like to use confidential VMs.</p>
+<p>By dedicating cores to customers cloud providers are already pretty close to implementing core gapping, they are only missing the last few miles.
+If there is no other customers sharing the core, what else is still running on there?
+Well, the cloud provider&rsquo;s hypervisor.
+What core gapping really is about is running the hypervisor somewhere else, on a separate core.</p>
+<h2 id="running-vms-with-a-remote-hypervisor">Running VMs with a remote hypervisor</h2>
+<p>That one sounds a bit crazy at first, and yet once again it fits very elegantly withing existing systems.
+To run confidential VMs what (most) architectures are doing is splitting the responsibilities of the hypervisor in two: the huge, legacy hypervisor such (e.g. KVM or Hyper-V) stays responsible for managing resources, emulation, and scheduling, but a new, lightweight security monitor becomes responsible for validation and enforcement.
+On Arm this security monitor is called the RMM.
+On existing systems the legacy hypervisor calls into the security monitor using some sort of system call (depending on the architecture), in other words it context-switches to the security monitor <em>on the same core</em>.
+The crux of the core gapping design is to replace this context switch with a cross-core RPC, and voilà!
+The hypervisor runs on another core.</p>
+<p>Now there are some details to get right to ensure both correctness and performance, but really nothing far fetched.
+Details are in the paper, but I will share two of the main tricks here.</p>
+<p>The first one to redirect <code>kvm_kick_vcpu</code> to target the remote core when appropriate (i.e. when the vCPU is running).
+This one saved me from a seemingly never ending debugging session due to lost interrupts in the VM.
+The <code>kvm_kick_vcpu</code> function is what KVM uses to force a VM exit on a guest vCPU, once it got the ability to target remote cores the whole VM started running smoothly.</p>
+<p>The second trick is interrupt delegation.
+In a normal setting each core is responsible for handling its own interrupts, but with core gapping a single host core handles the interrupts of dozens of vCPUs running on different cores each!
+For the sake of illustration let&rsquo;s assume a system running 64 vCPUs on 64 physical cores and consider how much timer interrupts the host core has to handle.
+The timer frequency is in the ~100Hz for a standard Linux guest, with interrupt processing taking in the order of a few µs on the host, let&rsquo;s say 3µs, and each timer tick causing two exits.
+With those numbers we get 64 * 100 * 2 * 3µs = 38.4ms per second spent on handling <em>timer interrupts</em>, 3.8% of CPU time!
+But worse this means 12,800 exits per second delaying actually useful and latency sensitive interrupts.
+This is not acceptable, and in fact handling all interrupts on the host core simply do not scale when increasing the vCPU count.</p>
+<p>It turns out there is no need to delegate timer interrupts to the host, they can be processed locally just fine.
+Existing system delegate the timer because the host is responsible for scheduling on the core, but with core gapping the host already gave complete control of one of the core to a vCPU, so getting timer interrupts from that core do not make sense anymore.
+Another type of interrupts that doesn&rsquo;t need to go through the host are IPIs between vCPUs.
+Once we implemented interrupt delegation core gapping recovered all the performance it lost compared to vanilla VMs, and in fact it even outperforms them!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>When I look back at the trends and evolution of security in the cloud it seems to me that core gapping is the logical next step.
+In short core gapping is the culmination of two trends: first strict partitioning of cores among tenants to minimize the attack surface due to transient-execution attacks and CPU bugs, and second the rise of confidential computing that promises to remove the cloud provider itself from the trusted computing base, similar to how other tenants are untrusted.
+With core gapping we can finally achieve both, and as a bonus core gapping can be implemented without any hardware modifications on any Arm machine with CCA support.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Well, one of the elephants in the room, but I will save that for future posts.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>This number is coming out of my hat™.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>That is true for &ldquo;normal&rdquo; instances, if you rent spot VMs or use one of the many flavor of serverless computing chances are your VM will use multiplexed resources.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+]]></content>
+        </item>
+        
+        <item>
             <title>Using the TLA⁺ Command Line Interface</title>
             <link>https://charlycst.github.io/posts/tla-cli/</link>
             <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>

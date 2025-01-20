@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithm on CharlyCst</title>
-    <link>http://localhost:1313/tags/algorithm/</link>
+    <link>https://charlycst.github.io/tags/algorithm/</link>
     <description>Recent content in Algorithm on CharlyCst</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Tue, 05 May 2020 23:18:49 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://charlycst.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>An Interactive Introduction to Reinforcement Learning</title>
-      <link>http://localhost:1313/posts/an-animated-introduction-to-rl/</link>
+      <link>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</link>
       <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
-      <guid>http://localhost:1313/posts/an-animated-introduction-to-rl/</guid>
+      <guid>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</guid>
       <description>Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
     </item>
     <item>
       <title>Speeding up pattern matching with WebAssembly</title>
-      <link>http://localhost:1313/posts/speeding-up-pattern-matching/</link>
+      <link>https://charlycst.github.io/posts/speeding-up-pattern-matching/</link>
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/speeding-up-pattern-matching/</guid>
+      <guid>https://charlycst.github.io/posts/speeding-up-pattern-matching/</guid>
       <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.&#xA;On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
     </item>
     <item>
       <title>Let&#39;s (re)code React</title>
-      <link>http://localhost:1313/posts/micro-react/</link>
+      <link>https://charlycst.github.io/posts/micro-react/</link>
       <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/micro-react/</guid>
+      <guid>https://charlycst.github.io/posts/micro-react/</guid>
       <description>With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&amp;rsquo;s get started!</description>
     </item>
   </channel>

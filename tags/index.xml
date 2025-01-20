@@ -2,80 +2,80 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on CharlyCst</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>https://charlycst.github.io/tags/</link>
     <description>Recent content in Tags on CharlyCst</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 08 Sep 2024 16:54:49 +0200</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 20 Jan 2025 21:42:37 +0100</lastBuildDate>
+    <atom:link href="https://charlycst.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Research</title>
-      <link>http://localhost:1313/tags/research/</link>
+      <link>https://charlycst.github.io/tags/research/</link>
       <pubDate>Wed, 29 May 2024 14:36:04 +0200</pubDate>
-      <guid>http://localhost:1313/tags/research/</guid>
+      <guid>https://charlycst.github.io/tags/research/</guid>
       <description></description>
     </item>
     <item>
       <title>Cli</title>
-      <link>http://localhost:1313/tags/cli/</link>
+      <link>https://charlycst.github.io/tags/cli/</link>
       <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>
-      <guid>http://localhost:1313/tags/cli/</guid>
+      <guid>https://charlycst.github.io/tags/cli/</guid>
       <description></description>
     </item>
     <item>
       <title>Rust</title>
-      <link>http://localhost:1313/tags/rust/</link>
+      <link>https://charlycst.github.io/tags/rust/</link>
       <pubDate>Sat, 27 Mar 2021 10:52:44 +0100</pubDate>
-      <guid>http://localhost:1313/tags/rust/</guid>
+      <guid>https://charlycst.github.io/tags/rust/</guid>
       <description></description>
     </item>
     <item>
       <title>Wasm</title>
-      <link>http://localhost:1313/tags/wasm/</link>
+      <link>https://charlycst.github.io/tags/wasm/</link>
       <pubDate>Mon, 21 Dec 2020 10:03:08 +0100</pubDate>
-      <guid>http://localhost:1313/tags/wasm/</guid>
+      <guid>https://charlycst.github.io/tags/wasm/</guid>
       <description></description>
     </item>
     <item>
       <title>Algorithm</title>
-      <link>http://localhost:1313/tags/algorithm/</link>
+      <link>https://charlycst.github.io/tags/algorithm/</link>
       <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
-      <guid>http://localhost:1313/tags/algorithm/</guid>
+      <guid>https://charlycst.github.io/tags/algorithm/</guid>
       <description></description>
     </item>
     <item>
       <title>Reinforcement Learning</title>
-      <link>http://localhost:1313/tags/reinforcement-learning/</link>
+      <link>https://charlycst.github.io/tags/reinforcement-learning/</link>
       <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
-      <guid>http://localhost:1313/tags/reinforcement-learning/</guid>
+      <guid>https://charlycst.github.io/tags/reinforcement-learning/</guid>
       <description></description>
     </item>
     <item>
       <title>Go</title>
-      <link>http://localhost:1313/tags/go/</link>
+      <link>https://charlycst.github.io/tags/go/</link>
       <pubDate>Sat, 29 Feb 2020 12:21:24 +0100</pubDate>
-      <guid>http://localhost:1313/tags/go/</guid>
+      <guid>https://charlycst.github.io/tags/go/</guid>
       <description></description>
     </item>
     <item>
       <title>Profiling</title>
-      <link>http://localhost:1313/tags/profiling/</link>
+      <link>https://charlycst.github.io/tags/profiling/</link>
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/profiling/</guid>
+      <guid>https://charlycst.github.io/tags/profiling/</guid>
       <description></description>
     </item>
     <item>
       <title>React</title>
-      <link>http://localhost:1313/tags/react/</link>
+      <link>https://charlycst.github.io/tags/react/</link>
       <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/react/</guid>
+      <guid>https://charlycst.github.io/tags/react/</guid>
       <description></description>
     </item>
     <item>
       <title>Web</title>
-      <link>http://localhost:1313/tags/web/</link>
+      <link>https://charlycst.github.io/tags/web/</link>
       <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/web/</guid>
+      <guid>https://charlycst.github.io/tags/web/</guid>
       <description></description>
     </item>
   </channel>

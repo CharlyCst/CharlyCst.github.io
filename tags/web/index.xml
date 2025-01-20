@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Web on CharlyCst</title>
-    <link>https://charlycst.github.io/tags/web/</link>
+    <link>http://localhost:1313/tags/web/</link>
     <description>Recent content in Web on CharlyCst</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Sun, 26 Jan 2020 11:17:53 +0100</lastBuildDate>
-    <atom:link href="https://charlycst.github.io/tags/web/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/web/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Let&#39;s (re)code React</title>
-      <link>https://charlycst.github.io/posts/micro-react/</link>
+      <link>http://localhost:1313/posts/micro-react/</link>
       <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>https://charlycst.github.io/posts/micro-react/</guid>
+      <guid>http://localhost:1313/posts/micro-react/</guid>
       <description>With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&amp;rsquo;s get started!</description>
     </item>
   </channel>

@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cli on CharlyCst</title>
-    <link>https://charlycst.github.io/tags/cli/</link>
+    <link>http://localhost:1313/tags/cli/</link>
     <description>Recent content in Cli on CharlyCst</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Sun, 24 Apr 2022 23:06:29 +0200</lastBuildDate>
-    <atom:link href="https://charlycst.github.io/tags/cli/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/cli/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using the TLA⁺ Command Line Interface</title>
-      <link>https://charlycst.github.io/posts/tla-cli/</link>
+      <link>http://localhost:1313/posts/tla-cli/</link>
       <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>
-      <guid>https://charlycst.github.io/posts/tla-cli/</guid>
+      <guid>http://localhost:1313/posts/tla-cli/</guid>
       <description>TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.&#xA;The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!</description>
     </item>
     <item>
       <title>Introducing Parrot</title>
-      <link>https://charlycst.github.io/posts/introducing-parrot/</link>
+      <link>http://localhost:1313/posts/introducing-parrot/</link>
       <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
-      <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
+      <guid>http://localhost:1313/posts/introducing-parrot/</guid>
       <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!&#xA;Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.&#xA;This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
     </item>
   </channel>

@@ -1,19 +1,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Posts on CharlyCst</title>
-        <link>https://charlycst.github.io/posts/</link>
+        <link>http://localhost:1313/posts/</link>
         <description>Recent content in Posts on CharlyCst</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <lastBuildDate>Wed, 29 May 2024 14:36:04 +0200</lastBuildDate>
-        <atom:link href="https://charlycst.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
             <title>Reflections on Core Gapping</title>
-            <link>https://charlycst.github.io/posts/reflections-on-core-gapping/</link>
+            <link>http://localhost:1313/posts/reflections-on-core-gapping/</link>
             <pubDate>Wed, 29 May 2024 14:36:04 +0200</pubDate>
             
-            <guid>https://charlycst.github.io/posts/reflections-on-core-gapping/</guid>
+            <guid>http://localhost:1313/posts/reflections-on-core-gapping/</guid>
             <description>As my work on core gapping recently got published to ASPLOS (to be presented at ASPLOS&#39;25), I&amp;rsquo;ll use this opportunity to take a step back and write down some of my thoughts, one year after starting the project.
 When I started my visiting at Google&amp;rsquo;s system research group last year, we decided to look into the upcoming Arm CCA extension. Arm CCA stands for Confidential Computing Architecture, Arm&amp;rsquo;s solution for confidential VMs.</description>
             <content type="html"><![CDATA[<p>As my <a href="/papers/coregap-asplos24.pdf">work on core gapping</a> recently got published to ASPLOS (to be presented at ASPLOS'25), I&rsquo;ll use this opportunity to take a step back and write down some of my thoughts, one year after starting the project.</p>
@@ -93,11 +93,162 @@ With core gapping we can finally achieve both, and as a bonus core gapping can b
         </item>
         
         <item>
+            <title>Processes Are All We Need</title>
+            <link>http://localhost:1313/posts/all-we-need-are-processes/</link>
+            <pubDate>Fri, 30 Jun 2023 14:55:02 +0200</pubDate>
+            
+            <guid>http://localhost:1313/posts/all-we-need-are-processes/</guid>
+            <description>POCS, or Principles of Computer Systems, is one of the must-take class for any student studying systems at EPFL. The class is based on weekly paper reading an essay writing. One of the essays that causes the most confusion among students each year is the following:
+Are processes virtual machines? And are virtual machines processes?
+I wrote an essay on this question myself a few years ago, and I discussed this topic at multiple occasions with fellow PhD and Master students.</description>
+            <content type="html"><![CDATA[<p>POCS, or Principles of Computer Systems, is one of the must-take class for any
+student studying systems at EPFL. The class is based on weekly paper reading an
+essay writing. One of the essays that causes the most confusion among students
+each year is the following:</p>
+<p><em>Are processes virtual machines? And are virtual machines processes?</em></p>
+<p>I wrote an essay on this question myself a few years ago, and I discussed this
+topic at multiple occasions with fellow PhD and Master students.
+At first, the question is surprising and the answer seems to be &ldquo;No and no&rdquo;, but
+on second though processes and virtual machines have a lot of similarities.</p>
+<p>Processes are to operating systems what virtual machines are to hypervisors.
+On type 2 hypervisors, such as <a href="https://en.m.wikipedia.org/wiki/Kernel-based_Virtual_Machine">KVM</a>,
+virtual machines can even be collocated with processes and share a lot of the
+kernel internal implementation.
+I could go on and name similarities and differences, but I will let future
+students forge their own opinion on the topic.</p>
+<p>There is one difference, however, that I do find particularly interesting: VMs
+and processes expose a <em>very different</em> system interface.
+A virtual machine exposes a &ldquo;bare metal&rdquo; interface, where (ignoring
+para-virtualization) the guest believes it is executing on directly on physical
+hardware.
+A process, however, expose an operating system interface, that is abstractions
+such as files, network, and processes.</p>
+<p>Another question asked in POCS, yet not in the same lecture, is the following:
+<em>Why can VMs easily be migrated, but processes can not?</em>
+The reason why it is hard to migrate a process has to do with the operating
+system interface.</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Porting the Rust Standard Libary to a New Target</title>
+            <link>http://localhost:1313/posts/rust-new-target/</link>
+            <pubDate>Sun, 24 Apr 2022 14:55:02 +0200</pubDate>
+            
+            <guid>http://localhost:1313/posts/rust-new-target/</guid>
+            <description>I really like the Rust ecosystem, it&amp;rsquo;s the language that brought me back to system programming, and since then I have been going down the rabbit hole and ended up building kernels and hypervisors in Rust. Rust is an evolving language, and even though the experience is well polished for most user-level development needs there are some rough edges left. One of which the std/no_std dichotomy.
+Providing support for no_std environment is an explicit design choice, and for libraries whose main use cases are environments that do support std it requires extra testing and a fair amount of #[cfg(not(feature = &amp;quot;no_std&amp;quot;))] sprinkled across the code base.</description>
+            <content type="html"><![CDATA[<p>I really like the Rust ecosystem, it&rsquo;s the language that brought me back to
+system programming, and since then I have been going down the rabbit hole and
+ended up building kernels and hypervisors in Rust.
+Rust is an evolving language, and even though the experience is well
+polished for most user-level development needs there are some rough edges left.
+One of which the <code>std</code>/<code>no_std</code> dichotomy.</p>
+<p>Providing support for <code>no_std</code> environment is an explicit design choice, and for
+libraries whose main use cases are environments that do support <code>std</code> it
+requires extra testing and a fair amount of <code>#[cfg(not(feature = &quot;no_std&quot;))]</code>
+sprinkled across the code base.
+One such example is the <a href="https://github.com/bytecodealliance/wasmtime/tree/main/cranelift">Cranelift
+compiler</a>,
+which uses to bend over backward to support both environments and finally
+decided to <a href="https://docs.wasmtime.dev/stability-platform-support.html#what-about-no_std">remove support for
+<code>no_std</code></a>.</p>
+<p>It turns out I badly wanted to run Cranelift on bare metal for an <a href="https://github.com/CharlyCst/coral">experimental
+kernel</a> I was working on.</p>
+<hr>
+<p>Plan:</p>
+<ol>
+<li>Why? Other options?</li>
+<li>Add a target to Rustc</li>
+</ol>
+<ul>
+<li>Targets, json and compiler built-in</li>
+<li>Where to modify</li>
+<li>Role of arch, vendor, os and env</li>
+<li>Build the compiler, check that the target is available (linking the toolchain)</li>
+</ul>
+<ol start="3">
+<li>Update the standard library</li>
+</ol>
+<ul>
+<li>
+<p>The <code>sys</code> module</p>
+</li>
+<li>
+<p>The <code>unsupported</code> modules</p>
+</li>
+<li>
+<p><a href="https://rustc-dev-guide.rust-lang.org/building/new-target.html">https://rustc-dev-guide.rust-lang.org/building/new-target.html</a></p>
+</li>
+<li>
+<p><a href="https://doc.rust-lang.org/nightly/rustc/platform-support.html">https://doc.rust-lang.org/nightly/rustc/platform-support.html</a></p>
+</li>
+<li>
+<p><a href="https://www.reddit.com/r/rust/comments/5ag60z/how_do_i_bootstrap_rust_to_crosscompile_for_a_new/">https://www.reddit.com/r/rust/comments/5ag60z/how_do_i_bootstrap_rust_to_crosscompile_for_a_new/</a></p>
+</li>
+<li>
+<p><a href="https://doc.rust-lang.org/reference/conditional-compilation.html">https://doc.rust-lang.org/reference/conditional-compilation.html</a></p>
+</li>
+</ul>
+<pre tabindex="0"><code># Print target spec
+rustc +coral -Z unstable-options --target=x86_64-coral-unknown-kernel --print target-spec-json
+
+# Quickly rebuild the standard library
+./x.py build -i library/std --keep-stage 0
+
+# Duplicated items (due to -Z build-std):
+duplicate lang item in crate `core` (which `kernel` depends on): `bool`
+
+# Real duplicated items:
+found duplicate lang item `panic_impl`
+
+#[cfg(not(any(test, target_vendor = &#34;coral&#34;)))]
+#[doc(hidden)]
+#[alloc_error_handler]
+#[unstable(feature = &#34;alloc_internals&#34;, issue = &#34;none&#34;)]
+pub fn rust_oom(layout: Layout) -&gt; ! { ... }
+
+
+# Had to add an &#34;#[allow(dead_code)]&#34; to get the lib to compile
+
+# Path `sys_common/mod.rs`:
+cfg_if::cfg_if! {
+    if #[cfg(any(target_os = &#34;l4re&#34;,
+                 target_os = &#34;hermit&#34;,
+                 feature = &#34;restricted-std&#34;,
+                 target_vendor = &#34;coral&#34;,
+                 all(target_family = &#34;wasm&#34;, not(target_os = &#34;emscripten&#34;)),
+                 all(target_vendor = &#34;fortanix&#34;, target_env = &#34;sgx&#34;)))] {
+        pub use crate::sys::net;
+    } else {
+        pub mod net;
+    }
+}
+
+# Linking now fail:
+linking with `rust-lld` failed: exit status: 1
+...
+note: rust-lld: error: undefined symbol: memcpy
+
+# Update the build process to include &#34;compiler-builtins-mem&#34; featurues.
+# func `std_cargo` in `src/bootstrap/compile.rs`.
+if target.contains(&#34;coral&#34;) {
+    features.push_str(&#34; compiler-builtins-mem&#34;);
+}
+
+# Thead local doesn&#39;t work, so just avoid it in some common places (e.g. hashmaps)
+# func: pub fn new() -&gt; RandomState
+#[cfg(target_vendor = &#34;coral&#34;)]
+return RandomState { k0: 14, k1: 15 };
+</code></pre>]]></content>
+        </item>
+        
+        <item>
             <title>Using the TLA⁺ Command Line Interface</title>
-            <link>https://charlycst.github.io/posts/tla-cli/</link>
+            <link>http://localhost:1313/posts/tla-cli/</link>
             <pubDate>Sun, 12 Sep 2021 10:41:19 +0200</pubDate>
             
-            <guid>https://charlycst.github.io/posts/tla-cli/</guid>
+            <guid>http://localhost:1313/posts/tla-cli/</guid>
             <description>TLA⁺ is a formal language for modelling concurrent and distributed systems in the form of a mathematical specification. TLA⁺ is often used with a set of tools, such as the TLC model checker, distributed with the official TLA⁺ IDE: the TLA⁺ toolbox.
 The toolbox is fine, but I personally prefer to edit my specifications using my favorite editor rather than a specialized IDE. Turns out running the TLA⁺ tools from the command line is quite simple yet not very well documented, that&amp;rsquo;s why I decided to write down my process for using TLA⁺ outside of the toolbox, hope it helps!</description>
             <content type="html"><![CDATA[<p><a href="https://lamport.azurewebsites.net/tla/tla.html">TLA⁺</a> is a formal language for
@@ -226,10 +377,10 @@ specs outside of the toolbox!</p>
         
         <item>
             <title>Compiling Rust Just-In-Time, the easy way</title>
-            <link>https://charlycst.github.io/posts/jit-ing-rust/</link>
+            <link>http://localhost:1313/posts/jit-ing-rust/</link>
             <pubDate>Sat, 27 Mar 2021 10:52:44 +0100</pubDate>
             
-            <guid>https://charlycst.github.io/posts/jit-ing-rust/</guid>
+            <guid>http://localhost:1313/posts/jit-ing-rust/</guid>
             <description>I just learned about dlopen a few days ago while scrolling on Twitter, it&amp;rsquo;s a function for programmatically loading dynamic libraries and then calling into them or using exported symbols. I already knew it was possible before, but until then I didn&amp;rsquo;t know how exactly, but now that all this power is at my fingertips I started to think about all kind of crazy things I could do with that.</description>
             <content type="html"><![CDATA[<p>I just learned about <a href="https://linux.die.net/man/3/dlopen"><code>dlopen</code></a> a few days ago while scrolling on Twitter, it&rsquo;s a function for programmatically loading dynamic libraries and then calling into them or using exported symbols.
 I already knew it was possible before, but until then I didn&rsquo;t know <em>how</em> exactly, but now that all this power is at my fingertips I started to think about all kind of crazy things I could do with that.</p>
@@ -502,10 +653,10 @@ One of the arguments rustc accepts is the <em>crate type</em>, here we want a dy
         
         <item>
             <title>Building a Memory Allocator for WebAssembly</title>
-            <link>https://charlycst.github.io/posts/wasm-memory-allocator/</link>
+            <link>http://localhost:1313/posts/wasm-memory-allocator/</link>
             <pubDate>Mon, 21 Dec 2020 10:03:08 +0100</pubDate>
             
-            <guid>https://charlycst.github.io/posts/wasm-memory-allocator/</guid>
+            <guid>http://localhost:1313/posts/wasm-memory-allocator/</guid>
             <description>While waiting for the GC proposal, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory. Memory allocation and management is a huge topic in computer science, but in this post we will focus on a simple design: the linked list allocators.
 Building an efficient allocator is notoriously hard, as testifies the popular jemalloc which is famously known for its 30,000 lines of codes.</description>
             <content type="html"><![CDATA[<p>While waiting for the <a href="https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md">GC proposal</a>, the only way to request memory in WebAssembly is to allocate it for ourselves from the linear memory.
@@ -761,10 +912,10 @@ That&rsquo;s why LLVM for instance uses a <em>shadow stack</em>, it&rsquo;s basi
         
         <item>
             <title>Introducing Parrot</title>
-            <link>https://charlycst.github.io/posts/introducing-parrot/</link>
+            <link>http://localhost:1313/posts/introducing-parrot/</link>
             <pubDate>Fri, 16 Oct 2020 19:10:59 +0200</pubDate>
             
-            <guid>https://charlycst.github.io/posts/introducing-parrot/</guid>
+            <guid>http://localhost:1313/posts/introducing-parrot/</guid>
             <description>I recently published my very first crate, a new step in my journey learning rust. I really enjoyed developing it and as it started becoming usable enough for my own needs I decided to publish it, so let&amp;rsquo;s do it properly!
 Before jumping in and telling you what that crate actually is about, let&amp;rsquo;s start with some context.
 This code does not compile As a hobby project for the last couple of months I have been building my very own compiler.</description>
@@ -850,11 +1001,25 @@ This code does not compile As a hobby project for the last couple of months I ha
         </item>
         
         <item>
+            <title>Wasm Control Flow</title>
+            <link>http://localhost:1313/posts/wasm-control-flow/</link>
+            <pubDate>Sun, 19 Jul 2020 12:55:06 +0200</pubDate>
+            
+            <guid>http://localhost:1313/posts/wasm-control-flow/</guid>
+            <description>The case of control flow in WebAssembly is quite interesting as, contrary to what one could expect from a supposed assembly language, there are no instructions to perform arbitrary jumps. Instead WebAssembly uses structured control flow, we have access to instructions such as block, loop and if that define precise points inside the program to which one can jump.
+This design choice reduces the surface for exploitation, for instance with x86_64 assembly it is possible to execute instructions that were actually never written by the compiler, just by jumping in the middle of a multi-bytes instruction which happens to encode something else if you start reading from there.</description>
+            <content type="html"><![CDATA[<p>The case of control flow in WebAssembly is quite interesting as, contrary to what one could expect from a supposed assembly language, there are no instructions to perform arbitrary jumps. Instead WebAssembly uses <em>structured control flow</em>, we have access to instructions such as <code>block</code>, <code>loop</code> and <code>if</code> that define precise points inside the program to which one can jump.</p>
+<p>This design choice reduces the surface for exploitation, for instance with <code>x86_64</code> assembly it is possible to execute instructions that were actually never written by the compiler, just by jumping in the middle of a multi-bytes instruction which happens to encode something else if you start reading from there. This is also helpful to type check and validate the code, ensuring that the stack always looks how it should with the right types on top of it.</p>
+<p>But of course with additional guaranties come additional constraints. The Go language for instance <a href="https://github.com/WebAssembly/design/issues/796#issuecomment-401310366">suffers from the absence of the <code>goto</code> instruction</a>, because the scheduler can resume execution of a goroutine at a few places and it does it very efficiently with arbitrary jumps, but it has to resort to doing a few back and forth using WebAssembly &rsquo;less flexible&rsquo; instructions.</p>
+]]></content>
+        </item>
+        
+        <item>
             <title>Wasm binary encoding</title>
-            <link>https://charlycst.github.io/posts/wasm-encoding/</link>
+            <link>http://localhost:1313/posts/wasm-encoding/</link>
             <pubDate>Fri, 12 Jun 2020 08:00:00 +0100</pubDate>
             
-            <guid>https://charlycst.github.io/posts/wasm-encoding/</guid>
+            <guid>http://localhost:1313/posts/wasm-encoding/</guid>
             <description>Lately I have been working on my own compiler (for fun &amp;amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this book and the rustc dev guide), but when it comes down to writing bytes one after the other the only thing you can hold onto is the specification.
 Don&amp;rsquo;t get me wrong, the specification is great, but it may be a little rough at first.</description>
             <content type="html"><![CDATA[<p>Lately I have been working on <a href="https://github.com/CharlyCst/zephyr">my own compiler</a> (for fun &amp; glory) targeting WebAssembly. The inner working of a compiler is well documented and there are plenty of production-grade examples to look at (for instance this <a href="http://craftinginterpreters.com/">book</a> and the <a href="https://rustc-dev-guide.rust-lang.org/">rustc dev guide</a>), but when it comes down to writing bytes one after the other the only thing you can hold onto is the <a href="https://webassembly.github.io/spec/">specification</a>.</p>
@@ -1108,10 +1273,10 @@ i32.add register_c register_a register_b
         
         <item>
             <title>An Interactive Introduction to Reinforcement Learning</title>
-            <link>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</link>
+            <link>http://localhost:1313/posts/an-animated-introduction-to-rl/</link>
             <pubDate>Sat, 28 Mar 2020 21:01:09 +0100</pubDate>
             
-            <guid>https://charlycst.github.io/posts/an-animated-introduction-to-rl/</guid>
+            <guid>http://localhost:1313/posts/an-animated-introduction-to-rl/</guid>
             <description>Reinforcement learning (RL) is a branch of machine learning that aim at finding an (hopefully) optimal policy (or behavior) for an agent in a given environment. I find it the most interesting area of machine learning because applications, hide and seek, capture the flag or StarCraft II to quote a few, are really fun to watch, often mind-blowing and sometimes make me think that these virtual agent are truly intelligent.</description>
             <content type="html"><![CDATA[<script>
   function resizeIframe(obj) {
@@ -1454,10 +1619,10 @@ i32.add register_c register_a register_b
         
         <item>
             <title>Diving into Intel MPK</title>
-            <link>https://charlycst.github.io/posts/mpk/</link>
+            <link>http://localhost:1313/posts/mpk/</link>
             <pubDate>Sat, 29 Feb 2020 12:21:24 +0100</pubDate>
             
-            <guid>https://charlycst.github.io/posts/mpk/</guid>
+            <guid>http://localhost:1313/posts/mpk/</guid>
             <description>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with mprotect on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using memory protection keys, hence the acronym MPK, let&amp;rsquo;s dive into it!</description>
             <content type="html"><![CDATA[<p>Memory protection consists in managing access rights of memory pages, either to avoid bugs or preventing malicious behavior. This is usually done through system calls, for instance with <code>mprotect</code> on Linux, because modification of the page table entries requires privileged access. However, in its Skylake architecture, Intel introduced a new way of managing memory permissions directly from userspace using <em>memory protection keys</em>, hence the acronym <em>MPK</em>, let&rsquo;s dive into it!</p>
 <h2 id="what-is-intel-mpk">What is Intel MPK?</h2>
@@ -1648,10 +1813,10 @@ i32.add register_c register_a register_b
         
         <item>
             <title>Speeding up pattern matching with WebAssembly</title>
-            <link>https://charlycst.github.io/posts/speeding-up-pattern-matching/</link>
+            <link>http://localhost:1313/posts/speeding-up-pattern-matching/</link>
             <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
             
-            <guid>https://charlycst.github.io/posts/speeding-up-pattern-matching/</guid>
+            <guid>http://localhost:1313/posts/speeding-up-pattern-matching/</guid>
             <description>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.
 On the other hand I recently paid a lot of attention to WebAssembly and Rust, both technologies seem really promising and attract a growing interest from developers.</description>
             <content type="html"><![CDATA[<p>I while ago I was tasked to find predefined patterns in strings, a well known problem in computer science. Our algorithm was running on AWS Lambda using the Node.js runtime, and, considering that we sometimes needed to search through billions of strings, performances of this algorithm were crucial.</p>
@@ -1856,10 +2021,10 @@ On the other hand I recently paid a lot of attention to WebAssembly and Rust, bo
         
         <item>
             <title>Let&#39;s (re)code React</title>
-            <link>https://charlycst.github.io/posts/micro-react/</link>
+            <link>http://localhost:1313/posts/micro-react/</link>
             <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
             
-            <guid>https://charlycst.github.io/posts/micro-react/</guid>
+            <guid>http://localhost:1313/posts/micro-react/</guid>
             <description>With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&amp;rsquo;s get started!</description>
             <content type="html"><![CDATA[<p>With more than 140k stars on Github at the time of writing, React is arguably one of the most used and loved web framework, but did you ever asked yourself how it works under the hood? Well you may know that there is this virtual DOM thing, and a certain reconciliation algorithm, but how do they work exactly? The best way to find out is probably to (re)code React by ourselves, let&rsquo;s get started!</p>
 <p>But first a quick disclaimer: React is a very mature framework, it&rsquo;s the results of years of research and the actual algorithm is more evolved than the one I&rsquo;m presenting here. The core idea is the same, however, and I will point out differences worth mentioning.</p>

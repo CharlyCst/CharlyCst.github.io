@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Last week I attended HotOS, the biennial workshop on Hot topics in Operating Systems. HotOS is my favorite academic conference. It is a small-scale, single track conference where people are open to discussing all sorts of ideas. This is very different from the main system conferences, where everyone tends to be on the defensive. This year there were 100 attendees at HotOS, which took place in Banff, Alberta, Canada.
+The Venue HotOS took place at the Fairmont Banff Springs Hotel, a castle at the heart of the Banff National Park." />
+<meta name="keywords" content="Charly Castes, CharlyCst, compilers, systems, operating systems" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://charlycst.github.io/posts/hotos-25/" />
+
+
+    <title>
+        
+            CharlyCst 
+        
+    </title>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/main.min.a6fd1d8ecc7624f8f894c7318c7ea7d94b4f1a954078d535e1a2a70e3b5fea0e.css">
+
+
+
+
+
+  <meta itemprop="name" content="HotOS&#39;25 Retrospective">
+  <meta itemprop="description" content="Last week I attended HotOS, the biennial workshop on Hot topics in Operating Systems. HotOS is my favorite academic conference. It is a small-scale, single track conference where people are open to discussing all sorts of ideas. This is very different from the main system conferences, where everyone tends to be on the defensive. This year there were 100 attendees at HotOS, which took place in Banff, Alberta, Canada.
+The Venue HotOS took place at the Fairmont Banff Springs Hotel, a castle at the heart of the Banff National Park.">
+  <meta itemprop="datePublished" content="2025-05-18T12:21:24+01:00">
+  <meta itemprop="dateModified" content="2025-05-24T01:12:07+02:00">
+  <meta itemprop="wordCount" content="1374">
+  <meta itemprop="image" content="https://charlycst.github.io/img/hotos-25/banff.jpg">
+  <meta itemprop="keywords" content="HotOS">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://charlycst.github.io/img/hotos-25/banff.jpg">
+  <meta name="twitter:title" content="HotOS&#39;25 Retrospective">
+  <meta name="twitter:description" content="Last week I attended HotOS, the biennial workshop on Hot topics in Operating Systems. HotOS is my favorite academic conference. It is a small-scale, single track conference where people are open to discussing all sorts of ideas. This is very different from the main system conferences, where everyone tends to be on the defensive. This year there were 100 attendees at HotOS, which took place in Banff, Alberta, Canada.
+The Venue HotOS took place at the Fairmont Banff Springs Hotel, a castle at the heart of the Banff National Park.">
+
+
+
+
+
+    <meta property="article:published_time" content="2025-05-18 12:21:24 &#43;0100 &#43;0100" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">cd ~</span>
+            
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://charlycst.github.io/posts">/posts</a></li><li><a href="https://charlycst.github.io/research">/research</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>7 minutes
+
+            
+
+            </p>
+        </div>
+
+        <article>
+            <h1 class="post-title">
+                <a href="https://charlycst.github.io/posts/hotos-25/">HotOS'25 Retrospective</a>
+            </h1>
+
+            
+                <img src="/img/hotos-25/banff.jpg" class="post-cover" />
+            
+
+            <div class="post-content">
+                <p>Last week I attended HotOS, the biennial <a href="https://sigops.org/s/conferences/hotos/2025/">workshop on Hot topics in Operating Systems</a>.
+HotOS is my favorite academic conference.
+It is a small-scale, single track conference where people are open to discussing all sorts of ideas.
+This is very different from the main system conferences, where everyone tends to be on the defensive.
+This year there were 100 attendees at HotOS, which took place in Banff, Alberta, Canada.</p>
+<h2 id="the-venue">The Venue</h2>
+<p>HotOS took place at the Fairmont Banff Springs Hotel, a castle at the heart of the Banff National Park.
+The organizing team managed to negotiate preferential rates, which kept the overall cost somewhat manageable.
+I have to say that I really loved the venue, Banff is a place that I would absolutely recommend.
+The town itself is in the middle of the mountains, with plenty of nature and wildlife.
+The view is breathtaking, and we even spotted deer while walking at night to relax after a day of the conference.</p>
+<p><img alt="The HotOS'25 Venue" src="/img/hotos-25/hotel.jpg"></p>
+<h2 id="the-talks">The Talks</h2>
+<p>I found this year&rsquo;s talks to be of very high quality and engaging.
+HotOS is one of those places where people are very open to discussing early stage or controversial ideas, which gave birth to genuine and interesting exchanges.</p>
+<p>The full list of talks is available <a href="https://sigops.org/s/conferences/hotos/2025/program.html">on the conference website</a>, with the papers coming soon.
+In this post I will only go through a few of them, but the others are worth checking too!</p>
+<h3 id="guillotine-hypervisors-for-isolating-malicious-ais">Guillotine: Hypervisors for Isolating Malicious AIs</h3>
+<p>This was a talk by James Mickens, also known for his <a href="https://tentimesyourmaster.com/">band</a> and his writing such as <a href="https://scholar.harvard.edu/files/mickens/files/thenightwatch.pdf">The Night Watch</a>.
+I had high expectations for this talk, and I was not disappointed.</p>
+<p>James presented the Guillotine hypervisor, a system designed to contain AI programs in case of a Skynet scenario.
+Guillotine is architected as a set security of layers, to account for potentially multiple levels of sandbox escape by the AI.
+The security layers range from software and hardware partitioning all the way to physical failsafes such as disconnecting the power and internet cables or immolating the whole data center.
+James managed to mix humor and apocalyptic threats, all with a perfect delivery and some interesting food for thought.
+I had a lot of fun and would definitely recommend reading the paper, make your own mind on Guillotine!</p>
+<h3 id="lightweight-hypervisor-verification-putting-the-hardware-burger-on-a-dietpaperslightweight-hypervisor-verifpdf"><a href="/papers/lightweight-hypervisor-verif.pdf">Lightweight Hypervisor Verification: Putting the Hardware Burger on a Diet</a></h3>
+<p>In that talk I presented our work on hypervisor verification, and I have to say that I did not expect so much positive feedback.</p>
+<p>The paper presents an approach for finding bugs in instruction emulation and hardware configuration in hypervisors.
+We developed a framework to verify Miralis (a research hypervisor that virtualises firmware) and found it super valuable for us, so we decided to share the ideas behind the verification of Miralis.
+There are two key ideas here: first, in recent years executable ISA specifications became a de facto standard; and second, hypervisors follow a pretty regular structure that makes them easy to verify automatically.
+In short, we translated the RISC-V specification into Rust code (with a custom compiler), and used a model checker to verify the hardware configuration and instruction emulation.
+The approach is completely automated (contrary to theorem provers), and helped us squash a lots of very nasty but subtle bugs in Miralis.</p>
+<h3 id="modular-full-system-verification">Modular, Full-System Verification</h3>
+<p>That was a talk by Gregory Malecha from BlueRock on the effort to verify the Nova microkernel (and hypervisor) and the OS built on top.
+The proof leverages separation logic and decomposes verification by privilege levels.
+Their approach contrasts with seL4, and in particular they hope to achieve multi-core verification, which seL4 has been struggling with for a while.
+Looking forward to seeing how far they can go!</p>
+<h3 id="uniting-the-world-by-dividing-it-federated-maps-to-enable-spatial-applications">Uniting the World by Dividing it: Federated Maps to Enable Spatial Applications</h3>
+<p>I liked the talk, which presented the design of a federated mapping system.
+Think Google Map merging with your local store, university, and office mapping systems.
+They have a prototype, <a href="https://www.open-flame.com/">OpenFlame</a>, and some cool demos.</p>
+<h3 id="real-life-is-uncertain-consensus-should-be-too">Real Life Is Uncertain. Consensus Should Be Too!</h3>
+<p>This was a great talk by Reginald Frank, from Natacha Crooks&rsquo; group at UC Berkeley.
+They remark that consensus protocols operate under the assumption that up to <em>f</em> machines can fail, but that the <em>f</em> threshold is not very representative of the reality of correlated and non-homogeneous failure rates of machines.
+They argue that the failure probability should be taken into account when designing consensus protocols, and is a parameter that can be played with to trade off costs for consistency.
+For instance, maybe the quorum size should be increased while the fleet is undergoing an update, or could be reduced on newer machines.
+Maybe the nodes&rsquo; votes should even be weighted by their probability of failure?</p>
+<h3 id="from-ahead-of--to-just-in-time-and-back-again-static-analysis-for-unix-shell-programs">From Ahead-of- to Just-in-Time and Back Again: Static Analysis for Unix Shell Programs</h3>
+<p>A cool talk by Lukas Lazarek from Brown.
+They built a tool for static analysis of shell programs, which can do things such as type checking or predicting changes to the filesystem.
+The tool builds upon a simplified but complete enough for most use cases specification of the most common Unix tools.
+There was an interesting discussion about the relevance of that work in the age of AI agent, would be cool to be able to automatically check if that LLM-suggested script is going to wipe out my filesystem!</p>
+<h3 id="the-nic-should-be-part-of-the-os">The NIC should be part of the OS</h3>
+<p>Maybe one of my favorite OS papers of this year.
+It was presented by Pengcheng Xu from ETH Zurich&rsquo;s system group, and builds on their <a href="https://enzian.systems/">Enzian research computer</a>.
+They explain how they can go from a packet on the NIC to the handler in user-space in 3 instructions.
+The trick is to issue a blocking read on the NIC, which the NIC will unblock with the packet data once the packet arrives.
+No need to burn watts on polling while getting the best possible latency.
+Of course, doing so requires a cache coherent interconnect between the NIC and the CPU, which they have on their Enzian machine (and that maybe we will have too with CXL one day).
+That also means that the NIC needs to be aware of part of the kernel state, such as what processes are scheduled on which cores.
+Overall, that is a super cool NIC/OS co-design.</p>
+<h3 id="rethinking-rpc-communication-for-microservices-based-applications">Rethinking RPC Communication for Microservices-based Applications</h3>
+<p>A great talk about co-design between transport protocols and network functions.
+When the end-to-end path is controlled by the same entity there is an opportunity in deviating from standard protocols to expose the information needed by network functions directly.
+For instance, rather than un-marshaling multiple layers of protocols, the network functions could directly access the required field.</p>
+<h3 id="analyzing-metastable-failures">Analyzing Metastable Failures</h3>
+<p>A super interesting talk by the AWS crew.
+They explain how to model and visualize systems to find the stable states.
+They have pretty cool systems visualization as vector fields where we can clearly see the attractors, some of which map to stable under-performing states which are the cause of metastable failures.
+Some super cool research from AWS!</p>
+<h3 id="designing-a-datacenter-wide-distributed-shared-log">Designing a Datacenter-wide Distributed Shared Log</h3>
+<p>Another talk from Natacha&rsquo;s group, presented by Micah Murray.
+They ask the question of how to scale a log to a whole data center.
+The bottleneck is sequencing, which requires synchronization, but in terms of compute sequencing is pretty lightweight.
+Their solution is to use programmable switches to manage the sequencing, rather than standard processors.
+Based on their prototype, they estimate that they can scale to 62 billion req/s with 100 switches while staying under 1ms latency.
+Pretty cool result and fun idea!</p>
+<h2 id="roaming-around-in-alberta">Roaming Around in Alberta</h2>
+<p>After those fun three days of the conference in Banff I stayed a bit around Calgary to roam around.
+Banff is the main attraction near Calgary, but another super interesting place is Drumheller.
+Drumheller is known for the Royal Tyrrell Museum and its fossils (of which there are plenty in Alberta), if you are into dinosaurs and natural history I can only recommend checking it out!</p>
+<p><img alt="A T-Rex fossil from the Royal Tyrrell Museum" src="/img/hotos-25/trex.jpg"></p>
+<p>The area around Drumheller has a very cool Far West vibe, with canyons, small towns with saloons, and the hoodoos.</p>
+<p><img alt="The hoodoos, in Drumheller, Alberta" src="/img/hotos-25/hoodoos.jpg"></p>
+<p>And if you are a foodie, of the restaurants I tried in Calgary I would recommend checking out Ten Foot Henry.</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://charlycst.github.io/tags/hotos">HotOS</a></span>
+                </p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1374 Words</p>
+
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2025-05-18</p>
+                <p>Last edited on 2025-05-24</p>
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h"></span>
+                    <hr />
+                </div>
+
+                <div class="pagination__buttons">
+                    
+
+                    
+                        <span class="button next">
+                            <a href="https://charlycst.github.io/posts/reflections-on-core-gapping/">
+                                <span class="button__text">Reflections on Core Gapping</span>
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    
+                </div>
+            </div>
+        
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2025</span>
+            
+                <span><a href="https://charlycst.github.io/">Charly Castes</a></span>
+            
+            
+            <span><a href="https://charlycst.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.ca03643369d34a3ffdf96b403fe35ceb5924ec218c73345ebe3c7b7c3d1ffe2320ead14c71f8c8e0bbe9ac9d30862950f985fe74310dfb0149ee3f68f3586c83.js" integrity="sha512-ygNkM2nTSj/9&#43;WtAP&#43;Nc61kk7CGMczRevjx7fD0f/iMg6tFMcfjI4LvprJ0whilQ&#43;YX&#43;dDEN&#43;wFJ7j9o81hsgw=="></script>
+
+
+
+    </body>
+</html>

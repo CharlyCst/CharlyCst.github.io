@@ -8,6 +8,13 @@
     <language>en</language>
     <atom:link href="https://charlycst.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>HotOS&#39;25 Retrospective</title>
+      <link>https://charlycst.github.io/posts/hotos-25/</link>
+      <pubDate>Sun, 18 May 2025 12:21:24 +0100</pubDate>
+      <guid>https://charlycst.github.io/posts/hotos-25/</guid>
+      <description>Last week I attended HotOS, the biennial workshop on Hot topics in Operating Systems. HotOS is my favorite academic conference. It is a small-scale, single track conference where people are open to discussing all sorts of ideas. This is very different from the main system conferences, where everyone tends to be on the defensive. This year there were 100 attendees at HotOS, which took place in Banff, Alberta, Canada.&#xA;The Venue HotOS took place at the Fairmont Banff Springs Hotel, a castle at the heart of the Banff National Park.</description>
+    </item>
+    <item>
       <title>Reflections on Core Gapping</title>
       <link>https://charlycst.github.io/posts/reflections-on-core-gapping/</link>
       <pubDate>Wed, 29 May 2024 14:36:04 +0200</pubDate>

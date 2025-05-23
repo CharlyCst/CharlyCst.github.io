@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HotOS on CharlyCst</title>
+    <link>https://charlycst.github.io/tags/hotos/</link>
+    <description>Recent content in HotOS on CharlyCst</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 24 May 2025 01:12:07 +0200</lastBuildDate>
+    <atom:link href="https://charlycst.github.io/tags/hotos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HotOS&#39;25 Retrospective</title>
+      <link>https://charlycst.github.io/posts/hotos-25/</link>
+      <pubDate>Sun, 18 May 2025 12:21:24 +0100</pubDate>
+      <guid>https://charlycst.github.io/posts/hotos-25/</guid>
+      <description>Last week I attended HotOS, the biennial workshop on Hot topics in Operating Systems. HotOS is my favorite academic conference. It is a small-scale, single track conference where people are open to discussing all sorts of ideas. This is very different from the main system conferences, where everyone tends to be on the defensive. This year there were 100 attendees at HotOS, which took place in Banff, Alberta, Canada.&#xA;The Venue HotOS took place at the Fairmont Banff Springs Hotel, a castle at the heart of the Banff National Park.</description>
+    </item>
+  </channel>
+</rss>

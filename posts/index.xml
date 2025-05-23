@@ -31,9 +31,9 @@ The view is breathtaking, and we even spotted deer while walking at night to rel
 <h2 id="the-talks">The Talks</h2>
 <p>I found this year&rsquo;s talks to be of very high quality and engaging.
 HotOS is one of those places where people are very open to discussing early stage or controversial ideas, which gave birth to genuine and interesting exchanges.</p>
-<p>The full list of talks is available <a href="https://sigops.org/s/conferences/hotos/2025/program.html">on the conference website</a>, with the papers coming soon.
+<p>The full list of talks is available <a href="https://sigops.org/s/conferences/hotos/2025/program.html">on the conference website</a>.
 In this post I will only go through a few of them, but the others are worth checking too!</p>
-<h3 id="guillotine-hypervisors-for-isolating-malicious-ais">Guillotine: Hypervisors for Isolating Malicious AIs</h3>
+<h3 id="guillotine-hypervisors-for-isolating-malicious-aishttpssigopsorgsconferenceshotos2025papershotos25-290pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-290.pdf">Guillotine: Hypervisors for Isolating Malicious AIs</a></h3>
 <p>This was a talk by James Mickens, also known for his <a href="https://tentimesyourmaster.com/">band</a> and his writing such as <a href="https://scholar.harvard.edu/files/mickens/files/thenightwatch.pdf">The Night Watch</a>.
 I had high expectations for this talk, and I was not disappointed.</p>
 <p>James presented the Guillotine hypervisor, a system designed to contain AI programs in case of a Skynet scenario.
@@ -48,27 +48,27 @@ We developed a framework to verify Miralis (a research hypervisor that virtualis
 There are two key ideas here: first, in recent years executable ISA specifications became a de facto standard; and second, hypervisors follow a pretty regular structure that makes them easy to verify automatically.
 In short, we translated the RISC-V specification into Rust code (with a custom compiler), and used a model checker to verify the hardware configuration and instruction emulation.
 The approach is completely automated (contrary to theorem provers), and helped us squash a lots of very nasty but subtle bugs in Miralis.</p>
-<h3 id="modular-full-system-verification">Modular, Full-System Verification</h3>
+<h3 id="modular-full-system-verificationhttpssigopsorgsconferenceshotos2025papershotos25-206pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-206.pdf">Modular, Full-System Verification</a></h3>
 <p>That was a talk by Gregory Malecha from BlueRock on the effort to verify the Nova microkernel (and hypervisor) and the OS built on top.
 The proof leverages separation logic and decomposes verification by privilege levels.
 Their approach contrasts with seL4, and in particular they hope to achieve multi-core verification, which seL4 has been struggling with for a while.
 Looking forward to seeing how far they can go!</p>
-<h3 id="uniting-the-world-by-dividing-it-federated-maps-to-enable-spatial-applications">Uniting the World by Dividing it: Federated Maps to Enable Spatial Applications</h3>
+<h3 id="uniting-the-world-by-dividing-it-federated-maps-to-enable-spatial-applicationshttpssigopsorgsconferenceshotos2025papershotos25-56pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-56.pdf">Uniting the World by Dividing it: Federated Maps to Enable Spatial Applications</a></h3>
 <p>I liked the talk, which presented the design of a federated mapping system.
 Think Google Map merging with your local store, university, and office mapping systems.
 They have a prototype, <a href="https://www.open-flame.com/">OpenFlame</a>, and some cool demos.</p>
-<h3 id="real-life-is-uncertain-consensus-should-be-too">Real Life Is Uncertain. Consensus Should Be Too!</h3>
+<h3 id="real-life-is-uncertain-consensus-should-be-toohttpssigopsorgsconferenceshotos2025papershotos25-69pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-69.pdf">Real Life Is Uncertain. Consensus Should Be Too!</a></h3>
 <p>This was a great talk by Reginald Frank, from Natacha Crooks&rsquo; group at UC Berkeley.
 They remark that consensus protocols operate under the assumption that up to <em>f</em> machines can fail, but that the <em>f</em> threshold is not very representative of the reality of correlated and non-homogeneous failure rates of machines.
 They argue that the failure probability should be taken into account when designing consensus protocols, and is a parameter that can be played with to trade off costs for consistency.
 For instance, maybe the quorum size should be increased while the fleet is undergoing an update, or could be reduced on newer machines.
 Maybe the nodes&rsquo; votes should even be weighted by their probability of failure?</p>
-<h3 id="from-ahead-of--to-just-in-time-and-back-again-static-analysis-for-unix-shell-programs">From Ahead-of- to Just-in-Time and Back Again: Static Analysis for Unix Shell Programs</h3>
+<h3 id="from-ahead-of--to-just-in-time-and-back-again-static-analysis-for-unix-shell-programshttpssigopsorgsconferenceshotos2025papershotos25-364pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-364.pdf">From Ahead-of- to Just-in-Time and Back Again: Static Analysis for Unix Shell Programs</a></h3>
 <p>A cool talk by Lukas Lazarek from Brown.
 They built a tool for static analysis of shell programs, which can do things such as type checking or predicting changes to the filesystem.
 The tool builds upon a simplified but complete enough for most use cases specification of the most common Unix tools.
 There was an interesting discussion about the relevance of that work in the age of AI agent, would be cool to be able to automatically check if that LLM-suggested script is going to wipe out my filesystem!</p>
-<h3 id="the-nic-should-be-part-of-the-os">The NIC should be part of the OS</h3>
+<h3 id="the-nic-should-be-part-of-the-oshttpssigopsorgsconferenceshotos2025papershotos25-207pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-207.pdf">The NIC should be part of the OS</a></h3>
 <p>Maybe one of my favorite OS papers of this year.
 It was presented by Pengcheng Xu from ETH Zurich&rsquo;s system group, and builds on their <a href="https://enzian.systems/">Enzian research computer</a>.
 They explain how they can go from a packet on the NIC to the handler in user-space in 3 instructions.
@@ -77,16 +77,16 @@ No need to burn watts on polling while getting the best possible latency.
 Of course, doing so requires a cache coherent interconnect between the NIC and the CPU, which they have on their Enzian machine (and that maybe we will have too with CXL one day).
 That also means that the NIC needs to be aware of part of the kernel state, such as what processes are scheduled on which cores.
 Overall, that is a super cool NIC/OS co-design.</p>
-<h3 id="rethinking-rpc-communication-for-microservices-based-applications">Rethinking RPC Communication for Microservices-based Applications</h3>
+<h3 id="rethinking-rpc-communication-for-microservices-based-applicationshttpssigopsorgsconferenceshotos2025papershotos25-71pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-71.pdf">Rethinking RPC Communication for Microservices-based Applications</a></h3>
 <p>A great talk about co-design between transport protocols and network functions.
 When the end-to-end path is controlled by the same entity there is an opportunity in deviating from standard protocols to expose the information needed by network functions directly.
 For instance, rather than un-marshaling multiple layers of protocols, the network functions could directly access the required field.</p>
-<h3 id="analyzing-metastable-failures">Analyzing Metastable Failures</h3>
+<h3 id="analyzing-metastable-failureshttpssigopsorgsconferenceshotos2025papershotos25-106pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-106.pdf">Analyzing Metastable Failures</a></h3>
 <p>A super interesting talk by the AWS crew.
 They explain how to model and visualize systems to find the stable states.
 They have pretty cool systems visualization as vector fields where we can clearly see the attractors, some of which map to stable under-performing states which are the cause of metastable failures.
 Some super cool research from AWS!</p>
-<h3 id="designing-a-datacenter-wide-distributed-shared-log">Designing a Datacenter-wide Distributed Shared Log</h3>
+<h3 id="designing-a-datacenter-wide-distributed-shared-loghttpssigopsorgsconferenceshotos2025papershotos25-358pdf"><a href="https://sigops.org/s/conferences/hotos/2025/papers/hotos25-358.pdf">Designing a Datacenter-wide Distributed Shared Log</a></h3>
 <p>Another talk from Natacha&rsquo;s group, presented by Micah Murray.
 They ask the question of how to scale a log to a whole data center.
 The bottleneck is sequencing, which requires synchronization, but in terms of compute sequencing is pretty lightweight.

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Essay on CharlyCst</title>
+    <link>http://localhost:1313/tags/essay/</link>
+    <description>Recent content in Essay on CharlyCst</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 09 Jun 2025 10:41:40 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/essay/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CPU as a Library</title>
+      <link>http://localhost:1313/posts/the-software-cpu/</link>
+      <pubDate>Sat, 07 Jun 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/the-software-cpu/</guid>
+      <description>Hardware and software have always been treated as if they were alien to each others, like oil and water, or mind and body. They feel so different because one we can touch, and the other we can&amp;rsquo;t. Yet, when writing software, the system engineer has to think not of one and the other, but of the combination of the two. Hardware and software need to blend together.&#xA;System software exist in two distinct dimensions: in its abstract form as source code, and its embodiment as a binary on a machine or an emulator.</description>
+    </item>
+  </channel>
+</rss>

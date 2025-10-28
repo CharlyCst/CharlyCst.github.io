@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PhD on CharlyCst</title>
+    <link>http://localhost:1313/tags/phd/</link>
+    <description>Recent content in PhD on CharlyCst</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 06 Oct 2025 03:32:38 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/phd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What to Work on for a Systems PhD</title>
+      <link>http://localhost:1313/posts/projects-in-systems-phd/</link>
+      <pubDate>Sat, 04 Oct 2025 10:03:08 +0100</pubDate>
+      <guid>http://localhost:1313/posts/projects-in-systems-phd/</guid>
+      <description>It has now been over four years since the start of my PhD. I consider myself lucky, over the course of those four years there is only one thing that I wish I did differently: picking what to work on.&#xA;When talking with people earlier in their PhD journey the question of what to work on often comes back. PhDs in computer systems are especially tricky, because of the time and energy it takes to get a project all the way through the finish line.</description>
+    </item>
+  </channel>
+</rss>
